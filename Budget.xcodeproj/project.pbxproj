@@ -24,7 +24,6 @@
 		6CCBC296295F851E00FAC11C /* BudgetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC295295F851E00FAC11C /* BudgetError.swift */; };
 		6CCBC298295F882F00FAC11C /* CategoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC297295F882F00FAC11C /* CategoryStorage.swift */; };
 		6CCBC29A295F8A0300FAC11C /* TransactionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC299295F8A0300FAC11C /* TransactionStorage.swift */; };
-		6CCBC29E295F8BE800FAC11C /* BudgetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC29D295F8BE800FAC11C /* BudgetViewModel.swift */; };
 		6CCBC2A2295F93CD00FAC11C /* CategoryScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC2A1295F93CD00FAC11C /* CategoryScene.swift */; };
 		6CCBC2A5295F93E000FAC11C /* TransactionScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC2A4295F93E000FAC11C /* TransactionScene.swift */; };
 		6CCBC2A7295F93EB00FAC11C /* BudgetScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC2A6295F93EB00FAC11C /* BudgetScene.swift */; };
@@ -56,7 +55,6 @@
 		6CCBC295295F851E00FAC11C /* BudgetError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetError.swift; sourceTree = "<group>"; };
 		6CCBC297295F882F00FAC11C /* CategoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryStorage.swift; sourceTree = "<group>"; };
 		6CCBC299295F8A0300FAC11C /* TransactionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionStorage.swift; sourceTree = "<group>"; };
-		6CCBC29D295F8BE800FAC11C /* BudgetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetViewModel.swift; sourceTree = "<group>"; };
 		6CCBC2A1295F93CD00FAC11C /* CategoryScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryScene.swift; sourceTree = "<group>"; };
 		6CCBC2A4295F93E000FAC11C /* TransactionScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionScene.swift; sourceTree = "<group>"; };
 		6CCBC2A6295F93EB00FAC11C /* BudgetScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetScene.swift; sourceTree = "<group>"; };
@@ -199,17 +197,8 @@
 			isa = PBXGroup;
 			children = (
 				6C6584E429610CF2003A9ABA /* Presenter */,
-				6CCBC29C295F8BDA00FAC11C /* ViewModel */,
 			);
 			path = Presentation;
-			sourceTree = "<group>";
-		};
-		6CCBC29C295F8BDA00FAC11C /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				6CCBC29D295F8BE800FAC11C /* BudgetViewModel.swift */,
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		6CCBC29F295F93B400FAC11C /* View */ = {
@@ -321,7 +310,6 @@
 				6CCBC2AC295F98C400FAC11C /* AddCategoryScene.swift in Sources */,
 				6CCBC2A7295F93EB00FAC11C /* BudgetScene.swift in Sources */,
 				6CCBC293295F840500FAC11C /* ArrayExtensions.swift in Sources */,
-				6CCBC29E295F8BE800FAC11C /* BudgetViewModel.swift in Sources */,
 				6CCBC2A2295F93CD00FAC11C /* CategoryScene.swift in Sources */,
 				6CCBC28C295F815400FAC11C /* TransactionEntity.swift in Sources */,
 				6C6584E82961167B003A9ABA /* AddCategoryPresenter.swift in Sources */,
