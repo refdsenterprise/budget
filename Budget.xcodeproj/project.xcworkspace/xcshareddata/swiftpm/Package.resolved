@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "refds-design-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/refdsenterprise/refds-design-system.git",
+      "state" : {
+        "branch" : "develop",
+        "revision" : "df8b6ec5241ffff3a58cc9206f2b65256b5e7d77"
+      }
+    }
+  ],
+  "version" : 2
+}
