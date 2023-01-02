@@ -11,6 +11,8 @@ import Charts
 
 struct BudgetScene: View {
     @StateObject private var presenter: BudgetPresenter = .instance
+    @State private var snappedItem = 0.0
+    @State private var draggingItem = 0.0
     
     var body: some View {
         NavigationStack {
@@ -43,9 +45,12 @@ struct BudgetScene: View {
     private var content: some View {
         List {
             sectionActualAndBudget
-            sectionDifference
-            sectionChartBudgetVsActualTitle
-            sectionChartBudgetVsActual
+            if !presenter.categories.isEmpty {
+                sectionDifference
+                sectionTotalDifference
+                sectionChartBudgetVsActualTitle
+                sectionChartBudgetVsActual
+            }
             sectionOptions
         }
     }
@@ -62,6 +67,44 @@ struct BudgetScene: View {
     
     private var sectionActualAndBudget: some View {
         Section { } footer: {
+            ZStack {
+                ForEach(0..<3) { index in
+                    currentValueView
+                        .scaleEffect(1.0 - abs(distance(index)) * 0.25)
+                        .opacity(1.0 - abs(distance(index)) * 0.7)
+                        .offset(x: myXOffset(index), y: 0)
+                        .zIndex(1.0 - abs(distance(index)) * 0.1)
+                }
+            }
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        draggingItem = snappedItem + value.translation.width / 100
+                    }
+                    .onEnded { value in
+                        withAnimation {
+                            draggingItem = snappedItem + value.predictedEndTranslation.width / 100
+                            draggingItem = round(draggingItem).remainder(dividingBy: Double(3))
+                            snappedItem = draggingItem
+                        }
+                    }
+            )
+            .padding(.top, 25)
+            .padding(.bottom, 15)
+        }
+    }
+    
+    private func distance(_ item: Int) -> Double {
+        return (draggingItem - Double(item)).remainder(dividingBy: Double(3))
+    }
+    
+    private func myXOffset(_ item: Int) -> Double {
+        let angle = Double.pi * 2 / Double(3) * distance(item)
+        return sin(angle) * 100
+    }
+    
+    private var currentValueView: some View {
+        VStack {
             if let actual = presenter.getTotalActual(),
                let budget = presenter.getTotalBudget() {
                 VStack(spacing: 10) {
@@ -79,9 +122,14 @@ struct BudgetScene: View {
                     }
                     RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(16), family: .moderatMono)
                 }
-                .frame(maxWidth: .infinity)
+                .padding()
+                .padding(.horizontal)
+                .background(Color(uiColor: .secondarySystemBackground))
+                .cornerRadius(10)
             }
+            
         }
+        .frame(maxWidth: .infinity)
     }
     
     private var sectionDifference: some View {
@@ -91,23 +139,37 @@ struct BudgetScene: View {
                    let actual = presenter.getActualTransaction(by: category) {
                     HStack {
                         VStack(alignment: .leading) {
-                            RefdsTag(category.name, size: .custom(11), color: .randomColor, lineLimit: 1)
-                            HStack {
-                                RefdsText("Budget: ")
-                                RefdsText(budget.formatted(.currency(code: "BRL")), color: .secondary, weight: .bold)
-                            }
-                            HStack {
-                                RefdsText("Atual:    ")
-                                RefdsText(actual.formatted(.currency(code: "BRL")), color: .secondary, weight: .bold)
-                            }
+                            RefdsTag(category.name, size: .custom(11), color: presenter.getColor(by: category), lineLimit: 1)
                         }
                         Spacer()
-                        RefdsText((budget - actual).formatted(.currency(code: "BRL")), color: presenter.getActualColor(actual: actual, budget: budget), weight: .bold)
+                        RefdsText((budget - actual).formatted(.currency(code: "BRL")), color: budget - actual < 0 ? .pink : .secondary, weight: .bold)
                     }
                 }
             }
         } header: {
-            RefdsText("restante", size: .extraSmall, color: .secondary)
+            if !presenter.categories.isEmpty {
+                RefdsText("restante", size: .extraSmall, color: .secondary)
+            }
+        }
+    }
+    
+    private var sectionTotalDifference: some View {
+        Section {
+            HStack {
+                RefdsText("Total das categorias")
+                Spacer()
+                RefdsText(
+                    presenter.getTotalDifference().formatted(.currency(code: "BRL")),
+                    color: presenter.getTotalDifference() <= 0 ? .pink : .accentColor,
+                    weight: .bold,
+                    family: .moderatMono,
+                    lineLimit: 1
+                )
+            }
+        } header: {
+            if !presenter.categories.isEmpty {
+                RefdsText("total restante", size: .extraSmall, color: .secondary)
+            }
         }
     }
     
