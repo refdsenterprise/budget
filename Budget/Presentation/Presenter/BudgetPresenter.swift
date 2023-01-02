@@ -14,6 +14,7 @@ final class BudgetPresenter: ObservableObject {
     @Published var categories: [CategoryEntity] = []
     @Published var transactions: [TransactionEntity] = []
     @Published var isFilterPerDate = true
+    private var colors: [Color] = []
     
     func loadData() {
         let category = Storage.shared.category
@@ -51,6 +52,14 @@ final class BudgetPresenter: ObservableObject {
         }).reduce(0, +)
     }
     
+    func getTotalDifference() -> Double {
+        categories.map({
+            let budget = getBudget(by: $0)?.amount ?? 0
+            let actual = getActualTransaction(by: $0)
+            return budget - actual
+        }).reduce(0, +)
+    }
+    
     func getActualColor(actual: Double, budget: Double) -> Color {
         let accent = budget - actual > 0
         let secondary = budget - actual == 0
@@ -74,5 +83,13 @@ final class BudgetPresenter: ObservableObject {
         categories.map({
             (category: $0.name.capitalized, value: getActualTransaction(by: $0))
         })
+    }
+    
+    func getColor(by category: CategoryEntity) -> Color {
+        guard let index = categories.firstIndex(of: category) else { return .randomColor }
+        if !colors.indices.contains(index) {
+            colors = categories.map({ _ in .randomColor })
+        }
+        return colors[index]
     }
 }
