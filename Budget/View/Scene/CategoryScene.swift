@@ -89,23 +89,21 @@ struct CategoryScene: View {
     }
     
     private func sectionTotalBudget(_ budget: Double, isActual: Bool = false) -> some View {
-        Section {
-            HStack {
-                RefdsText("Total das categorias")
-                Spacer()
+        Section {} header: {
+            VStack(spacing: 10) {
+                RefdsText("total \(isActual ? "atual" : "budget")".uppercased(), size: .custom(12), color: .secondary)
                 RefdsText(
                     budget.formatted(.currency(code: "BRL")),
-                    color: .accentColor,
+                    size: .custom(40),
+                    color: .primary,
                     weight: .bold,
                     family: .moderatMono,
+                    alignment: .center,
                     lineLimit: 1
                 )
             }
-        } header: {
-            if !presenter.getCategoriesFiltred().isEmpty {
-                RefdsText("total \(isActual ? "atual" : "budget")", size: .extraSmall, color: .secondary)
-            }
         }
+        .frame(maxWidth: .infinity)
     }
     
     private var sectionActualCategories: some View {

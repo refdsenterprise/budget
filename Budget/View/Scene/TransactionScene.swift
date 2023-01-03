@@ -51,26 +51,30 @@ struct TransactionScene: View {
     private var list: some View {
         List {
             sectionOptions
+            sectionTotal(presenter.getTotalAmount())
             if !presenter.getTransactionsFiltred().isEmpty {
                 sectionTransactions
-                sectionTotal(presenter.getTotalAmount())
             }
         }
         .listStyle(.insetGrouped)
     }
     
     private func sectionTotal(_ total: Double) -> some View {
-        Section {
-            HStack {
-                RefdsText("Total das transações")
-                Spacer()
-                RefdsText(total.formatted(.currency(code: "BRL")), color: .accentColor, weight: .bold, family: .moderatMono, lineLimit: 1)
-            }
-        } header: {
-            if !presenter.getTransactionsFiltred().isEmpty {
-                RefdsText("total", size: .extraSmall, color: .secondary)
+        Section {} header: {
+            VStack(spacing: 10) {
+                RefdsText("total das transações".uppercased(), size: .custom(12), color: .secondary)
+                RefdsText(
+                    total.formatted(.currency(code: "BRL")),
+                    size: .custom(40),
+                    color: .primary,
+                    weight: .bold,
+                    family: .moderatMono,
+                    alignment: .center,
+                    lineLimit: 1
+                )
             }
         }
+        .frame(maxWidth: .infinity)
     }
     
     private var sectionOptions: some View {

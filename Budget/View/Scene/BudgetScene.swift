@@ -13,11 +13,12 @@ struct BudgetScene: View {
     @StateObject private var presenter: BudgetPresenter = .instance
     @State private var snappedItem = 0.0
     @State private var draggingItem = 0.0
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle(BudgetApp.TabItem.budget.title)
+                .navigationTitle(BudgetApp.TabItem.budget.title + " \(presenter.isFilterPerDate ? presenter.selectedPeriod.label.capitalized : "")")
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         HStack {
@@ -28,7 +29,7 @@ struct BudgetScene: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         if presenter.isFilterPerDate {
-                            RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .teal)
+                            RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .teal)
                         }
                     }
                 }
@@ -44,11 +45,20 @@ struct BudgetScene: View {
     
     private var content: some View {
         List {
-            sectionActualAndBudget
+            if !presenter.isFilterPerDate {
+                Section {} footer: {
+                    if let actual = presenter.getTotalActual(),
+                       let budget = presenter.getTotalBudget() {
+                        valueView(actual: actual, budget: budget)
+                            .padding(.top)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+            } else { sectionActualAndBudget }
+            
             if !presenter.categories.isEmpty {
                 sectionDifference
                 sectionTotalDifference
-                sectionChartBudgetVsActualTitle
                 sectionChartBudgetVsActual
             }
             sectionOptions
@@ -86,6 +96,9 @@ struct BudgetScene: View {
                             draggingItem = snappedItem + value.predictedEndTranslation.width / 100
                             draggingItem = round(draggingItem).remainder(dividingBy: Double(3))
                             snappedItem = draggingItem
+                            if let period = BudgetPresenter.Period(rawValue: Int(snappedItem)) {
+                                presenter.selectedPeriod = period
+                            }
                         }
                     }
             )
@@ -107,42 +120,44 @@ struct BudgetScene: View {
         VStack {
             if let actual = presenter.getTotalActual(),
                let budget = presenter.getTotalBudget() {
-                VStack(spacing: 10) {
-                    VStack {
-                        RefdsText("valor atual".uppercased(), size: .custom(12), color: .secondary)
-                        RefdsText(
-                            actual.formatted(.currency(code: "BRL")),
-                            size: .custom(40),
-                            color: presenter.getActualColor(actual: actual, budget: budget),
-                            weight: .bold,
-                            family: .moderatMono,
-                            alignment: .center,
-                            lineLimit: 1
-                        )
-                    }
-                    RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(16), family: .moderatMono)
+                if presenter.isFilterPerDate {
+                    valueView(actual: actual, budget: budget)
+                        .padding()
+                        .background(Color(uiColor: colorScheme == .dark ? .secondarySystemBackground : .systemBackground))
+                        .cornerRadius(15)
                 }
-                .padding()
-                .padding(.horizontal)
-                .background(Color(uiColor: .secondarySystemBackground))
-                .cornerRadius(10)
             }
-            
         }
         .frame(maxWidth: .infinity)
+    }
+    
+    private func valueView(actual: Double, budget: Double) -> some View {
+        VStack(spacing: 10) {
+            RefdsText("valor atual \(presenter.isFilterPerDate ? presenter.selectedPeriod.label : "")".uppercased(), size: .custom(12), color: .secondary)
+            RefdsText(
+                actual.formatted(.currency(code: "BRL")),
+                size: .custom(40),
+                color: presenter.getActualColor(actual: actual, budget: budget),
+                weight: .bold,
+                family: .moderatMono,
+                alignment: .center,
+                lineLimit: 1
+            )
+            RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(16), color: .secondary, weight: .bold, family: .moderatMono)
+        }
     }
     
     private var sectionDifference: some View {
         Section {
             ForEach(presenter.categories) { category in
-                if let budget = presenter.getBudget(by: category)?.amount,
-                   let actual = presenter.getActualTransaction(by: category) {
+                if let budget = presenter.getBudgetAmount(by: category),
+                   let actual = presenter.getAmountTransactions(by: category) {
                     HStack {
                         VStack(alignment: .leading) {
                             RefdsTag(category.name, size: .custom(11), color: presenter.getColor(by: category), lineLimit: 1)
                         }
                         Spacer()
-                        RefdsText((budget - actual).formatted(.currency(code: "BRL")), color: budget - actual < 0 ? .pink : .secondary, weight: .bold)
+                        RefdsText((budget - actual).formatted(.currency(code: "BRL")), color: budget - actual < 0 ? .pink : .secondary, family: .moderatMono)
                     }
                 }
             }
@@ -170,13 +185,6 @@ struct BudgetScene: View {
             if !presenter.categories.isEmpty {
                 RefdsText("total restante", size: .extraSmall, color: .secondary)
             }
-        }
-    }
-    
-    private var sectionChartBudgetVsActualTitle: some View {
-        Section { } footer: {
-            RefdsText("Budget vs Atual", size: .large, weight: .bold, alignment: .center)
-                .frame(maxWidth: .infinity)
         }
     }
     
@@ -244,6 +252,10 @@ struct BudgetScene: View {
                     .padding()
                     .padding(.top)
                 }
+            }
+        } header: {
+            if !presenter.categories.isEmpty {
+                RefdsText("Budget vs Atual (\(presenter.selectedPeriod.label))", size: .extraSmall, color: .secondary)
             }
         }
     }

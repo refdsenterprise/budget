@@ -14,6 +14,7 @@ final class BudgetPresenter: ObservableObject {
     @Published var categories: [CategoryEntity] = []
     @Published var transactions: [TransactionEntity] = []
     @Published var isFilterPerDate = true
+    @Published var selectedPeriod: BudgetPresenter.Period = .month
     private var colors: [Color] = []
     
     func loadData() {
@@ -23,41 +24,63 @@ final class BudgetPresenter: ObservableObject {
         transactions = isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()
     }
     
-    func getTransactions(by category: CategoryEntity) -> [TransactionEntity] {
-        transactions.filter({ $0.category == category })
-    }
-    
-    func getActualTransaction(by category: CategoryEntity) -> Double {
-        getTransactions(by: category).map({ $0.amount }).reduce(0, +)
-    }
-    
-    func getBudget(by category: CategoryEntity) -> BudgetEntity? {
-        isFilterPerDate ?
-        category.budgets.first(where: {
-            $0.date.asString(withDateFormat: "MM/yyyy") == date.asString(withDateFormat: "MM/yyyy")
-        }) :
-        //.init(amount: category.budgets.map({ $0.amount }).reduce(0, +) / Double(category.budgets.count))
-            .init(amount: category.budgets.map({ $0.amount }).reduce(0, +))
-    }
-    
-    func getTotalBudget() -> Double {
-        let total = categories.flatMap({ $0.budgets }).map({ $0.amount }).reduce(0, +)
-        //return isFilterPerDate ? total : total / Double(categories.count)
-        return total
-    }
-    
     func getTotalActual() -> Double {
         categories.map({
-            return getActualTransaction(by: $0)
+            return getAmountTransactions(by: $0)
         }).reduce(0, +)
     }
     
     func getTotalDifference() -> Double {
         categories.map({
-            let budget = getBudget(by: $0)?.amount ?? 0
-            let actual = getActualTransaction(by: $0)
+            let budget = getBudgetAmount(by: $0)
+            let actual = getAmountTransactions(by: $0)
             return budget - actual
         }).reduce(0, +)
+    }
+    
+    func getBudgetAmount(by category: CategoryEntity) -> Double {
+        isFilterPerDate ? getBudgetAmountByPeriod(by: category) : getBudgetAmountAll(by: category)
+    }
+    
+    func getTotalBudget() -> Double {
+        isFilterPerDate ? getTotalBudgetByPeriod() : getTotalBudgetAll()
+    }
+    
+    func getTransactions(by category: CategoryEntity) -> [TransactionEntity] {
+        isFilterPerDate ? getTransactionsByPeriod(by: category) : getTransactionsAll(by: category)
+    }
+    
+    private func getBudgetAmountAll(by category: CategoryEntity) -> Double {
+        category.budgets.map({ $0.amount }).reduce(0, +)
+    }
+    
+    private func getBudgetAmountByPeriod(by category: CategoryEntity) -> Double {
+        (category.budgets.first(where: {
+            selectedPeriod == .week ? selectedPeriod.containsWeek(originalDate: date, compareDate: $0.date) : $0.date.asString(withDateFormat: BudgetPresenter.Period.month.dateFormat) == date.asString(withDateFormat: BudgetPresenter.Period.month.dateFormat)
+        })?.amount ?? 0) / selectedPeriod.averageFactor
+    }
+    
+    private func getTotalBudgetAll() -> Double {
+        categories.flatMap({ $0.budgets }).map({ $0.amount }).reduce(0, +)
+    }
+    
+    private func getTotalBudgetByPeriod() -> Double {
+        getTotalBudgetAll() / selectedPeriod.averageFactor
+    }
+    
+    func getAmountTransactions(by category: CategoryEntity) -> Double {
+        getTransactions(by: category).map({ $0.amount }).reduce(0, +)
+    }
+    
+    private func getTransactionsAll(by category: CategoryEntity) -> [TransactionEntity] {
+        transactions.filter({ $0.category == category })
+    }
+    
+    private func getTransactionsByPeriod(by category: CategoryEntity) -> [TransactionEntity] {
+        transactions.filter({
+            $0.category == category &&
+            (selectedPeriod == .week ? selectedPeriod.containsWeek(originalDate: date, compareDate: $0.date) : $0.date.asString(withDateFormat: selectedPeriod.dateFormat) == date.asString(withDateFormat: selectedPeriod.dateFormat))
+        })
     }
     
     func getActualColor(actual: Double, budget: Double) -> Color {
@@ -75,13 +98,13 @@ final class BudgetPresenter: ObservableObject {
     
     func getBudgetData() -> [(category: String, value: Double)] {
         categories.map({
-            (category: $0.name.capitalized, value: getBudget(by: $0)?.amount ?? 0)
+            (category: $0.name.capitalized, value: getBudgetAmount(by: $0))
         })
     }
     
     func getActualData() -> [(category: String, value: Double)] {
         categories.map({
-            (category: $0.name.capitalized, value: getActualTransaction(by: $0))
+            (category: $0.name.capitalized, value: getAmountTransactions(by: $0))
         })
     }
     
@@ -91,5 +114,50 @@ final class BudgetPresenter: ObservableObject {
             colors = categories.map({ _ in .randomColor })
         }
         return colors[index]
+    }
+}
+
+extension BudgetPresenter {
+    enum Period: Int {
+        case month = 0
+        case daily = 1
+        case week = -1
+        
+        var label: String {
+            switch self {
+            case .month: return "mensal"
+            case .daily: return "diário"
+            case .week: return "semanal"
+            }
+        }
+        
+        var dateFormat: String {
+            switch self {
+            case .month: return "MM/yyyy"
+            case .daily: return "dd/MM/yyyy"
+            case .week: return "EEEE/MM/yyyy"
+            }
+        }
+        
+        func containsWeek(originalDate: Date, compareDate: Date) -> Bool {
+            let calendar = Calendar.current
+            let dayOfWeek = calendar.component(.weekday, from: originalDate)
+            let day = calendar.component(.day, from: originalDate)
+            let days = Array(1...7).map { weekday in
+                if weekday == dayOfWeek { return day }
+                else if weekday < dayOfWeek { return day - (dayOfWeek - weekday) }
+                else { return day + (weekday - dayOfWeek) }
+            }
+            let compareDay = calendar.component(.day, from: compareDate)
+            return days.contains(compareDay)
+        }
+        
+        var averageFactor: Double {
+            switch self {
+            case .month: return 1
+            case .daily: return 30
+            case .week: return 4
+            }
+        }
     }
 }

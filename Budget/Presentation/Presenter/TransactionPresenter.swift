@@ -23,9 +23,9 @@ final class TransactionPresenter: ObservableObject {
     func loadData() {
         let transaction = Storage.shared.transaction
         if let category = category {
-            transactions = isFilterPerDate ? transaction.getTransactions(on: category, from: date) : transaction.getTransactions(on: category)
+            transactions = (isFilterPerDate ? transaction.getTransactions(on: category, from: date) : transaction.getTransactions(on: category)).reversed()
         } else {
-            transactions = isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()
+            transactions = (isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()).reversed()
         }
     }
     
