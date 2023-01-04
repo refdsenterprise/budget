@@ -11,6 +11,7 @@ import SwiftUI
 final class CategoryPresenter: ObservableObject {
     static var instance: Self { Self() }
     
+    @Published var document: DataDocument = .init()
     @Published var date: Date = Date()
     @Published var categories: [CategoryEntity] = []
     @Published var transactions: [TransactionEntity] = []
@@ -22,6 +23,7 @@ final class CategoryPresenter: ObservableObject {
         let transaction = Storage.shared.transaction
         categories = isFilterPerDate ? category.getCategories(from: date) : category.getAllCategories()
         transactions = isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()
+        document.codable = categories.asString
     }
     
     func removeCategory(_ category: CategoryEntity) {

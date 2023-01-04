@@ -11,6 +11,7 @@ import RefdsUI
 struct TransactionScene: View {
     @StateObject private var presenter: TransactionPresenter
     @State private var isPresentedAddTransaction = false
+    @State private var isPresentedExporting: Bool = false
     private var category: CategoryEntity?
     
     init(category: CategoryEntity? = nil) {
@@ -19,33 +20,31 @@ struct TransactionScene: View {
     }
     
     var body: some View {
-        NavigationStack {
-            list
-                .navigationTitle(category == nil ? BudgetApp.TabItem.transaction.title : category!.name.capitalized)
-                .navigationDestination(isPresented: $isPresentedAddTransaction, destination: { AddTransactionScene() })
-                .toolbar {
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        HStack {
-                            buttonAddTransaction
-                            if presenter.isFilterPerDate { buttonCalendar }
-                        }
+        list
+            .navigationTitle(category == nil ? BudgetApp.TabItem.transaction.title : category!.name.capitalized)
+            .navigationDestination(isPresented: $isPresentedAddTransaction, destination: { AddTransactionScene() })
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    HStack {
+                        buttonAddTransaction
+                        if presenter.isFilterPerDate { buttonCalendar }
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        if presenter.isFilterPerDate {
-                            RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .teal)
-                        }
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    buttonExport
+                    if presenter.isFilterPerDate {
+                        RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .teal)
                     }
                 }
-                .searchable(text: $presenter.query, prompt: "Busque por transações")
-                .onAppear { presenter.loadData() }
-        }
-        .tabItem {
-            Image(systemName: "list.triangle")
-            RefdsText(BudgetApp.TabItem.transaction.title, size: .normal)
-        }
-        .tag(BudgetApp.TabItem.transaction)
+            }
+            .searchable(text: $presenter.query, prompt: "Busque por transações")
+            .onAppear { presenter.loadData() }
+            .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "trasactions.json") { result in
+                if case .success = result { print("success to export")
+                } else { print("failed to export") }
+            }
     }
     
     private var list: some View {
@@ -162,6 +161,21 @@ struct TransactionScene: View {
                 .frame(height: 20)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.accentColor)
+                .bold()
+        }
+    }
+    
+    private var buttonExport: some View {
+        Button {
+            UIApplication.shared.endEditing()
+            isPresentedExporting.toggle()
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 20)
+                .symbolRenderingMode(.hierarchical)
+                .foregroundColor(.secondary)
                 .bold()
         }
     }

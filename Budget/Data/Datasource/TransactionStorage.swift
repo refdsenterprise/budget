@@ -82,4 +82,12 @@ final class TransactionStorage {
         }) else { throw BudgetError.notFoundTransaction }
         transactions.remove(at: index)
     }
+    
+    func replaceAllTransactions(_ data: Data?) {
+        guard let data = data,
+              let transactions = try? JSONDecoder().decode([TransactionEntity].self, from: data) else {
+            return
+        }
+        self.transactions = transactions
+    }
 }

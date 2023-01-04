@@ -11,36 +11,35 @@ import RefdsUI
 struct CategoryScene: View {
     @StateObject private var presenter: CategoryPresenter = .instance
     @State private var isPresentedAddCategory = false
+    @State private var isPresentedExporting: Bool = false
     @State private var category: CategoryEntity?
     
     var body: some View {
-        NavigationStack {
-            list
-                .navigationTitle(BudgetApp.TabItem.category.title)
-                .navigationDestination(isPresented: $isPresentedAddCategory, destination: { AddCategoryScene() })
-                .toolbar {
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        HStack {
-                            buttonAddCategory
-                            if presenter.isFilterPerDate { buttonCalendar }
-                        }
+        list
+            .navigationTitle(BudgetApp.TabItem.category.title)
+            .navigationDestination(isPresented: $isPresentedAddCategory, destination: { AddCategoryScene() })
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    HStack {
+                        buttonAddCategory
+                        if presenter.isFilterPerDate { buttonCalendar }
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        if presenter.isFilterPerDate {
-                            RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .teal)
-                        }
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    buttonExport
+                    if presenter.isFilterPerDate {
+                        RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .teal)
                     }
                 }
-                .searchable(text: $presenter.query, prompt: "Busque por categoria")
-                .onAppear { presenter.loadData() }
-        }
-        .tabItem {
-            Image(systemName: "square.stack.3d.forward.dottedline.fill")
-            RefdsText(BudgetApp.TabItem.category.title, size: .normal)
-        }
-        .tag(BudgetApp.TabItem.category)
+            }
+            .searchable(text: $presenter.query, prompt: "Busque por categoria")
+            .onAppear { presenter.loadData() }
+            .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "categories.json") { result in
+                if case .success = result { print("success to export")
+                } else { print("failed to export") }
+            }
     }
     
     private var list: some View {
@@ -196,6 +195,21 @@ struct CategoryScene: View {
                 .frame(height: 20)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.accentColor)
+                .bold()
+        }
+    }
+    
+    private var buttonExport: some View {
+        Button {
+            UIApplication.shared.endEditing()
+            isPresentedExporting.toggle()
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 20)
+                .symbolRenderingMode(.hierarchical)
+                .foregroundColor(.secondary)
                 .bold()
         }
     }

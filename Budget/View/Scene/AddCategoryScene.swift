@@ -13,6 +13,8 @@ struct AddCategoryScene: View {
     @State private var isPresentedAddBudget = false
     @State private var isPresentedAlert = false
     private var isEditMode: Bool
+    @State private var document: DataDocument = .init()
+    @State private var isImporting: Bool = false
     @Environment(\.dismiss) var dismiss
     
     init(category: CategoryEntity? = nil) {
@@ -28,7 +30,16 @@ struct AddCategoryScene: View {
             })
             .refdsAlert(title: "Erro ao criar categoria", message: "A categoria que está criando já consta no sistema.", isPresented: $isPresentedAlert)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) { buttonAdd }
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    buttonAdd
+                    buttonImport
+                }
+            }
+            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
+                switch result {
+                case .success(let url): Storage.shared.category.replaceAllCategories(try? Data(contentsOf: url))
+                case .failure(_): print("error import file")
+                }
             }
     }
     
@@ -105,6 +116,21 @@ struct AddCategoryScene: View {
             else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert.toggle() }) }
         } label: {
             Image(systemName: "checkmark.rectangle.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 20)
+                .symbolRenderingMode(.hierarchical)
+                .foregroundColor(presenter.buttonForegroundColor)
+                .bold()
+        }
+    }
+    
+    private var buttonImport: some View {
+        Button {
+            UIApplication.shared.endEditing()
+            isImporting = !isEditMode
+        } label: {
+            Image(systemName: "square.and.arrow.down")
                 .resizable()
                 .scaledToFit()
                 .frame(height: 20)

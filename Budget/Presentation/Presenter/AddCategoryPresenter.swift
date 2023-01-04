@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 final class AddCategoryPresenter: ObservableObject {
     static var instance: Self { Self() }

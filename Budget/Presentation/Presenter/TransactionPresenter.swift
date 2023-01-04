@@ -14,6 +14,7 @@ final class TransactionPresenter: ObservableObject {
     @Published var transactions: [TransactionEntity] = []
     @Published var query: String = ""
     @Published var isFilterPerDate = true
+    @Published var document: DataDocument = .init()
     private var category: CategoryEntity?
     
     init(category: CategoryEntity? = nil) {
@@ -27,6 +28,7 @@ final class TransactionPresenter: ObservableObject {
         } else {
             transactions = (isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()).reversed()
         }
+        document.codable = transactions.asString
     }
     
     func getTransactionsFiltred() -> [TransactionEntity] {

@@ -53,4 +53,12 @@ final class CategoryStorage {
         }) else { throw BudgetError.notFoundCategory }
         categories.remove(at: index)
     }
+    
+    func replaceAllCategories(_ data: Data?) {
+        guard let data = data,
+              let categories = try? JSONDecoder().decode([CategoryEntity].self, from: data) else {
+            return
+        }
+        self.categories = categories
+    }
 }

@@ -11,6 +11,8 @@ import RefdsUI
 struct AddTransactionScene: View {
     @StateObject private var presenter: AddTransactionPresenter = .instance
     @State private var isPresentedAlert = false
+    @State private var document: DataDocument = .init()
+    @State private var isImporting: Bool = false
     
     @Environment(\.dismiss) var dismiss
     
@@ -19,7 +21,7 @@ struct AddTransactionScene: View {
             .navigationTitle("Nova Transação")
             .onAppear { presenter.loadData() }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button {
                         UIApplication.shared.endEditing()
                         if presenter.canAddNewTransaction {
@@ -38,9 +40,17 @@ struct AddTransactionScene: View {
                             .symbolRenderingMode(.hierarchical)
                             .foregroundColor(presenter.buttonForegroundColor)
                     }
+                    
+                    buttonImport
                 }
             }
             .refdsAlert(title: "Erro ao criar transação", message: "A transação que está criando já consta no sistema.", isPresented: $isPresentedAlert)
+            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
+                switch result {
+                case .success(let url): Storage.shared.transaction.replaceAllTransactions(try? Data(contentsOf: url))
+                case .failure(_): print("error import file")
+                }
+            }
     }
     
     private var form: some View {
@@ -96,6 +106,21 @@ struct AddTransactionScene: View {
                     }
                 }
             }
+        }
+    }
+    
+    private var buttonImport: some View {
+        Button {
+            UIApplication.shared.endEditing()
+            isImporting.toggle()
+        } label: {
+            Image(systemName: "square.and.arrow.down")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 20)
+                .symbolRenderingMode(.hierarchical)
+                .foregroundColor(presenter.buttonForegroundColor)
+                .bold()
         }
     }
 }

@@ -16,31 +16,23 @@ struct BudgetScene: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        NavigationStack {
-            content
-                .navigationTitle(BudgetApp.TabItem.budget.title + " \(presenter.isFilterPerDate ? presenter.selectedPeriod.label.capitalized : "")")
-                .toolbar {
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        HStack {
-                            if presenter.isFilterPerDate { buttonCalendar }
-                        }
+        content
+            .navigationTitle(BudgetApp.TabItem.budget.title + " \(presenter.isFilterPerDate ? presenter.selectedPeriod.label.capitalized : "")")
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    HStack {
+                        if presenter.isFilterPerDate { buttonCalendar }
                     }
                 }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        if presenter.isFilterPerDate {
-                            RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .teal)
-                        }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    if presenter.isFilterPerDate {
+                        RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .teal)
                     }
                 }
-                .onAppear { presenter.loadData() }
-                
-        }
-        .tabItem {
-            Image(systemName: "dollarsign.square.fill")
-            RefdsText(BudgetApp.TabItem.budget.title, size: .normal)
-        }
-        .tag(BudgetApp.TabItem.budget)
+            }
+            .onAppear { presenter.loadData() }
     }
     
     private var content: some View {
