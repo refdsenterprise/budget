@@ -55,9 +55,10 @@ final class TransactionStorage {
         transactions.append(.init(
             date: date,
             description: description,
-            category: category,
+            categoryUUID: category.id,
             amount: amount
         ))
+        transactions.sort(by: { $0.date > $1.date })
     }
     
     func editTransaction(
@@ -72,7 +73,7 @@ final class TransactionStorage {
         }) else { throw BudgetError.notFoundTransaction }
         transactions[index].date = date
         transactions[index].description = description
-        transactions[index].category = category
+        transactions[index].categoryUUID = category.id
         transactions[index].amount = amount
     }
     
@@ -89,5 +90,6 @@ final class TransactionStorage {
             return
         }
         self.transactions = transactions
+        self.transactions.sort(by: { $0.date > $1.date })
     }
 }

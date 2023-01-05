@@ -10,9 +10,10 @@ import RefdsUI
 
 @main
 struct BudgetApp: App {
-#if os(iOS)
+    private let actionService = ActionService.shared
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-#endif
     @State private var tabItemSelection: BudgetApp.TabItem = .budget
     
     init() {
@@ -23,6 +24,7 @@ struct BudgetApp: App {
         WindowGroup {
 #if targetEnvironment(macCatalyst)
             SideBarScene()
+                .environmentObject(actionService)
                 .withHostingWindow { window in
                     window?.windowScene?.sizeRestrictions?.minimumSize = CGSize(width: 1000, height: 700)
                     window?.windowScene?.sizeRestrictions?.maximumSize = CGSize(width: 1000, height: 700)
@@ -60,7 +62,22 @@ struct BudgetApp: App {
                 }
                 .tag(BudgetApp.TabItem.transaction)
             }
+            .environmentObject(actionService)
+            .onChange(of: scenePhase) { newValue in
+                switch newValue {
+                case .active: performActionIfNeeded()
+                default: break
+                }
+            }
 #endif
+        }
+    }
+    
+    private func performActionIfNeeded() {
+        guard let action = actionService.action else { return }
+        switch action {
+        case .newCategory: tabItemSelection = .category
+        case .newTransaction: tabItemSelection = .transaction
         }
     }
 }
@@ -97,7 +114,7 @@ extension View {
 
 fileprivate struct HostingWindowFinder: UIViewRepresentable {
     var callback: (UIWindow?) -> ()
-
+    
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
         DispatchQueue.main.async { [weak view] in
@@ -105,7 +122,7 @@ fileprivate struct HostingWindowFinder: UIViewRepresentable {
         }
         return view
     }
-
+    
     func updateUIView(_ uiView: UIView, context: Context) {
     }
 }

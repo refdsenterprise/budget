@@ -17,16 +17,19 @@ final class TransactionPresenter: ObservableObject {
     @Published var document: DataDocument = .init()
     private var category: CategoryEntity?
     
-    init(category: CategoryEntity? = nil) {
+    init(category: CategoryEntity? = nil, date: Date? = nil) {
         self.category = category
+        if let date = date {
+            _date = Published(initialValue: date)
+        }
     }
     
     func loadData() {
         let transaction = Storage.shared.transaction
         if let category = category {
-            transactions = (isFilterPerDate ? transaction.getTransactions(on: category, from: date) : transaction.getTransactions(on: category)).reversed()
+            transactions = isFilterPerDate ? transaction.getTransactions(on: category, from: date) : transaction.getTransactions(on: category)
         } else {
-            transactions = (isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()).reversed()
+            transactions = isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()
         }
         document.codable = transactions.asString
     }
@@ -48,7 +51,7 @@ final class TransactionPresenter: ObservableObject {
         guard !query.isEmpty else { return true }
         let query = query.lowercased()
         let description = transaction.description.lowercased().contains(query)
-        let category = transaction.category.name.lowercased().contains(query)
+        let category = transaction.category?.name.lowercased().contains(query) ?? false
         let amount = "\(transaction.amount)".lowercased().contains(query)
         let date = transaction.date.asString(withDateFormat: "MM/yyyy").lowercased().contains(query)
         return description || category || amount || date

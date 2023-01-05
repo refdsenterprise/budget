@@ -10,6 +10,9 @@ import SwiftUI
 final class CategoryStorage {
     static let shared =  CategoryStorage()
     @AppStorage("categories") private var categories = [CategoryEntity]()
+    private var categoriesByUUID: [UUID: CategoryEntity] = [:]
+    
+    private init() { updateCategoriesByUUID() }
     
     func getAllCategories() -> [CategoryEntity] { categories }
     
@@ -32,19 +35,23 @@ final class CategoryStorage {
         return budget
     }
     
-    func addCategory(name: String, budgets: [BudgetEntity] = []) throws {
+    func addCategory(name: String, color: Color, budgets: [BudgetEntity] = []) throws {
         guard categories.contains(where: {
             $0.name.lowercased() == name.lowercased()
         }) == false else { throw BudgetError.existingCategory }
-        categories.append(.init(name: name, budgets: budgets))
+        categories.append(.init(name: name, color: color, budgets: budgets))
+        categories.sort(by: { $0.name.lowercased() < $1.name.lowercased() })
+        updateCategoriesByUUID()
     }
     
-    func editCategory(_ current: CategoryEntity, name: String, budgets: [BudgetEntity]) throws {
+    func editCategory(_ current: CategoryEntity, name: String, color: Color, budgets: [BudgetEntity]) throws {
         guard let index = categories.firstIndex(where: {
             $0 == current
         }) else { throw BudgetError.notFoundCategory }
         categories[index].name = name
         categories[index].budgets = budgets
+        categories[index].color = color
+        categoriesByUUID[current.id] = categories[index]
     }
     
     func removeCategory(_ current: CategoryEntity) throws {
@@ -52,6 +59,7 @@ final class CategoryStorage {
             $0 == current
         }) else { throw BudgetError.notFoundCategory }
         categories.remove(at: index)
+        updateCategoriesByUUID()
     }
     
     func replaceAllCategories(_ data: Data?) {
@@ -60,5 +68,18 @@ final class CategoryStorage {
             return
         }
         self.categories = categories
+        self.categories.sort(by: { $0.name.lowercased() < $1.name.lowercased() })
+        updateCategoriesByUUID()
+    }
+    
+    func getCategory(by id: UUID) -> CategoryEntity? {
+        categoriesByUUID[id]
+    }
+    
+    func updateCategoriesByUUID() {
+        categoriesByUUID = [:]
+        categories.forEach { category in
+            categoriesByUUID[category.id] = category
+        }
     }
 }

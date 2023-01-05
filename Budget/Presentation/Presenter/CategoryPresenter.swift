@@ -27,8 +27,24 @@ final class CategoryPresenter: ObservableObject {
     }
     
     func removeCategory(_ category: CategoryEntity) {
-        try? Storage.shared.category.removeCategory(category)
+        isFilterPerDate ? removeBudgetInsideCategory(category) : removeAllCategory(category)
         loadData()
+    }
+    
+    func removeAllCategory(_ category: CategoryEntity) {
+        try? Storage.shared.category.removeCategory(category)
+    }
+    
+    func removeBudgetInsideCategory(_ category: CategoryEntity) {
+        try? Storage.shared.category.editCategory(
+            category,
+            name: category.name,
+            color: category.color,
+            budgets: category.budgets.filter({
+                $0.date.asString(withDateFormat: "MM/yyyy") != date.asString(withDateFormat: "MM/yyyy")
+                
+            })
+        )
     }
     
     func containsCategory(_ category: CategoryEntity) -> Bool {
@@ -55,7 +71,7 @@ final class CategoryPresenter: ObservableObject {
     }
     
     func getTotalBudget() -> Double {
-        let total = getCategoriesFiltred().flatMap({ $0.budgets }).map({ $0.amount }).reduce(0, +)
+        let total = getCategoriesFiltred().map({ getBudget(by: $0)?.amount ?? 0 }).reduce(0, +)
         return isFilterPerDate ? total : total / Double(categories.count)
     }
     
@@ -71,5 +87,30 @@ final class CategoryPresenter: ObservableObject {
     
     func getTransactions(by category: CategoryEntity) -> [TransactionEntity] {
         transactions.filter({ $0.category == category })
+    }
+    
+    func getDateFromLastCategoriesByCurrentDate() -> Date? {
+        guard isFilterPerDate, categories.isEmpty else { return nil }
+        guard let previousDate = Calendar.current.date(byAdding: .month, value: -1, to: date)?.asString(withDateFormat: "MM/yyyy") else { return nil }
+        guard Storage.shared.category.getAllCategories().firstIndex(where: { category in
+            return category.budgets.map({ $0.date.asString(withDateFormat: "MM/yyyy") }).contains(previousDate)
+        }) != nil else { return nil }
+        return Calendar.current.date(byAdding: .month, value: -1, to: date)
+    }
+    
+    func duplicateCategories(from previousDate: Date) {
+        guard isFilterPerDate, categories.isEmpty else { return }
+        let categories = Storage.shared.category.getCategories(from: previousDate)
+        categories.forEach { category in
+            if let lastBudget = category.budgets.first(where: { $0.date.asString(withDateFormat: "MM/yyyy") == previousDate.asString(withDateFormat: "MM/yyyy") }) {
+                try? Storage.shared.category.editCategory(
+                    category,
+                    name: category.name,
+                    color: category.color,
+                    budgets: category.budgets + [BudgetEntity(date: date, amount: lastBudget.amount)]
+                )
+            }
+        }
+        loadData()
     }
 }

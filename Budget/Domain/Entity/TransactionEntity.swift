@@ -11,20 +11,21 @@ struct TransactionEntity: Codable, Identifiable, Hashable {
     let id: UUID
     var date: Date
     var description: String
-    var category: CategoryEntity
+    var category: CategoryEntity? { Storage.shared.category.getCategory(by: categoryUUID) }
+    var categoryUUID: UUID
     var amount: Double
     
     init(
         id: UUID = UUID(),
         date: Date = Date(),
         description: String,
-        category: CategoryEntity,
+        categoryUUID: UUID,
         amount: Double
     ) {
         self.id = id
         self.date = date
         self.description = description
-        self.category = category
+        self.categoryUUID = categoryUUID
         self.amount = amount
     }
 }

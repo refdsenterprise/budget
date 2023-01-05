@@ -146,7 +146,7 @@ struct BudgetScene: View {
                    let actual = presenter.getAmountTransactions(by: category) {
                     HStack {
                         VStack(alignment: .leading) {
-                            RefdsTag(category.name, size: .custom(11), color: presenter.getColor(by: category), lineLimit: 1)
+                            RefdsTag(category.name, size: .custom(11), color: category.color ?? .accentColor, lineLimit: 1)
                         }
                         Spacer()
                         RefdsText((budget - actual).formatted(.currency(code: "BRL")), color: budget - actual < 0 ? .pink : .secondary, family: .moderatMono)

@@ -13,10 +13,12 @@ struct TransactionScene: View {
     @State private var isPresentedAddTransaction = false
     @State private var isPresentedExporting: Bool = false
     private var category: CategoryEntity?
+    @EnvironmentObject private var actionService: ActionService
+    @Environment(\.scenePhase) private var scenePhase
     
-    init(category: CategoryEntity? = nil) {
+    init(category: CategoryEntity? = nil, date: Date? = nil) {
         self.category = category
-        _presenter = StateObject(wrappedValue: TransactionPresenter(category: category))
+        _presenter = StateObject(wrappedValue: TransactionPresenter(category: category, date: date))
     }
     
     var body: some View {
@@ -40,7 +42,15 @@ struct TransactionScene: View {
                 }
             }
             .searchable(text: $presenter.query, prompt: "Busque por transações")
-            .onAppear { presenter.loadData() }
+            .onAppear {
+                presenter.loadData()
+                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                    switch scenePhase {
+                    case .active: performActionIfNeeded()
+                    default: break
+                    }
+                }
+            }
             .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "trasactions.json") { result in
                 if case .success = result { print("success to export")
                 } else { print("failed to export") }
@@ -103,7 +113,7 @@ struct TransactionScene: View {
         HStack {
             RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy"))
             Spacer()
-            RefdsTag(transaction.category.name, color: .randomColor)
+            RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
         }
     }
     
@@ -178,6 +188,15 @@ struct TransactionScene: View {
                 .foregroundColor(.secondary)
                 .bold()
         }
+    }
+    
+    private func performActionIfNeeded() {
+      guard let action = actionService.action else { return }
+      switch action {
+      case .newTransaction: isPresentedAddTransaction.toggle()
+      default: break
+      }
+      actionService.action = nil
     }
 }
 

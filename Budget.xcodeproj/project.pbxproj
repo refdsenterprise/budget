@@ -16,6 +16,8 @@
 		6C6F63242964D0B7007D7600 /* SideBarScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F63232964D0B7007D7600 /* SideBarScene.swift */; };
 		6C6F63262965D161007D7600 /* DataDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F63252965D161007D7600 /* DataDocument.swift */; };
 		6C6F63282965D1DD007D7600 /* EncodableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F63272965D1DD007D7600 /* EncodableExtensions.swift */; };
+		6C6F632A2965F20A007D7600 /* QuickActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F63292965F20A007D7600 /* QuickActionEntity.swift */; };
+		6C6F632C2965F4AB007D7600 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F632B2965F4AB007D7600 /* AppDelegate.swift */; };
 		6C7317AB2960C2D000AD0539 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7317AA2960C2D000AD0539 /* ColorExtension.swift */; };
 		6CA9227F295F7F1C007B270F /* BudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA9227E295F7F1C007B270F /* BudgetApp.swift */; };
 		6CA92283295F7F1E007B270F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CA92282295F7F1E007B270F /* Assets.xcassets */; };
@@ -65,6 +67,8 @@
 		6C6F63232964D0B7007D7600 /* SideBarScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarScene.swift; sourceTree = "<group>"; };
 		6C6F63252965D161007D7600 /* DataDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDocument.swift; sourceTree = "<group>"; };
 		6C6F63272965D1DD007D7600 /* EncodableExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodableExtensions.swift; sourceTree = "<group>"; };
+		6C6F63292965F20A007D7600 /* QuickActionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionEntity.swift; sourceTree = "<group>"; };
+		6C6F632B2965F4AB007D7600 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C7317AA2960C2D000AD0539 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		6CA9227B295F7F1C007B270F /* Budget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Budget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CA9227E295F7F1C007B270F /* BudgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetApp.swift; sourceTree = "<group>"; };
@@ -145,6 +149,7 @@
 				6C6F62F62964C5F6007D7600 /* Info.plist */,
 				6CA92284295F7F1E007B270F /* Budget.entitlements */,
 				6CA9227E295F7F1C007B270F /* BudgetApp.swift */,
+				6C6F632B2965F4AB007D7600 /* AppDelegate.swift */,
 				6CA92282295F7F1E007B270F /* Assets.xcassets */,
 				6CCBC28D295F820600FAC11C /* Data */,
 				6CCBC285295F7F4B00FAC11C /* Domain */,
@@ -179,6 +184,7 @@
 				6CCBC289295F807300FAC11C /* BudgetEntity.swift */,
 				6CCBC28B295F815400FAC11C /* TransactionEntity.swift */,
 				6C6F631F2964CC04007D7600 /* WidgetEntity.swift */,
+				6C6F63292965F20A007D7600 /* QuickActionEntity.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -332,7 +338,9 @@
 			files = (
 				6CCBC29A295F8A0300FAC11C /* TransactionStorage.swift in Sources */,
 				6C6F63282965D1DD007D7600 /* EncodableExtensions.swift in Sources */,
+				6C6F632A2965F20A007D7600 /* QuickActionEntity.swift in Sources */,
 				6CCBC2B22960008400FAC11C /* DateExtensions.swift in Sources */,
+				6C6F632C2965F4AB007D7600 /* AppDelegate.swift in Sources */,
 				6CCBC2B0295FFAD700FAC11C /* AddBudgetScene.swift in Sources */,
 				6CCBC2AE295F990800FAC11C /* AddTransactionScene.swift in Sources */,
 				6CCBC296295F851E00FAC11C /* BudgetError.swift in Sources */,
@@ -478,6 +486,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Budget/Budget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -521,6 +530,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Budget/Budget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

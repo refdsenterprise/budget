@@ -56,8 +56,18 @@ struct AddCategoryScene: View {
                 RefdsText("Nome")
                 RefdsTextField("Informe o nome da categoria", text: $presenter.name, alignment: .trailing, textInputAutocapitalization: .characters)
             }
+            sectionCategoryColor
         } header: {
             RefdsText("categoria", size: .extraSmall, color: .secondary)
+        }
+    }
+    
+    private var sectionCategoryColor: some View {
+        HStack {
+            RefdsText("Cor")
+            Spacer()
+            ColorPicker(selection: $presenter.color, supportsOpacity: false) {
+            }
         }
     }
     

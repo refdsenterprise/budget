@@ -15,7 +15,6 @@ final class BudgetPresenter: ObservableObject {
     @Published var transactions: [TransactionEntity] = []
     @Published var isFilterPerDate = true
     @Published var selectedPeriod: BudgetPresenter.Period = .month
-    private var colors: [Color] = []
     
     func loadData() {
         let category = Storage.shared.category
@@ -106,14 +105,6 @@ final class BudgetPresenter: ObservableObject {
         categories.map({
             (category: $0.name.capitalized, value: getAmountTransactions(by: $0))
         })
-    }
-    
-    func getColor(by category: CategoryEntity) -> Color {
-        guard let index = categories.firstIndex(of: category) else { return .randomColor }
-        if !colors.indices.contains(index) {
-            colors = categories.map({ _ in .randomColor })
-        }
-        return colors[index]
     }
 }
 

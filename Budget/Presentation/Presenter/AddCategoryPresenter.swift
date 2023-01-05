@@ -12,6 +12,7 @@ final class AddCategoryPresenter: ObservableObject {
     static var instance: Self { Self() }
     
     @Published var name: String = ""
+    @Published var color: Color = .accentColor
     @Published var budgets: [BudgetEntity] = []
     private var category: CategoryEntity?
     
@@ -20,6 +21,7 @@ final class AddCategoryPresenter: ObservableObject {
         if let category = category {
             name = category.name
             budgets = category.budgets
+            color = category.color
         }
     }
     
@@ -36,14 +38,14 @@ final class AddCategoryPresenter: ObservableObject {
     
     func addCategory(onSuccess: () -> Void, onError: () -> Void) {
         do {
-            try Storage.shared.category.addCategory(name: name, budgets: budgets)
+            try Storage.shared.category.addCategory(name: name, color: color, budgets: budgets)
             onSuccess()
         } catch { onError() }
     }
     
     func editCategory(onSuccess: () -> Void, onError: () -> Void) {
         do {
-            try Storage.shared.category.editCategory(category!, name: name, budgets: budgets)
+            try Storage.shared.category.editCategory(category!, name: name, color: color, budgets: budgets)
             onSuccess()
         } catch { onError() }
     }

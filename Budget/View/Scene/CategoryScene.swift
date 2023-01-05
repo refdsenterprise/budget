@@ -13,6 +13,8 @@ struct CategoryScene: View {
     @State private var isPresentedAddCategory = false
     @State private var isPresentedExporting: Bool = false
     @State private var category: CategoryEntity?
+    @EnvironmentObject private var actionService: ActionService
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
         list
@@ -35,7 +37,15 @@ struct CategoryScene: View {
                 }
             }
             .searchable(text: $presenter.query, prompt: "Busque por categoria")
-            .onAppear { presenter.loadData() }
+            .onAppear {
+                presenter.loadData()
+                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                    switch scenePhase {
+                    case .active: performActionIfNeeded()
+                    default: break
+                    }
+                }
+            }
             .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "categories.json") { result in
                 if case .success = result { print("success to export")
                 } else { print("failed to export") }
@@ -45,9 +55,11 @@ struct CategoryScene: View {
     private var list: some View {
         List {
             sectionOptions
+            if let previousDate = presenter.getDateFromLastCategoriesByCurrentDate() {
+                sectionDuplicateCategories(previousDate: previousDate)
+            }
             if !presenter.getCategoriesFiltred().isEmpty {
                 sectionCategories
-                
                 if presenter.isFilterPerDate {
                     sectionTotalBudget(presenter.getTotalBudget())
                     sectionActualCategories
@@ -68,10 +80,29 @@ struct CategoryScene: View {
         }
     }
     
+    private func sectionDuplicateCategories(previousDate: Date) -> some View {
+        Section {
+            VStack(alignment: .center, spacing: 20) {
+                RefdsText("Nenhuma categoria encontrada", size: .large, weight: .bold, alignment: .center)
+                RefdsText("Podemos duplicar os budgets do mês anterior mantendo a mesma categoria", color: .secondary, alignment: .center)
+                Button {
+                    presenter.duplicateCategories(from: previousDate)
+                } label: {
+                    RefdsText("DUPLICAR", size: .small, color: .accentColor, weight: .bold)
+                        .frame(maxWidth: .infinity)
+                }
+                .padding()
+                .background(Color.accentColor.opacity(0.2))
+                .cornerRadius(10)
+            }
+            .padding()
+        }
+    }
+    
     private var sectionCategories: some View {
         Section {
             ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
-                NavigationLink(destination: { TransactionScene(category: category) }, label: {
+                NavigationLink(destination: { TransactionScene(category: category, date: presenter.date) }, label: {
                     rowCategory(category)
                         .swipeActions(edge: .trailing, allowsFullSwipe: false, content: { swipeRemoveCategory(category) })
                         .swipeActions(edge: .trailing, allowsFullSwipe: false, content: {
@@ -212,6 +243,15 @@ struct CategoryScene: View {
                 .foregroundColor(.secondary)
                 .bold()
         }
+    }
+    
+    private func performActionIfNeeded() {
+      guard let action = actionService.action else { return }
+      switch action {
+      case .newCategory: isPresentedAddCategory.toggle()
+      default: break
+      }
+      actionService.action = nil
     }
 }
 
