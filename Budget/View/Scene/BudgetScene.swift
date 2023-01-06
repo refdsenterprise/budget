@@ -179,18 +179,10 @@ struct BudgetScene: View {
                         HStack {
                             RefdsText(budget.formatted(.currency(code: "BRL")), color: .primary, family: .moderatMono, alignment: .leading)
                             Spacer()
-                            RefdsText(actual.formatted(.currency(code: "BRL")), color: .primary, family: .moderatMono, alignment: .trailing)
+                            RefdsText(actual.formatted(.currency(code: "BRL")), color: presenter.getActualColor(actual: actual, budget: budget), family: .moderatMono, alignment: .trailing)
                         }
                         .background(alignment: .center) {
                             HStack {
-                                ProgressView(value: budget, total: maxBudget, label: {  })
-                                    .tint(.secondary)
-                                    .rotationEffect(.degrees(180))
-                                    .frame(height: 28)
-                                    .scaleEffect(x: 1, y: 6, anchor: .center)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .opacity(0)
-                                    .padding(.leading, -5)
                                 Spacer()
                                 Button(action: { presenter.isSelectedVersus.toggle() }) {
                                     if presenter.isSelectedVersus {
@@ -200,13 +192,15 @@ struct BudgetScene: View {
                                     }
                                 }
                                 Spacer()
-                                ProgressView(value: actual, total: budget, label: {  })
-                                    .tint(presenter.getActualColor(actual: actual, budget: budget))
-                                    .offset(y: 20)
-                                    .padding(.trailing, -20)
-                                    
                             }
                         }
+                        .background {
+                            ProgressView(value: actual, total: budget, label: {  })
+                                .tint(presenter.getActualColor(actual: actual, budget: budget))
+                                .offset(y: 20)
+                        }
+                        .padding(.bottom)
+                        .padding(.top, 5)
                     }
                 }
             }
