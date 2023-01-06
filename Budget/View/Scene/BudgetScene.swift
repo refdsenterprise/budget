@@ -37,14 +37,13 @@ struct BudgetScene: View {
     
     private var content: some View {
         List {
-            if !presenter.isFilterPerDate {
+            if !presenter.isFilterPerDate,
+               let actual = presenter.getTotalActual(),
+               let budget = presenter.getTotalBudget() {
                 Section {} footer: {
-                    if let actual = presenter.getTotalActual(),
-                       let budget = presenter.getTotalBudget() {
-                        valueView(actual: actual, budget: budget)
-                            .padding(.top)
-                            .frame(maxWidth: .infinity)
-                    }
+                    valueView(actual: actual, budget: budget)
+                        .padding(.top)
+                        .frame(maxWidth: .infinity)
                 }
             } else { sectionActualAndBudget }
             
@@ -52,6 +51,11 @@ struct BudgetScene: View {
                 sectionDifference
                 sectionTotalDifference
                 sectionChartBudgetVsActual
+                if let actual = presenter.getTotalActual(),
+                   let budget = presenter.getTotalBudget() {
+                    sectionBudgetUse(actual: actual, budget: budget)
+                }
+                sectionCompare
             }
             sectionOptions
         }
@@ -145,9 +149,8 @@ struct BudgetScene: View {
                 if let budget = presenter.getBudgetAmount(by: category),
                    let actual = presenter.getAmountTransactions(by: category) {
                     HStack {
-                        VStack(alignment: .leading) {
-                            RefdsTag(category.name, size: .custom(11), color: category.color ?? .accentColor, lineLimit: 1)
-                        }
+                        RefdsTag(presenter.getDifferencePercent(budget: budget, actual: actual), size: .custom(13), color: category.color, lineLimit: 1)
+                        RefdsText(category.name.capitalized)
                         Spacer()
                         RefdsText((budget - actual).formatted(.currency(code: "BRL")), color: budget - actual < 0 ? .pink : .secondary, family: .moderatMono)
                     }
@@ -158,6 +161,77 @@ struct BudgetScene: View {
                 RefdsText("restante", size: .extraSmall, color: .secondary)
             }
         }
+    }
+    
+    private var sectionCompare: some View {
+        Section {
+            if let maxBudget = presenter.getMaxBudget() {
+                ForEach(presenter.categories) { category in
+                    if let budget = presenter.getBudgetAmount(by: category),
+                       let actual = presenter.getAmountTransactions(by: category) {
+                        HStack {
+                            RefdsText(budget.formatted(.currency(code: "BRL")), color: .secondary, family: .moderatMono, alignment: .leading)
+                            Spacer()
+                            RefdsText(actual.formatted(.currency(code: "BRL")), color: .secondary, family: .moderatMono, alignment: .trailing)
+                        }
+                        .background(alignment: .center) {
+                            HStack {
+                                ProgressView(value: budget, total: maxBudget, label: {  })
+                                    .tint(.secondary)
+                                    .rotationEffect(.degrees(180))
+                                    .frame(height: 28)
+                                    .scaleEffect(x: 1, y: 6, anchor: .center)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .opacity(0.1)
+                                    .padding(.leading, -5)
+                                Spacer()
+                                Button(action: { presenter.isSelectedVersus.toggle() }) {
+                                    if presenter.isSelectedVersus {
+                                        RefdsTag(category.name, size: .custom(11), color: category.color)
+                                    } else {
+                                        RefdsTag("vs", size: .custom(12), color: .primary)
+                                    }
+                                }
+                                Spacer()
+                                ProgressView(value: actual, total: budget, label: {  })
+                                    .tint(presenter.getActualColor(actual: actual, budget: budget))
+                                    .frame(height: 28)
+                                    .scaleEffect(x: 1, y: 6, anchor: .center)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .opacity(0.1)
+                                    .padding(.trailing, -5)
+                            }
+                        }
+                    }
+                }
+            }
+        } header: {
+            if !presenter.categories.isEmpty {
+                HStack {
+                    RefdsText("budget", size: .extraSmall, color: .secondary)
+                    Spacer()
+                    RefdsText("atual", size: .extraSmall, color: .secondary)
+                }
+            }
+        }
+    }
+    
+    private func sectionBudgetUse(actual: Double, budget: Double) -> some View {
+        Section {} header: {
+            VStack(spacing: 10) {
+                RefdsText("percentual de economia".uppercased(), size: .custom(12), color: .secondary)
+                RefdsText(
+                    presenter.getDifferencePercent(budget: budget, actual: budget - actual, hasPlaces: true),
+                    size: .custom(40),
+                    color: .primary,
+                    weight: .bold,
+                    family: .moderatMono,
+                    alignment: .center,
+                    lineLimit: 1
+                )
+            }
+        }
+        .frame(maxWidth: .infinity)
     }
     
     private var sectionTotalDifference: some View {

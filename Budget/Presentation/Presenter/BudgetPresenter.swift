@@ -15,6 +15,7 @@ final class BudgetPresenter: ObservableObject {
     @Published var transactions: [TransactionEntity] = []
     @Published var isFilterPerDate = true
     @Published var selectedPeriod: BudgetPresenter.Period = .month
+    @Published var isSelectedVersus = false
     
     func loadData() {
         let category = Storage.shared.category
@@ -105,6 +106,25 @@ final class BudgetPresenter: ObservableObject {
         categories.map({
             (category: $0.name.capitalized, value: getAmountTransactions(by: $0))
         })
+    }
+    
+    func getMaxBudget() -> Double? {
+        categories.map({ getBudgetAmount(by: $0) }).max()
+    }
+    
+    func getMaxActual() -> Double? {
+        categories.map({ getAmountTransactions(by: $0) }).max()
+    }
+    
+    func getDifferencePercent(budget: Double, actual: Double, hasPlaces: Bool = false) -> String {
+        var percent = (actual * 100) / budget
+        percent = percent > 100 ? (100 - percent) : percent
+        if !hasPlaces {
+            let percentInteger = Int(percent)
+            return String(format: "%02d", percentInteger) + "%"
+        } else {
+            return String(format: "%02.02f", percent).replacingOccurrences(of: ".", with: ",") + "%"
+        }
     }
 }
 
