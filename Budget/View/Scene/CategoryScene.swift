@@ -167,8 +167,9 @@ struct CategoryScene: View {
     private func rowActualCategory(_ category: CategoryEntity) -> some View {
         HStack {
             if let actual = presenter.getActualTransaction(by: category),
-               let budget = presenter.getBudget(by: category)?.amount {
-                RefdsTag(presenter.getDifferencePercent(budget: budget, actual: actual), size: .custom(12), color: category.color)
+               let budget = presenter.getBudget(by: category)?.amount,
+               let diffencePercent = presenter.getDifferencePercent(budget: budget, actual: actual) {
+                RefdsTag(diffencePercent, size: .custom(12), color: category.color)
             }
             
             RefdsText(category.name.capitalized)

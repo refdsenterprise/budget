@@ -118,7 +118,7 @@ final class BudgetPresenter: ObservableObject {
     
     func getDifferencePercent(budget: Double, actual: Double, hasPlaces: Bool = false) -> String {
         var percent = (actual * 100) / budget
-        percent = percent > 100 ? (100 - percent) : percent
+        percent = 100 - percent
         if !hasPlaces {
             let percentInteger = Int(percent)
             return String(format: "%02d", percentInteger) + "%"
