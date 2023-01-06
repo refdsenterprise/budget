@@ -47,6 +47,10 @@ final class TransactionPresenter: ObservableObject {
         loadData()
     }
     
+    func getChartData() -> [(date: Date, value: Double)]{
+        getTransactionsFiltred().map({ (date: $0.date, value: $0.amount) })
+    }
+    
     func containsTransaction(_ transaction: TransactionEntity) -> Bool {
         guard !query.isEmpty else { return true }
         let query = query.lowercased()
