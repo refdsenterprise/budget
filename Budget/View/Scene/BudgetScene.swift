@@ -170,9 +170,9 @@ struct BudgetScene: View {
                     if let budget = presenter.getBudgetAmount(by: category),
                        let actual = presenter.getAmountTransactions(by: category) {
                         HStack {
-                            RefdsText(budget.formatted(.currency(code: "BRL")), color: .secondary, family: .moderatMono, alignment: .leading)
+                            RefdsText(budget.formatted(.currency(code: "BRL")), color: .primary, family: .moderatMono, alignment: .leading)
                             Spacer()
-                            RefdsText(actual.formatted(.currency(code: "BRL")), color: .secondary, family: .moderatMono, alignment: .trailing)
+                            RefdsText(actual.formatted(.currency(code: "BRL")), color: .primary, family: .moderatMono, alignment: .trailing)
                         }
                         .background(alignment: .center) {
                             HStack {
@@ -182,14 +182,14 @@ struct BudgetScene: View {
                                     .frame(height: 28)
                                     .scaleEffect(x: 1, y: 6, anchor: .center)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .opacity(0.1)
+                                    .opacity(0.2)
                                     .padding(.leading, -5)
                                 Spacer()
                                 Button(action: { presenter.isSelectedVersus.toggle() }) {
                                     if presenter.isSelectedVersus {
                                         RefdsTag(category.name, size: .custom(11), color: category.color)
                                     } else {
-                                        RefdsTag("vs", size: .custom(12), color: .primary)
+                                        RefdsTag("vs", size: .custom(12), color: .secondary)
                                     }
                                 }
                                 Spacer()
@@ -198,7 +198,7 @@ struct BudgetScene: View {
                                     .frame(height: 28)
                                     .scaleEffect(x: 1, y: 6, anchor: .center)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .opacity(0.1)
+                                    .opacity(0.2)
                                     .padding(.trailing, -5)
                             }
                         }
