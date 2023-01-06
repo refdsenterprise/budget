@@ -56,6 +56,13 @@ struct BudgetScene: View {
                     sectionBudgetUse(actual: actual, budget: budget)
                 }
                 sectionCompare
+//                if let chartData = presenter.getChartDataTransactions(), !chartData.map({ $0.value }).isEmpty {
+//                    sectionChartTransactions(chartData)
+//                }
+                
+                if let maxTransaction = presenter.getMaxTrasaction() {
+                    sectionMaxTransaction(transaction: maxTransaction)
+                }
             }
             sectionOptions
         }
@@ -182,7 +189,7 @@ struct BudgetScene: View {
                                     .frame(height: 28)
                                     .scaleEffect(x: 1, y: 6, anchor: .center)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .opacity(0.2)
+                                    .opacity(0)
                                     .padding(.leading, -5)
                                 Spacer()
                                 Button(action: { presenter.isSelectedVersus.toggle() }) {
@@ -195,11 +202,9 @@ struct BudgetScene: View {
                                 Spacer()
                                 ProgressView(value: actual, total: budget, label: {  })
                                     .tint(presenter.getActualColor(actual: actual, budget: budget))
-                                    .frame(height: 28)
-                                    .scaleEffect(x: 1, y: 6, anchor: .center)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .opacity(0.2)
-                                    .padding(.trailing, -5)
+                                    .offset(y: 20)
+                                    .padding(.trailing, -20)
+                                    
                             }
                         }
                     }
@@ -221,7 +226,7 @@ struct BudgetScene: View {
             VStack(spacing: 10) {
                 RefdsText("percentual de economia".uppercased(), size: .custom(12), color: .secondary)
                 RefdsText(
-                    presenter.getDifferencePercent(budget: budget, actual: budget - actual, hasPlaces: true),
+                    presenter.getDifferencePercent(budget: budget, actual: actual, hasPlaces: true),
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
@@ -235,22 +240,20 @@ struct BudgetScene: View {
     }
     
     private var sectionTotalDifference: some View {
-        Section {
-            HStack {
-                RefdsText("Total das categorias")
-                Spacer()
+        Section { } footer: {
+            VStack(alignment: .center, spacing: 10) {
+                RefdsText("total restante".uppercased(), size: .custom(12), color: .secondary)
                 RefdsText(
                     presenter.getTotalDifference().formatted(.currency(code: "BRL")),
-                    color: presenter.getTotalDifference() <= 0 ? .pink : .accentColor,
+                    size: .custom(40),
+                    color: presenter.getTotalDifference() <= 0 ? .pink : .primary,
                     weight: .bold,
                     family: .moderatMono,
+                    alignment: .center,
                     lineLimit: 1
                 )
             }
-        } header: {
-            if !presenter.categories.isEmpty {
-                RefdsText("total restante", size: .extraSmall, color: .secondary)
-            }
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -321,7 +324,7 @@ struct BudgetScene: View {
             }
         } header: {
             if !presenter.categories.isEmpty {
-                RefdsText("Budget vs Atual (\(presenter.selectedPeriod.label))", size: .extraSmall, color: .secondary)
+                RefdsText("Budget vs Atual", size: .extraSmall, color: .secondary)
             }
         }
     }
@@ -345,6 +348,66 @@ struct BudgetScene: View {
                 }.allowsHitTesting(false)
             }
         }
+    }
+    
+    private func sectionMaxTransaction(transaction: TransactionEntity) -> some View {
+        Section {
+            VStack {
+                HStack {
+                    RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy - HH:mm"))
+                    Spacer()
+                    RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
+                }
+                Divider()
+                HStack {
+                    RefdsText(transaction.description.isEmpty ? "Sem descrição" : transaction.description, color: .secondary)
+                    Spacer()
+                    RefdsText(transaction.amount.formatted(.currency(code: "BRL")), color: .accentColor, weight: .bold, family: .moderatMono, alignment: .trailing, lineLimit: 1)
+                }
+            }
+        } header: {
+            RefdsText("maior compra", size: .extraSmall, color: .secondary)
+        }
+    }
+    
+    private func sectionChartTransactions(_ chartData: [(date: Date, value: Double)]) -> some View {
+        Section {
+            Chart {
+                ForEach(chartData, id: \.date) {
+                    buildLineMarkTransactions($0)
+                    buildAreaMarkTransactions($0)
+                }
+            }
+            .chartLegend(position: .overlay, alignment: .top, spacing: -20)
+            .chartYAxis { AxisMarks(position: .leading) }
+            .frame(minHeight: 150)
+            .padding()
+            .padding(.top)
+            
+        } header: {
+            RefdsText("transações", size: .extraSmall, color: .secondary)
+        }
+    }
+    
+    func buildLineMarkTransactions(_ data: (date: Date, value: Double)) -> some ChartContent {
+        LineMark(
+            x: .value("date", data.date),
+            y: .value("value", data.value)
+        )
+        .interpolationMethod(.catmullRom)
+        .lineStyle(StrokeStyle(dash: [5, 10]))
+        .foregroundStyle(by: .value("date", data.date))
+        .position(by: .value("date", data.date))
+    }
+    
+    func buildAreaMarkTransactions(_ data: (date: Date, value: Double)) -> some ChartContent {
+        AreaMark(
+            x: .value("date", data.date),
+            y: .value("value", data.value)
+        )
+        .interpolationMethod(.catmullRom)
+        .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
+        .position(by: .value("date", data.date))
     }
 }
 

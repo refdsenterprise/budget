@@ -88,45 +88,6 @@ struct TransactionScene: View {
         .frame(maxWidth: .infinity)
     }
     
-    private var sectionChart: some View {
-        Section {
-            if let chartData = presenter.getChartData() {
-                Chart {
-                    ForEach(chartData, id: \.date) {
-                        buildLineMark($0)
-                        buildAreaMark($0)
-                    }
-                }
-                .chartLegend(position: .overlay, alignment: .top, spacing: -20)
-                .chartYAxis { AxisMarks(position: .leading) }
-                .frame(minHeight: 150)
-                .padding()
-                .padding(.top)
-            }
-        }
-    }
-    
-    func buildLineMark(_ data: (date: Date, value: Double)) -> some ChartContent {
-        LineMark(
-            x: .value("date", data.date),
-            y: .value("value", data.value)
-        )
-        .interpolationMethod(.catmullRom)
-        .lineStyle(StrokeStyle(dash: [5, 10]))
-        .foregroundStyle(by: .value("date", data.date))
-        .position(by: .value("date", data.date))
-    }
-    
-    func buildAreaMark(_ data: (date: Date, value: Double)) -> some ChartContent {
-        AreaMark(
-            x: .value("date", data.date),
-            y: .value("value", data.value)
-        )
-        .interpolationMethod(.catmullRom)
-        .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
-        .position(by: .value("date", data.date))
-    }
-    
     private var sectionOptions: some View {
         Section {
             HStack {

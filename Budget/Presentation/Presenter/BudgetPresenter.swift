@@ -126,6 +126,20 @@ final class BudgetPresenter: ObservableObject {
             return String(format: "%02.02f", percent).replacingOccurrences(of: ".", with: ",") + "%"
         }
     }
+    
+    func getTransactions() -> [TransactionEntity] {
+        isFilterPerDate ? transactions.filter({
+            (selectedPeriod == .week ? selectedPeriod.containsWeek(originalDate: date, compareDate: $0.date) : $0.date.asString(withDateFormat: selectedPeriod.dateFormat) == date.asString(withDateFormat: selectedPeriod.dateFormat))
+        }) : transactions
+    }
+    
+    func getChartDataTransactions() -> [(date: Date, value: Double)]{
+        getTransactions().map({ (date: $0.date, value: $0.amount) })
+    }
+    
+    func getMaxTrasaction() -> TransactionEntity? {
+        getTransactions().max(by: { $0.amount < $1.amount })
+    }
 }
 
 extension BudgetPresenter {
