@@ -11,7 +11,7 @@ import RefdsUI
 struct AddCategoryScene: View {
     @StateObject private var presenter: AddCategoryPresenter
     @State private var isPresentedAddBudget = false
-    @State private var isPresentedAlert = false
+    @State private var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
     private var isEditMode: Bool
     @State private var document: DataDocument = .init()
     @State private var isImporting: Bool = false
@@ -28,7 +28,6 @@ struct AddCategoryScene: View {
             .navigationDestination(isPresented: $isPresentedAddBudget, destination: {
                 AddBudgetScene { presenter.addBudget($0) }
             })
-            .refdsAlert(title: "Erro ao criar categoria", message: "A categoria que está criando já consta no sistema.", isPresented: $isPresentedAlert)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     buttonAdd
@@ -41,6 +40,7 @@ struct AddCategoryScene: View {
                 case .failure(_): print("error import file")
                 }
             }
+            .alertBudgetError(isPresented: $isPresentedAlert)
     }
     
     private var form: some View {
@@ -111,7 +111,10 @@ struct AddCategoryScene: View {
     }
     
     private func swipeRemoveBudget(_ budget: BudgetEntity) -> some View {
-        Button { presenter.removeBudget(budget) } label: {
+        Button {
+            do { try presenter.removeBudget(budget) }
+            catch { isPresentedAlert = (true, error as! BudgetError) }
+        } label: {
             Image(systemName: "trash.fill")
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.white)
@@ -122,8 +125,8 @@ struct AddCategoryScene: View {
     private var buttonAdd: some View {
         Button {
             UIApplication.shared.endEditing()
-            if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert.toggle() }) }
-            else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert.toggle() }) }
+            if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
+            else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
         } label: {
             Image(systemName: "checkmark.rectangle.fill")
                 .resizable()

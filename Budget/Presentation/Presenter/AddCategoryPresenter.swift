@@ -36,21 +36,24 @@ final class AddCategoryPresenter: ObservableObject {
         budgets.append(budget)
     }
     
-    func addCategory(onSuccess: () -> Void, onError: () -> Void) {
+    func addCategory(onSuccess: () -> Void, onError: (BudgetError) -> Void) {
         do {
             try Storage.shared.category.addCategory(name: name, color: color, budgets: budgets)
             onSuccess()
-        } catch { onError() }
+        } catch { onError(error as! BudgetError) }
     }
     
-    func editCategory(onSuccess: () -> Void, onError: () -> Void) {
+    func editCategory(onSuccess: () -> Void, onError: (BudgetError) -> Void) {
         do {
             try Storage.shared.category.editCategory(category!, name: name, color: color, budgets: budgets)
             onSuccess()
-        } catch { onError() }
+        } catch { onError(error as! BudgetError) }
     }
     
-    func removeBudget(_ budget: BudgetEntity) {
+    func removeBudget(_ budget: BudgetEntity) throws {
+        guard !Storage.shared.transaction.getAllTransactions().contains(where: { transaction in
+            transaction.category?.budgets.contains(where: { $0.id == budget.id }) ?? false
+        }) else { throw BudgetError.cantDeleteBudget }
         guard let index = budgets.firstIndex(where: { $0 == budget }) else { return }
         budgets.remove(at: index)
     }

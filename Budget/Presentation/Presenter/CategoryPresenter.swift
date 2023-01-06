@@ -26,7 +26,8 @@ final class CategoryPresenter: ObservableObject {
         document.codable = categories.asString
     }
     
-    func removeCategory(_ category: CategoryEntity) {
+    func removeCategory(_ category: CategoryEntity) throws {
+        guard !Storage.shared.transaction.getAllTransactions().contains(where: { $0.categoryUUID == category.id }) else { throw BudgetError.cantDeleteCategory }
         isFilterPerDate ? removeBudgetInsideCategory(category) : removeAllCategory(category)
         loadData()
     }

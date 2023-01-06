@@ -56,10 +56,6 @@ struct BudgetScene: View {
                     sectionBudgetUse(actual: actual, budget: budget)
                 }
                 sectionCompare
-//                if let chartData = presenter.getChartDataTransactions(), !chartData.map({ $0.value }).isEmpty {
-//                    sectionChartTransactions(chartData)
-//                }
-                
                 if let maxTransaction = presenter.getMaxTrasaction() {
                     sectionMaxTransaction(transaction: maxTransaction)
                 }
@@ -140,7 +136,7 @@ struct BudgetScene: View {
             RefdsText(
                 actual.formatted(.currency(code: "BRL")),
                 size: .custom(40),
-                color: presenter.getActualColor(actual: actual, budget: budget),
+                color: budget - actual < 0 ? .pink : .primary,
                 weight: .bold,
                 family: .moderatMono,
                 alignment: .center,
@@ -172,36 +168,34 @@ struct BudgetScene: View {
     
     private var sectionCompare: some View {
         Section {
-            if let maxBudget = presenter.getMaxBudget() {
-                ForEach(presenter.categories) { category in
-                    if let budget = presenter.getBudgetAmount(by: category),
-                       let actual = presenter.getAmountTransactions(by: category) {
-                        HStack {
-                            RefdsText(budget.formatted(.currency(code: "BRL")), color: .primary, family: .moderatMono, alignment: .leading)
-                            Spacer()
-                            RefdsText(actual.formatted(.currency(code: "BRL")), color: presenter.getActualColor(actual: actual, budget: budget), family: .moderatMono, alignment: .trailing)
-                        }
-                        .background(alignment: .center) {
-                            HStack {
-                                Spacer()
-                                Button(action: { presenter.isSelectedVersus.toggle() }) {
-                                    if presenter.isSelectedVersus {
-                                        RefdsTag(category.name, size: .custom(11), color: category.color)
-                                    } else {
-                                        RefdsTag("vs", size: .custom(12), color: .secondary)
-                                    }
-                                }
-                                Spacer()
-                            }
-                        }
-                        .background {
-                            ProgressView(value: actual, total: budget, label: {  })
-                                .tint(presenter.getActualColor(actual: actual, budget: budget))
-                                .offset(y: 20)
-                        }
-                        .padding(.bottom)
-                        .padding(.top, 5)
+            ForEach(presenter.categories) { category in
+                if let budget = presenter.getBudgetAmount(by: category),
+                   let actual = presenter.getAmountTransactions(by: category) {
+                    HStack {
+                        RefdsText(budget.formatted(.currency(code: "BRL")), color: .primary, family: .moderatMono, alignment: .leading)
+                        Spacer()
+                        RefdsText(actual.formatted(.currency(code: "BRL")), color: presenter.getActualColor(actual: actual, budget: budget), family: .moderatMono, alignment: .trailing)
                     }
+                    .background(alignment: .center) {
+                        HStack {
+                            Spacer()
+                            Button(action: { presenter.isSelectedVersus.toggle() }) {
+                                if presenter.isSelectedVersus {
+                                    RefdsTag(category.name, size: .custom(11), color: category.color)
+                                } else {
+                                    RefdsTag("vs", size: .custom(12), color: .secondary)
+                                }
+                            }
+                            Spacer()
+                        }
+                    }
+                    .background {
+                        ProgressView(value: actual, total: budget, label: {  })
+                            .tint(presenter.getActualColor(actual: actual, budget: budget))
+                            .offset(y: 20)
+                    }
+                    .padding(.bottom)
+                    .padding(.top, 5)
                 }
             }
         } header: {

@@ -11,7 +11,8 @@ import RefdsUI
 struct CategoryScene: View {
     @StateObject private var presenter: CategoryPresenter = .instance
     @State private var isPresentedAddCategory = false
-    @State private var isPresentedExporting: Bool = false
+    @State private var isPresentedExporting = false
+    @State private var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
     @State private var category: CategoryEntity?
     @EnvironmentObject private var actionService: ActionService
     @Environment(\.scenePhase) private var scenePhase
@@ -50,6 +51,7 @@ struct CategoryScene: View {
                 if case .success = result { print("success to export")
                 } else { print("failed to export") }
             }
+            .alertBudgetError(isPresented: $isPresentedAlert)
     }
     
     private var list: some View {
@@ -187,7 +189,10 @@ struct CategoryScene: View {
     }
     
     private func swipeRemoveCategory(_ category: CategoryEntity) -> some View {
-        Button { presenter.removeCategory(category) } label: {
+        Button {
+            do { try presenter.removeCategory(category) }
+            catch { isPresentedAlert = (true, error as! BudgetError) }
+        } label: {
             Image(systemName: "trash.fill")
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.white)
