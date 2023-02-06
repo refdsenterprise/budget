@@ -25,20 +25,16 @@ struct TransactionScene: View {
     var body: some View {
         list
             .navigationTitle(category == nil ? BudgetApp.TabItem.transaction.title : category!.name.capitalized)
-            .navigationDestination(isPresented: $isPresentedAddTransaction, destination: { AddTransactionScene() })
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    HStack {
-                        buttonAddTransaction
-                        if presenter.isFilterPerDate { buttonCalendar }
-                    }
+                    HStack { buttonAddTransaction }
                 }
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     buttonExport
                     if presenter.isFilterPerDate {
-                        RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .teal)
+                        RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .teal)
                     }
                 }
             }
@@ -63,11 +59,15 @@ struct TransactionScene: View {
             sectionOptions
             sectionTotal(presenter.getTotalAmount())
             if !presenter.getTransactionsFiltred().isEmpty {
-                //sectionChart
                 sectionTransactions
             }
         }
         .listStyle(.insetGrouped)
+        .background(
+            NavigationLink(destination: AddTransactionScene(), isActive: $isPresentedAddTransaction) {
+                EmptyView()
+            }.hidden()
+        )
     }
     
     private func sectionTotal(_ total: Double) -> some View {
@@ -92,6 +92,11 @@ struct TransactionScene: View {
         Section {
             HStack {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
+            }
+            if presenter.isFilterPerDate {
+                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
+                    RefdsText("Data")
+                }
             }
         } header: {
             RefdsText("opções", size: .extraSmall, color: .secondary)
@@ -144,42 +149,20 @@ struct TransactionScene: View {
         }
     }
     
-    private var buttonCalendar: some View {
-        Button {  } label: {
-            ZStack {
-                DatePicker("", selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date)
-                    .labelsHidden()
-                    .datePickerStyle(.compact)
-                    .frame(width: 20, height: 20)
-                    .clipped()
-                SwiftUIWrapper {
-                    Image(systemName: "calendar")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 20)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundColor(.accentColor)
-                        .bold()
-                }.allowsHitTesting(false)
-            }
-        }
-    }
-    
     private var buttonAddTransaction: some View {
         Button { isPresentedAddTransaction.toggle() } label: {
-            Image(systemName: "plus.rectangle.fill")
+            Image(systemName: "plus.circle.fill")
                 .resizable()
                 .scaledToFit()
-                .frame(height: 20)
+                .frame(height: 25)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.accentColor)
-                .bold()
         }
     }
     
     private var buttonExport: some View {
         Button {
-            UIApplication.shared.endEditing()
+            Application.shared.endEditing()
             isPresentedExporting.toggle()
         } label: {
             Image(systemName: "square.and.arrow.up")
@@ -188,17 +171,16 @@ struct TransactionScene: View {
                 .frame(height: 20)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.secondary)
-                .bold()
         }
     }
     
     private func performActionIfNeeded() {
-      guard let action = actionService.action else { return }
-      switch action {
-      case .newTransaction: isPresentedAddTransaction.toggle()
-      default: break
-      }
-      actionService.action = nil
+        guard let action = actionService.action else { return }
+        switch action {
+        case .newTransaction: isPresentedAddTransaction.toggle()
+        default: break
+        }
+        actionService.action = nil
     }
 }
 

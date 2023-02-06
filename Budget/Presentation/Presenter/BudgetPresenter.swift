@@ -56,7 +56,7 @@ final class BudgetPresenter: ObservableObject {
     
     private func getBudgetAmountByPeriod(by category: CategoryEntity) -> Double {
         (category.budgets.first(where: {
-            selectedPeriod == .week ? selectedPeriod.containsWeek(originalDate: date, compareDate: $0.date) : $0.date.asString(withDateFormat: BudgetPresenter.Period.month.dateFormat) == date.asString(withDateFormat: BudgetPresenter.Period.month.dateFormat)
+            $0.date.asString(withDateFormat: BudgetPresenter.Period.month.dateFormat) == date.asString(withDateFormat: BudgetPresenter.Period.month.dateFormat)
         })?.amount ?? 0) / selectedPeriod.averageFactor
     }
     
@@ -120,8 +120,7 @@ final class BudgetPresenter: ObservableObject {
         var percent = (actual * 100) / budget
         percent = 100 - percent
         if !hasPlaces {
-            let percentInteger = Int(percent)
-            return String(format: "%02d", percentInteger) + "%"
+            return String(format: "%02.0f", percent, actual, budget) + "%"
         } else {
             return String(format: "%02.02f", percent).replacingOccurrences(of: ".", with: ",") + "%"
         }
@@ -134,7 +133,7 @@ final class BudgetPresenter: ObservableObject {
     }
     
     func getChartDataTransactions() -> [(date: Date, value: Double)]{
-        getTransactions().map({ (date: $0.date, value: $0.amount) })
+        isFilterPerDate ? Storage.shared.transaction.getChartDataTransactions(from: date, period: selectedPeriod) : Storage.shared.transaction.getChartDataTransactions()
     }
     
     func getMaxTrasaction() -> TransactionEntity? {
@@ -146,7 +145,7 @@ extension BudgetPresenter {
     enum Period: Int {
         case month = 0
         case daily = 1
-        case week = -1
+        case week = 2
         
         var label: String {
             switch self {

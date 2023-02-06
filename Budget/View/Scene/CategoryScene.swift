@@ -11,6 +11,7 @@ import RefdsUI
 struct CategoryScene: View {
     @StateObject private var presenter: CategoryPresenter = .instance
     @State private var isPresentedAddCategory = false
+    @State private var isPresentedEditCategory = false
     @State private var isPresentedExporting = false
     @State private var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
     @State private var category: CategoryEntity?
@@ -20,20 +21,16 @@ struct CategoryScene: View {
     var body: some View {
         list
             .navigationTitle(BudgetApp.TabItem.category.title)
-            .navigationDestination(isPresented: $isPresentedAddCategory, destination: { AddCategoryScene() })
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    HStack {
-                        buttonAddCategory
-                        if presenter.isFilterPerDate { buttonCalendar }
-                    }
+                    HStack { buttonAddCategory }
                 }
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
                     buttonExport
                     if presenter.isFilterPerDate {
-                        RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .teal)
+                        RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .teal)
                     }
                 }
             }
@@ -70,12 +67,27 @@ struct CategoryScene: View {
             }
         }
         .listStyle(.insetGrouped)
+        .background(
+            NavigationLink(destination: AddCategoryScene(), isActive: $isPresentedAddCategory) {
+                EmptyView()
+            }.hidden()
+        )
+        .background(
+            NavigationLink(destination: AddCategoryScene(category: category), isActive: $isPresentedEditCategory) {
+                EmptyView()
+            }.hidden()
+        )
     }
     
     private var sectionOptions: some View {
         Section {
             HStack {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
+            }
+            if presenter.isFilterPerDate {
+                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
+                    RefdsText("Data")
+                }
             }
         } header: {
             RefdsText("opções", size: .extraSmall, color: .secondary)
@@ -106,11 +118,13 @@ struct CategoryScene: View {
             ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
                 NavigationLink(destination: { TransactionScene(category: category, date: presenter.date) }, label: {
                     rowCategory(category)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false, content: { swipeRemoveCategory(category) })
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false, content: {
-                            NavigationLink(destination: { AddCategoryScene(category: category) }, label: { swipeEditCategory(category) })
-                                .tint(.orange)
-                        })
+                })
+                .swipeActions(edge: .trailing, allowsFullSwipe: true, content: {
+                    Button(action: {
+                        self.category = category
+                        isPresentedEditCategory.toggle()
+                    }, label: { swipeEditCategory(category) })
+                        .tint(.orange)
                 })
             }
         } header: {
@@ -208,42 +222,20 @@ struct CategoryScene: View {
         }
     }
     
-    private var buttonCalendar: some View {
-        Button {  } label: {
-            ZStack {
-                DatePicker("", selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date)
-                    .labelsHidden()
-                    .datePickerStyle(.compact)
-                    .frame(width: 20, height: 20)
-                    .clipped()
-                SwiftUIWrapper {
-                    Image(systemName: "calendar")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 20)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundColor(.accentColor)
-                        .bold()
-                }.allowsHitTesting(false)
-            }
-        }
-    }
-    
     private var buttonAddCategory: some View {
         Button { isPresentedAddCategory.toggle() } label: {
-            Image(systemName: "plus.rectangle.fill")
+            Image(systemName: "plus.circle.fill")
                 .resizable()
                 .scaledToFit()
-                .frame(height: 20)
+                .frame(height: 25)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.accentColor)
-                .bold()
         }
     }
     
     private var buttonExport: some View {
         Button {
-            UIApplication.shared.endEditing()
+            Application.shared.endEditing()
             isPresentedExporting.toggle()
         } label: {
             Image(systemName: "square.and.arrow.up")
@@ -252,17 +244,16 @@ struct CategoryScene: View {
                 .frame(height: 20)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.secondary)
-                .bold()
         }
     }
     
     private func performActionIfNeeded() {
-      guard let action = actionService.action else { return }
-      switch action {
-      case .newCategory: isPresentedAddCategory.toggle()
-      default: break
-      }
-      actionService.action = nil
+        guard let action = actionService.action else { return }
+        switch action {
+        case .newCategory: isPresentedAddCategory.toggle()
+        default: break
+        }
+        actionService.action = nil
     }
 }
 
@@ -270,12 +261,4 @@ struct CategoryScene_Previews: PreviewProvider {
     static var previews: some View {
         CategoryScene()
     }
-}
-
-struct SwiftUIWrapper<T: View>: UIViewControllerRepresentable {
-    let content: () -> T
-    func makeUIViewController(context: Context) -> UIHostingController<T> {
-        UIHostingController(rootView: content())
-    }
-    func updateUIViewController(_ uiViewController: UIHostingController<T>, context: Context) {}
 }

@@ -92,4 +92,17 @@ final class TransactionStorage {
         self.transactions = transactions
         self.transactions.sort(by: { $0.date > $1.date })
     }
+    
+    func getChartDataTransactions(
+        from date: Date? = nil,
+        period: BudgetPresenter.Period? = nil
+    ) -> [(date: Date, value: Double)] {
+        if let date = date, let period = period {
+            return getAllTransactions().filter({
+                period == .week ? (period.containsWeek(originalDate: date, compareDate: $0.date)) : ($0.date.asString(withDateFormat: period.dateFormat) == date.asString(withDateFormat: period.dateFormat))
+            }).map({ (date: $0.date, value: $0.amount) })
+        } else {
+            return getAllTransactions().map({ (date: $0.date, value: $0.amount) })
+        }
+    }
 }

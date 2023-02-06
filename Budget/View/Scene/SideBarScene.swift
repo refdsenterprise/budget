@@ -8,6 +8,7 @@
 import SwiftUI
 import RefdsUI
 
+@available(iOS 16.0, *)
 struct SideBarScene: View {
     var body: some View {
         NavigationSplitView {
@@ -36,6 +37,7 @@ struct SideBarScene: View {
     }
 }
 
+@available(iOS 16.0, *)
 struct SideBarScene_Previews: PreviewProvider {
     static var previews: some View {
         SideBarScene()

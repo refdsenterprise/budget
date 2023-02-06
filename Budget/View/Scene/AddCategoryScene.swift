@@ -25,9 +25,6 @@ struct AddCategoryScene: View {
     var body: some View {
         form
             .navigationTitle("Nova Categoria")
-            .navigationDestination(isPresented: $isPresentedAddBudget, destination: {
-                AddBudgetScene { presenter.addBudget($0) }
-            })
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     buttonAdd
@@ -48,6 +45,11 @@ struct AddCategoryScene: View {
             sectionCategoryName
             sectionBudget
         }
+        .background(
+            NavigationLink(destination: AddBudgetScene { presenter.addBudget($0) }, isActive: $isPresentedAddBudget) {
+                EmptyView()
+            }.hidden()
+        )
     }
     
     private var sectionCategoryName: some View {
@@ -96,7 +98,6 @@ struct AddCategoryScene: View {
                         .frame(height: 20)
                         .symbolRenderingMode(.hierarchical)
                         .foregroundColor(.accentColor)
-                        .bold()
                 }
             }
         }
@@ -124,23 +125,22 @@ struct AddCategoryScene: View {
     
     private var buttonAdd: some View {
         Button {
-            UIApplication.shared.endEditing()
+            Application.shared.endEditing()
             if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
             else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
         } label: {
-            Image(systemName: "checkmark.rectangle.fill")
+            Image(systemName: "checkmark.circle.fill")
                 .resizable()
                 .scaledToFit()
-                .frame(height: 20)
+                .frame(height: 25)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(presenter.buttonForegroundColor)
-                .bold()
         }
     }
     
     private var buttonImport: some View {
         Button {
-            UIApplication.shared.endEditing()
+            Application.shared.endEditing()
             isImporting = !isEditMode
         } label: {
             Image(systemName: "square.and.arrow.down")
@@ -149,7 +149,6 @@ struct AddCategoryScene: View {
                 .frame(height: 20)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(presenter.buttonForegroundColor)
-                .bold()
         }
     }
 }

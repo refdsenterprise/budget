@@ -1,12 +1,21 @@
 {
   "pins" : [
     {
+      "identity" : "refds-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/refdsenterprise/refds-core.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "9943d86399ea2c1cd60e6eb7fe76e1891d934b99"
+      }
+    },
+    {
       "identity" : "refds-design-system",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/refdsenterprise/refds-design-system.git",
       "state" : {
         "branch" : "develop",
-        "revision" : "df8b6ec5241ffff3a58cc9206f2b65256b5e7d77"
+        "revision" : "ed01c436962bfa134c7bbf65f49937315e1873d1"
       }
     }
   ],

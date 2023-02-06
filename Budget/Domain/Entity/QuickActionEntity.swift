@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if os(iOS)
 import UIKit
+#endif
 
 enum ActionType: String {
     case newTransaction = "Nova Transação"
@@ -16,7 +18,7 @@ enum ActionType: String {
 enum Action: Equatable {
     case newTransaction
     case newCategory
-
+    #if os(iOS)
     init?(shortcutItem: UIApplicationShortcutItem) {
         guard let type = ActionType(rawValue: shortcutItem.type) else {
             return nil
@@ -27,6 +29,7 @@ enum Action: Equatable {
         case .newTransaction: self = .newTransaction
         }
     }
+    #endif
 }
 
 class ActionService: ObservableObject {

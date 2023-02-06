@@ -25,16 +25,16 @@ struct AddBudgetScene: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        UIApplication.shared.endEditing()
+                        Application.shared.endEditing()
                         if canAddNewBudget {
                             delegate?(.init(date: categoryBudgetDate, amount: categoryBudgetAmount))
                             dismiss()
                         }
                     } label: {
-                        Image(systemName: "checkmark.rectangle.fill")
+                        Image(systemName: "checkmark.circle.fill")
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 20)
+                            .frame(height: 25)
                             .symbolRenderingMode(.hierarchical)
                             .foregroundColor(buttonForegroundColor)
                     }
@@ -46,14 +46,14 @@ struct AddBudgetScene: View {
         Form {
             sectionAmount
         }
-        .gesture(DragGesture().onChanged({ _ in UIApplication.shared.endEditing() }))
+        .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
     private var sectionAmount: some View {
         Section {
             sectionBudgetDate
         } header: {
-            RefdsCurrency(value: $categoryBudgetAmount)
+            RefdsCurrency(value: $categoryBudgetAmount, size: .custom(40))
                 .padding()
         }
     }

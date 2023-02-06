@@ -11,8 +11,4 @@ final class Storage {
     static let shared = Storage()
     let category: CategoryStorage = .shared
     let transaction: TransactionStorage = .shared
-    
-    func setWidgetData() {
-        
-    }
 }

@@ -11,31 +11,27 @@ import RefdsUI
 @main
 struct BudgetApp: App {
     private let actionService = ActionService.shared
+    #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
+    @Environment(\.scenePhase) private var scenePhase
     @State private var tabItemSelection: BudgetApp.TabItem = .budget
     
     init() {
+        #if os(iOS)
         RefdsUI.shared.setNavigationBarAppearance()
+        #endif
     }
     
     var body: some Scene {
         WindowGroup {
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(macOS)
             SideBarScene()
                 .environmentObject(actionService)
-                .withHostingWindow { window in
-                    window?.windowScene?.sizeRestrictions?.minimumSize = CGSize(width: 1000, height: 700)
-                    window?.windowScene?.sizeRestrictions?.maximumSize = CGSize(width: 1000, height: 700)
-                    if let titlebar = window?.windowScene?.titlebar {
-                        titlebar.titleVisibility = .hidden
-                        titlebar.toolbar = nil
-                    }
-                }
 #else
             TabView(selection: $tabItemSelection) {
-                NavigationStack {
+                NavigationView {
                     CategoryScene()
                 }
                 .tabItem {
@@ -44,7 +40,7 @@ struct BudgetApp: App {
                 }
                 .tag(BudgetApp.TabItem.category)
                 
-                NavigationStack {
+                NavigationView {
                     BudgetScene()
                 }
                 .tabItem {
@@ -53,7 +49,7 @@ struct BudgetApp: App {
                 }
                 .tag(BudgetApp.TabItem.budget)
                 
-                NavigationStack {
+                NavigationView {
                     TransactionScene()
                 }
                 .tabItem {
@@ -106,6 +102,7 @@ extension BudgetApp {
     }
 }
 
+#if os(iOS)
 extension View {
     fileprivate func withHostingWindow(_ callback: @escaping (UIWindow?) -> Void) -> some View {
         self.background(HostingWindowFinder(callback: callback))
@@ -126,3 +123,4 @@ fileprivate struct HostingWindowFinder: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
     }
 }
+#endif

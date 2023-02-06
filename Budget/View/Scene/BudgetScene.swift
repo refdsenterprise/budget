@@ -8,23 +8,16 @@
 import SwiftUI
 import RefdsUI
 import Charts
+import RefdsCore
 
 struct BudgetScene: View {
     @StateObject private var presenter: BudgetPresenter = .instance
-    @State private var snappedItem = 0.0
-    @State private var draggingItem = 0.0
+    @State private var selection: Int = 0
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         content
             .navigationTitle(BudgetApp.TabItem.budget.title + " \(presenter.isFilterPerDate ? presenter.selectedPeriod.label.capitalized : "")")
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    HStack {
-                        if presenter.isFilterPerDate { buttonCalendar }
-                    }
-                }
-            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     if presenter.isFilterPerDate {
@@ -37,20 +30,19 @@ struct BudgetScene: View {
     
     private var content: some View {
         List {
-            if !presenter.isFilterPerDate,
-               let actual = presenter.getTotalActual(),
+            if let actual = presenter.getTotalActual(),
                let budget = presenter.getTotalBudget() {
                 Section {} footer: {
                     valueView(actual: actual, budget: budget)
                         .padding(.top)
                         .frame(maxWidth: .infinity)
                 }
-            } else { sectionActualAndBudget }
+            }
             
             if !presenter.categories.isEmpty {
                 sectionDifference
                 sectionTotalDifference
-                sectionChartBudgetVsActual
+                if #available(iOS 16.0, *) { sectionChartBudgetVsActual }
                 if let actual = presenter.getTotalActual(),
                    let budget = presenter.getTotalBudget() {
                     sectionBudgetUse(actual: actual, budget: budget)
@@ -69,50 +61,37 @@ struct BudgetScene: View {
             HStack {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
             }
+            if presenter.isFilterPerDate {
+                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
+                    RefdsText("Data")
+                }
+            }
         } header: {
             RefdsText("opções", size: .extraSmall, color: .secondary)
         }
     }
     
-    private var sectionActualAndBudget: some View {
-        Section { } footer: {
-            ZStack {
-                ForEach(0..<3) { index in
-                    currentValueView
-                        .scaleEffect(1.0 - abs(distance(index)) * 0.25)
-                        .opacity(1.0 - abs(distance(index)) * 0.7)
-                        .offset(x: myXOffset(index), y: 0)
-                        .zIndex(1.0 - abs(distance(index)) * 0.1)
+    private var pageBudget: some View {
+        VStack {
+            TabView(selection: Binding(get: {
+                selection
+            }, set: { value, _ in
+                selection = value
+                if let period = BudgetPresenter.Period(rawValue: Int(value)) {
+                    presenter.selectedPeriod = period
                 }
+            })) {
+                ForEach(0 ..< 3) { i in
+                    currentValueView
+                        .tag(i)
+                }
+                .padding(.bottom, 40)
             }
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        draggingItem = snappedItem + value.translation.width / 100
-                    }
-                    .onEnded { value in
-                        withAnimation {
-                            draggingItem = snappedItem + value.predictedEndTranslation.width / 100
-                            draggingItem = round(draggingItem).remainder(dividingBy: Double(3))
-                            snappedItem = draggingItem
-                            if let period = BudgetPresenter.Period(rawValue: Int(snappedItem)) {
-                                presenter.selectedPeriod = period
-                            }
-                        }
-                    }
-            )
-            .padding(.top, 25)
-            .padding(.bottom, 15)
+            .frame(maxWidth: .infinity)
+            .frame(height: 180)
+            .padding(.horizontal, -25)
+            .tabViewStyle(PageTabViewStyle())
         }
-    }
-    
-    private func distance(_ item: Int) -> Double {
-        return (draggingItem - Double(item)).remainder(dividingBy: Double(3))
-    }
-    
-    private func myXOffset(_ item: Int) -> Double {
-        let angle = Double.pi * 2 / Double(3) * distance(item)
-        return sin(angle) * 100
     }
     
     private var currentValueView: some View {
@@ -142,7 +121,7 @@ struct BudgetScene: View {
                 alignment: .center,
                 lineLimit: 1
             )
-            RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(16), color: .secondary, weight: .bold, family: .moderatMono)
+            RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(16), color: .accentColor, weight: .bold, family: .moderatMono)
         }
     }
     
@@ -192,7 +171,7 @@ struct BudgetScene: View {
                     .background {
                         ProgressView(value: actual, total: budget, label: {  })
                             .tint(presenter.getActualColor(actual: actual, budget: budget))
-                            .offset(y: 20)
+                            .offset(y: 25)
                     }
                     .padding(.bottom)
                     .padding(.top, 5)
@@ -245,6 +224,7 @@ struct BudgetScene: View {
         }
     }
     
+    @available(iOS 16.0, *)
     private var sectionChartBudgetVsActual: some View {
         Section {
             if let chartData = presenter.getChartData(), !chartData.flatMap({ $0.data }).isEmpty {
@@ -259,6 +239,10 @@ struct BudgetScene: View {
                             .position(by: .value("category", chartData.label))
                         }
                     }
+                    .chartForegroundStyleScale([
+                        "Budget": Color.teal,
+                        "Atual": Color.accentColor
+                    ])
                     .chartLegend(position: .overlay, alignment: .top, spacing: -20)
                     .chartYAxis { AxisMarks(position: .leading) }
                     .frame(minHeight: 150)
@@ -268,19 +252,6 @@ struct BudgetScene: View {
                     Divider()
                     
                     Chart {
-                        ForEach(chartData[0].data, id: \.category) {
-                            LineMark(
-                                x: .value("Category", $0.category),
-                                y: .value("Value", $0.value)
-                            )
-                            .interpolationMethod(.catmullRom)
-                            .lineStyle(StrokeStyle(dash: [5, 10]))
-                            .symbol(by: .value("category", chartData[0].label))
-                            .symbolSize(30)
-                            .foregroundStyle(by: .value("category", chartData[0].label))
-                            .position(by: .value("category", chartData[0].label))
-                        }
-                        
                         ForEach(chartData[1].data, id: \.category) {
                             LineMark(
                                 x: .value("Category", $0.category),
@@ -302,7 +273,24 @@ struct BudgetScene: View {
                             .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
                             .position(by: .value("category", chartData[1].label))
                         }
+                        
+                        ForEach(chartData[0].data, id: \.category) {
+                            LineMark(
+                                x: .value("Category", $0.category),
+                                y: .value("Value", $0.value)
+                            )
+                            .interpolationMethod(.catmullRom)
+                            .lineStyle(StrokeStyle(dash: [5, 10]))
+                            .symbol(by: .value("category", chartData[0].label))
+                            .symbolSize(30)
+                            .foregroundStyle(by: .value("category", chartData[0].label))
+                            .position(by: .value("category", chartData[1].label))
+                        }
                     }
+                    .chartForegroundStyleScale([
+                        "Atual": Color.accentColor,
+                        "Budget": Color.teal
+                    ])
                     .chartLegend(position: .overlay, alignment: .top, spacing: -20)
                     .chartYAxis { AxisMarks(position: .leading) }
                     .frame(minHeight: 150)
@@ -313,27 +301,6 @@ struct BudgetScene: View {
         } header: {
             if !presenter.categories.isEmpty {
                 RefdsText("Budget vs Atual", size: .extraSmall, color: .secondary)
-            }
-        }
-    }
-    
-    private var buttonCalendar: some View {
-        Button {  } label: {
-            ZStack {
-                DatePicker("", selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date)
-                    .labelsHidden()
-                    .datePickerStyle(.compact)
-                    .frame(width: 20, height: 20)
-                    .clipped()
-                SwiftUIWrapper {
-                    Image(systemName: "calendar")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 20)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundColor(.accentColor)
-                        .bold()
-                }.allowsHitTesting(false)
             }
         }
     }
@@ -358,6 +325,7 @@ struct BudgetScene: View {
         }
     }
     
+    @available(iOS 16.0, *)
     private func sectionChartTransactions(_ chartData: [(date: Date, value: Double)]) -> some View {
         Section {
             Chart {
@@ -377,6 +345,7 @@ struct BudgetScene: View {
         }
     }
     
+    @available(iOS 16.0, *)
     func buildLineMarkTransactions(_ data: (date: Date, value: Double)) -> some ChartContent {
         LineMark(
             x: .value("date", data.date),
@@ -388,6 +357,7 @@ struct BudgetScene: View {
         .position(by: .value("date", data.date))
     }
     
+    @available(iOS 16.0, *)
     func buildAreaMarkTransactions(_ data: (date: Date, value: Double)) -> some ChartContent {
         AreaMark(
             x: .value("date", data.date),
