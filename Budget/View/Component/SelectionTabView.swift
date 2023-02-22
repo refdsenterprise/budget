@@ -19,7 +19,7 @@ struct SelectionTabView: View {
                     Button {
                         selected = values[index]
                     } label: {
-                        RefdsTag(values[index], size: .custom(14), color: values[index] == selected ? .accentColor : .secondary, lineLimit: 1)
+                        RefdsTag(values[index], color: values[index] == selected ? .accentColor : .secondary, lineLimit: 1)
                     }
                 }
             }

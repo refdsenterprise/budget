@@ -13,6 +13,7 @@ struct CategoryScene: View {
     @State private var isPresentedAddCategory = false
     @State private var isPresentedEditCategory = false
     @State private var isPresentedExporting = false
+    @State private var showDatePicker = false
     @State private var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
     @State private var category: CategoryEntity?
     @EnvironmentObject private var actionService: ActionService
@@ -21,6 +22,7 @@ struct CategoryScene: View {
     var body: some View {
         list
             .navigationTitle(BudgetApp.TabItem.category.title)
+        #if os(iOS)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     HStack { buttonAddCategory }
@@ -28,12 +30,10 @@ struct CategoryScene: View {
             }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarLeading) {
-                    buttonExport
-                    if presenter.isFilterPerDate {
-                        RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .teal)
-                    }
+                    //buttonExport
                 }
             }
+        #endif
             .searchable(text: $presenter.query, prompt: "Busque por categoria")
             .onAppear {
                 presenter.loadData()
@@ -53,7 +53,9 @@ struct CategoryScene: View {
     
     private var list: some View {
         List {
-            sectionOptions
+            CollapsedView(title: "Opções") {
+                options
+            }
             if let previousDate = presenter.getDateFromLastCategoriesByCurrentDate() {
                 sectionDuplicateCategories(previousDate: previousDate)
             }
@@ -75,18 +77,35 @@ struct CategoryScene: View {
         )
     }
     
-    private var sectionOptions: some View {
-        Section {
+    private var options: some View {
+        Group {
             HStack {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
             }
             if presenter.isFilterPerDate {
-                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
-                    RefdsText("Data")
+                Button {
+                    withAnimation {
+                        showDatePicker.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 15) {
+                        RefdsText("Periodo")
+                        Spacer()
+                        RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .accentColor)
+                    }
                 }
             }
-        } header: {
-            RefdsText("opções", size: .extraSmall, color: .secondary)
+            if showDatePicker {
+                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
+                    EmptyView()
+                }
+                .datePickerStyle(.graphical)
+                .onChange(of: presenter.date) { _ in
+                    withAnimation {
+                        showDatePicker.toggle()
+                    }
+                }
+            }
         }
     }
     
@@ -112,7 +131,7 @@ struct CategoryScene: View {
     private var sectionCategories: some View {
         Section {
             ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
-                NavigationLink(destination: { TransactionScene(category: category, date: presenter.date) }, label: {
+                NavigationLink(destination: { TransactionScene(category: category, date: presenter.date).tint(category.color) }, label: {
                     rowCategory(category)
                 })
                 .swipeActions(edge: .trailing, allowsFullSwipe: true, content: {
@@ -143,7 +162,7 @@ struct CategoryScene: View {
                     alignment: .center,
                     lineLimit: 1
                 )
-                RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(16), color: .accentColor, weight: .bold, family: .moderatMono)
+                RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(20), color: .accentColor, weight: .bold, family: .moderatMono)
             }
         }
         .frame(maxWidth: .infinity)
@@ -154,31 +173,21 @@ struct CategoryScene: View {
             IndicatorPointView(color: category.color)
             VStack(spacing: 2) {
                 HStack {
-                    RefdsText(category.name.capitalized)
+                    RefdsText(category.name.capitalized, weight: .bold)
                     Spacer()
                     if let budget = presenter.getBudget(by: category) {
                         RefdsText(
                             budget.amount.formatted(.currency(code: "BRL")),
-                            color: .secondary,
                             family: .moderatMono,
                             lineLimit: 1
                         )
                     }
                 }
-                
-                HStack(spacing: 10) {
-                    if let actual = presenter.getActualTransaction(by: category),
-                       let budget = presenter.getBudget(by: category)?.amount,
-                       let diffencePercent = presenter.getDifferencePercent(budget: budget, actual: actual) {
-                        RefdsText(diffencePercent, size: .small, color: .secondary, family: .moderatMono)
+                if let transactions = presenter.getTransactions(by: category), let actual = presenter.getActualTransaction(by: category), let percent = presenter.getDifferencePercent(budget: presenter.getBudget(by: category)?.amount ?? 1, actual: actual, hasPlaces: true) {
+                    HStack {
+                        RefdsText("\(percent) gasto", color: .secondary)
                         Spacer()
-                        RefdsText(
-                            actual.formatted(.currency(code: "BRL")),
-                            size: .small,
-                            color: budget - actual > 0 ? .accentColor : budget - actual == 0 ? .yellow : .pink,
-                            family: .moderatMono,
-                            lineLimit: 1
-                        )
+                        RefdsText("\(transactions.count) transações", color: .secondary)
                     }
                 }
             }
@@ -242,6 +251,8 @@ struct CategoryScene: View {
 
 struct CategoryScene_Previews: PreviewProvider {
     static var previews: some View {
-        CategoryScene()
+        NavigationView {
+            CategoryScene()
+        }
     }
 }

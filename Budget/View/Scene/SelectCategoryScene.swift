@@ -41,8 +41,9 @@ struct SelectCategoryScene: View {
                     RefdsText("Categorias", size: .extraSmall, color: .secondary)
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Selecione a categoria")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -57,6 +58,7 @@ struct SelectCategoryScene: View {
                     .tint(.secondary)
                 }
             }
+            #endif
         }
         .onAppear {
             selected = selection

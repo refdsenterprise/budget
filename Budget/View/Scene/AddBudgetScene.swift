@@ -22,29 +22,12 @@ struct AddBudgetScene: View {
     var body: some View {
         form
             .navigationTitle("Novo Budget")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        Application.shared.endEditing()
-                        if canAddNewBudget {
-                            delegate?(.init(date: categoryBudgetDate, amount: categoryBudgetAmount))
-                            dismiss()
-                        }
-                    } label: {
-                        Image(systemName: "checkmark.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 25)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundColor(buttonForegroundColor)
-                    }
-                }
-            }
     }
     
     private var form: some View {
         Form {
             sectionAmount
+            sectionSave
         }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
@@ -63,6 +46,20 @@ struct AddBudgetScene: View {
             .font(.refds(size: 16, scaledSize: 1.2 * 16))
             .datePickerStyle(.graphical)
         
+    }
+    
+    private var sectionSave: some View {
+        Section {
+            Button {
+                Application.shared.endEditing()
+                if canAddNewBudget {
+                    delegate?(.init(date: categoryBudgetDate, amount: categoryBudgetAmount))
+                    dismiss()
+                }
+            } label: {
+                RefdsText("Salvar alterações", color: buttonForegroundColor, weight: .bold)
+            }
+        }
     }
     
     private var canAddNewBudget: Bool {

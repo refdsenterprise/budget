@@ -15,6 +15,22 @@ final class TransactionPresenter: ObservableObject {
     @Published var query: String = ""
     @Published var isFilterPerDate = true
     @Published var document: DataDocument = .init()
+    @Published var selectedPeriodString: String = PeriodTransaction.monthly.value {
+        didSet {
+            for period in PeriodTransaction.allCases {
+                if period.value == selectedPeriodString {
+                    selectedPeriod = period
+                }
+            }
+        }
+    }
+    
+    @Published var selectedPeriod: PeriodTransaction = .monthly {
+        didSet {
+            loadData()
+        }
+    }
+    
     private var category: CategoryEntity?
     
     init(category: CategoryEntity? = nil, date: Date? = nil) {
@@ -27,9 +43,9 @@ final class TransactionPresenter: ObservableObject {
     func loadData() {
         let transaction = Storage.shared.transaction
         if let category = category {
-            transactions = isFilterPerDate ? transaction.getTransactions(on: category, from: date) : transaction.getTransactions(on: category)
+            transactions = isFilterPerDate ? transaction.getTransactions(on: category, from: date, format: selectedPeriod.dateFormat) : transaction.getTransactions(on: category)
         } else {
-            transactions = isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()
+            transactions = isFilterPerDate ? transaction.getTransactions(from: date, format: selectedPeriod.dateFormat) : transaction.getAllTransactions()
         }
         document.codable = transactions.asString
     }
@@ -57,7 +73,36 @@ final class TransactionPresenter: ObservableObject {
         let description = transaction.description.lowercased().contains(query)
         let category = transaction.category?.name.lowercased().contains(query) ?? false
         let amount = "\(transaction.amount)".lowercased().contains(query)
-        let date = transaction.date.asString(withDateFormat: "MM/yyyy").lowercased().contains(query)
+        let date = transaction.date.asString(withDateFormat: selectedPeriod.dateFormat).lowercased().contains(query)
         return description || category || amount || date
+    }
+}
+
+enum PeriodTransaction: CaseIterable {
+    case daily
+    //case weekly
+    case monthly
+    case yearly
+    
+    var value: String {
+        switch self {
+        case .daily: return "diário"
+        //case .weekly: return "semanal"
+        case .monthly: return "mensal"
+        case .yearly: return "anual"
+        }
+    }
+    
+    var dateFormat: String {
+        switch self {
+        case .daily: return "dd/MM/yyyy"
+        //case .weekly: return "EEE/MM/yyyy"
+        case .monthly: return "MM/yyyy"
+        case .yearly: return "yyyy"
+        }
+    }
+    
+    static var values: [String] {
+        PeriodTransaction.allCases.map { $0.value }
     }
 }

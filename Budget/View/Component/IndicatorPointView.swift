@@ -8,18 +8,17 @@
 import SwiftUI
 
 struct IndicatorPointView: View {
+    @State private var animate: Bool = false
     var color: Color
     var body: some View {
         VStack {
-            VStack {
+            ZStack {
+                Circle().fill(color.opacity(0.5)).frame(width: 20, height: 20).scaleEffect(animate ? 1 : 0.8)
+                Circle().fill(color.opacity(0.8)).frame(width: 10, height: 20)
             }
-            .frame(width: 10, height: 10)
-            .background(color)
-            .cornerRadius(3)
         }
-        .frame(width: 20, height: 20)
-        .background(color.opacity(0.2))
-        .cornerRadius(5)
+        .onAppear { animate.toggle() }
+        .animation(animate ? .easeInOut(duration: 1).repeatForever(autoreverses: true) : .default, value: animate)
     }
 }
 

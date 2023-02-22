@@ -14,6 +14,7 @@ struct TransactionScene: View {
     @State private var isPresentedAddTransaction = false
     @State private var isPresentedExporting = false
     @State private var isPresentedEditTransaction = false
+    @State private var showDatePicker = false
     @State private var transaction: TransactionEntity?
     private var category: CategoryEntity?
     @EnvironmentObject private var actionService: ActionService
@@ -27,19 +28,13 @@ struct TransactionScene: View {
     var body: some View {
         list
             .navigationTitle(category == nil ? BudgetApp.TabItem.transaction.title : category!.name.capitalized)
+        #if os(iOS)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     HStack { buttonAddTransaction }
                 }
             }
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
-                    buttonExport
-                    if presenter.isFilterPerDate {
-                        RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .teal)
-                    }
-                }
-            }
+        #endif
             .searchable(text: $presenter.query, prompt: "Busque por transações")
             .onAppear {
                 presenter.loadData()
@@ -54,12 +49,20 @@ struct TransactionScene: View {
                 if case .success = result { print("success to export")
                 } else { print("failed to export") }
             }
+            .accentColor(category?.color != nil ? category!.color : .green)
     }
     
     private var list: some View {
         List {
-            sectionOptions
+            CollapsedView(title: "Opções") {
+                sectionOptions
+            }
             sectionTotal(presenter.getTotalAmount())
+            if #available(iOS 16.0, *), let chartData = presenter.getChartData(), !chartData.compactMap({ $0.value }).isEmpty {
+                CollapsedView(title: "Gráfico") {
+                    sectionChartTransactions(chartData)
+                }
+            }
             if !presenter.getTransactionsFiltred().isEmpty {
                 sectionTransactions
             }
@@ -95,18 +98,49 @@ struct TransactionScene: View {
         .frame(maxWidth: .infinity)
     }
     
+    private var selectionPeriodView: some View {
+        SelectionTabView(
+            values: PeriodTransaction.values,
+            selected: $presenter.selectedPeriodString
+        )
+    }
+    
     private var sectionOptions: some View {
-        Section {
+        Group {
             HStack {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
             }
             if presenter.isFilterPerDate {
-                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
-                    RefdsText("Data")
+                HStack {
+                    RefdsText("Período")
+                    Spacer()
+                    selectionPeriodView
                 }
             }
-        } header: {
-            RefdsText("opções", size: .extraSmall, color: .secondary)
+            if presenter.isFilterPerDate {
+                Button {
+                    withAnimation {
+                        showDatePicker.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 15) {
+                        RefdsText("Data")
+                        Spacer()
+                        RefdsTag(presenter.date.asString(withDateFormat: "dd MMMM, yyyy"), color: .accentColor)
+                    }
+                }
+            }
+            if showDatePicker {
+                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
+                    EmptyView()
+                }
+                .datePickerStyle(.graphical)
+                .onChange(of: presenter.date) { _ in
+                    withAnimation {
+                        showDatePicker.toggle()
+                    }
+                }
+            }
         }
     }
     
@@ -126,8 +160,8 @@ struct TransactionScene: View {
     
     private func rowTransaction1(_ transaction: TransactionEntity) -> some View {
         HStack {
-            RefdsTag(transaction.date.asString(withDateFormat: "EEE"), color: .secondary)
-            RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy - HH:mm"))
+            RefdsTag(transaction.date.asString(withDateFormat: "EEE HH:mm"), color: .secondary)
+            RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy"))
             Spacer()
             RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
         }
@@ -194,6 +228,30 @@ struct TransactionScene: View {
         default: break
         }
         actionService.action = nil
+    }
+    
+    @available(iOS 16.0, *)
+    private func sectionChartTransactions(_ chartData: [(date: Date, value: Double)]) -> some View {
+            Chart {
+                ForEach(chartData, id: \.date) {
+                    buildAreaMarkTransactions($0)
+                }
+            }
+            .chartLegend(position: .overlay, alignment: .top, spacing: -20)
+            .chartYAxis { AxisMarks(position: .leading) }
+            .frame(minHeight: 150)
+            .padding()
+            .padding(.top)
+    }
+    
+    @available(iOS 16.0, *)
+    func buildAreaMarkTransactions(_ data: (date: Date, value: Double)) -> some ChartContent {
+        AreaMark(
+            x: .value("date", data.date),
+            y: .value("value", data.value)
+        )
+        .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
+        .position(by: .value("date", data.date))
     }
 }
 

@@ -26,7 +26,7 @@ final class AddTransactionPresenter: ObservableObject {
     }
     
     var canAddNewTransaction: Bool {
-        return amount > 0 && category != nil
+        return amount > 0 && category != nil && !description.isEmpty
     }
     
     var buttonBackgroundColor: Color {
@@ -34,7 +34,7 @@ final class AddTransactionPresenter: ObservableObject {
     }
     
     var buttonForegroundColor: Color {
-        return canAddNewTransaction ? .accentColor : .secondary
+        return canAddNewTransaction ? (category?.color ?? .accentColor) : .secondary
     }
     
     func loadData() {

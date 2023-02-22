@@ -25,12 +25,6 @@ struct AddCategoryScene: View {
     var body: some View {
         form
             .navigationTitle("Nova Categoria")
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    buttonAdd
-                    //buttonImport
-                }
-            }
             .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
                 switch result {
                 case .success(let url): Storage.shared.category.replaceAllCategories(try? Data(contentsOf: url))
@@ -44,19 +38,16 @@ struct AddCategoryScene: View {
         Form {
             sectionCategoryName
             sectionBudget
+            sectionSave
         }
-        .background(
-            NavigationLink(destination: AddBudgetScene { presenter.addBudget($0) }, isActive: $isPresentedAddBudget) {
-                EmptyView()
-            }.hidden()
-        )
+        .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
     private var sectionCategoryName: some View {
         Section {
             HStack {
                 RefdsText("Nome")
-                RefdsTextField("Informe o nome da categoria", text: $presenter.name, alignment: .leading, textInputAutocapitalization: .characters)
+                RefdsTextField("Informe o nome da categoria", text: $presenter.name, alignment: .trailing, textInputAutocapitalization: .characters)
             }
             sectionCategoryColor
         } header: {
@@ -81,31 +72,23 @@ struct AddCategoryScene: View {
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) { swipeRemoveBudget(budget) }
                 }
                 
-            } else {
-                RefdsText("Nenhum budget acionado até o momento.", size: .small, color: .secondary, alignment: .center)
-                    .frame(maxWidth: .infinity)
+            }
+            NavigationLink(destination: AddBudgetScene { presenter.addBudget($0) }) {
+                HStack {
+                    RefdsText("Adicionar novo budget", color: .accentColor, weight: .bold)
+                }
             }
         } header: {
             HStack {
-                RefdsText("categoria", size: .extraSmall, color: .secondary)
+                RefdsText("Budgets", size: .extraSmall, color: .secondary)
                 Spacer()
-                Button {
-                    isPresentedAddBudget.toggle()
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 25)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundColor(.accentColor)
-                }
             }
         }
     }
     
     private func rowBudget(_ budget: BudgetEntity) -> some View {
-        HStack {
-            RefdsText(budget.date.asString(withDateFormat: "MMMM yyyy"))
+        HStack(spacing: 15) {
+            RefdsText(budget.date.asString(withDateFormat: "MMMM yyyy").capitalized)
             Spacer()
             RefdsText(budget.amount.formatted(.currency(code: "BRL")), size: .normal, color: .secondary, weight: .medium, family: .moderatMono, lineLimit: 1)
         }
@@ -123,18 +106,15 @@ struct AddCategoryScene: View {
         .tint(.pink)
     }
     
-    private var buttonAdd: some View {
-        Button {
-            Application.shared.endEditing()
-            if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
-            else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
-        } label: {
-            Image(systemName: "checkmark.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 25)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(presenter.buttonForegroundColor)
+    private var sectionSave: some View {
+        Section {
+            Button {
+                Application.shared.endEditing()
+                if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
+                else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
+            } label: {
+                RefdsText("Salvar alterações", color: presenter.buttonForegroundColor, weight: .bold)
+            }
         }
     }
     

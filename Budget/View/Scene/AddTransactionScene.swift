@@ -11,7 +11,7 @@ import RefdsUI
 struct AddTransactionScene: View {
     @StateObject private var presenter: AddTransactionPresenter
     @State private var isPresentedAlert = false
-    @State private var isPresentedSelectionCategory = false
+    @State private var showSelectedCategory = false
     @State private var document: DataDocument = .init()
     @State private var isImporting: Bool = false
     
@@ -25,98 +25,103 @@ struct AddTransactionScene: View {
         form
             .navigationTitle("Nova Transação")
             .onAppear { presenter.loadData() }
+        #if os(iOS)
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button {
-                        Application.shared.endEditing()
-                        if presenter.canAddNewTransaction {
-                            if let transaction = presenter.transaction {
-                                do {
-                                    try Storage.shared.transaction.editTransaction(transaction, date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
-                                    dismiss()
-                                } catch {
-                                    isPresentedAlert.toggle()
-                                }
-                            } else {
-                                do {
-                                    try Storage.shared.transaction.addTransaction(date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
-                                    dismiss()
-                                } catch {
-                                    isPresentedAlert.toggle()
-                                }
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "checkmark.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 25)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundColor(presenter.buttonForegroundColor)
-                    }
-                    
-                    //  buttonImport
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    buttonSave
                 }
             }
+        #endif
 //            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
 //                switch result {
 //                case .success(let url): Storage.shared.transaction.replaceAllTransactions(try? Data(contentsOf: url))
 //                case .failure(_): print("error import file")
 //                }
 //            }
-            .sheet(isPresented: $isPresentedSelectionCategory) {
-                HalfSheet {
-                    SelectCategoryScene(selection: $presenter.category, date: $presenter.date)
-                }
-            }
     }
     
     private var form: some View {
         Form {
+            sectionCategory
             sectionAmount
         }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
-    private var sectionAmount: some View {
+    private var sectionCategory: some View {
         Section {
-            rowCategory
             rowDescription
-            rowDate
+            rowCategory
+            if showSelectedCategory {
+                ForEach(Storage.shared.category.getCategories(from: presenter.date, format: "MM/yyyy"), id: \.id) { category in
+                    Button {
+                        presenter.category = category
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation {
+                                showSelectedCategory.toggle()
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 10) {
+                            IndicatorPointView(color: presenter.category?.id == category.id ? category.color : .secondary)
+                            RefdsText(category.name.capitalized)
+                            Spacer()
+                            if let budget = category.budgets.first(where: { $0.date.asString(withDateFormat: "MM/yyyy") == presenter.date.asString(withDateFormat: "MM/yyyy") }) {
+                                RefdsText(budget.amount.formatted(.currency(code: "BRL")), color: .secondary, family: .moderatMono)
+                            }
+                        }
+                    }
+                }
+            }
         } header: {
             RefdsCurrency(value: Binding(get: { presenter.amount }, set: { presenter.amount = $0 }), size: .custom(40))
                 .padding()
         }
     }
     
+    private var sectionAmount: some View {
+        rowDate
+    }
+    
     private var rowDate: some View {
-        DatePicker("Informe o mês", selection: Binding(get: { presenter.date }, set: {
-            presenter.loadData(newDate: $0)
-            presenter.date = $0
-        }), displayedComponents: [.date, .hourAndMinute])
-            .font(.refds(size: 16, scaledSize: 1.2 * 16))
-            .datePickerStyle(.graphical)
+        CollapsedView(showOptions: true, title: "Data e hora") {
+            DatePicker("Informe o mês", selection: Binding(get: { presenter.date }, set: {
+                presenter.loadData(newDate: $0)
+                presenter.date = $0
+            }), displayedComponents: [.date, .hourAndMinute])
+                .font(.refds(size: 16, scaledSize: 1.2 * 16))
+                .datePickerStyle(.graphical)
+                .tint(presenter.category?.color ?? .accentColor)
+        }
+        .tint(presenter.category?.color ?? .accentColor)
     }
     
     private var rowDescription: some View {
         HStack {
             RefdsText("Descrição")
             Spacer()
-            RefdsTextField("Informe a descrição (Opicional)", text: $presenter.description, alignment: .trailing, textInputAutocapitalization: .sentences)
+            RefdsTextField("Informe a descrição", text: $presenter.description, alignment: .trailing, textInputAutocapitalization: .sentences)
         }
     }
     
     private var rowCategory: some View {
         VStack {
             if presenter.category != nil, let name = presenter.category?.name, let color = presenter.category?.color {
-                HStack {
-                    RefdsText("Categoria")
-                    Spacer()
-                    RefdsTag(name, size: .extraSmall, color: color)
+                Button {
+                    withAnimation {
+                        showSelectedCategory.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 15) {
+                        Image(systemName: "chevron.up")
+                            .font(.system(size: 16, weight: .bold))
+                            .rotationEffect(showSelectedCategory ? .degrees(0) : .degrees(180))
+                        RefdsText("Categoria")
+                        Spacer()
+                        RefdsTag(name, size: .extraSmall, color: color)
+                    }
                 }
-                .onTapGesture {
-                    isPresentedSelectionCategory.toggle()
-                }
+                .tint(presenter.category?.color ?? .accentColor)
             } else {
                 NavigationLink {
                     AddCategoryScene()
@@ -144,36 +149,40 @@ struct AddTransactionScene: View {
                 .foregroundColor(presenter.buttonForegroundColor)
         }
     }
+    
+    private var buttonSave: some View {
+        Button {
+            Application.shared.endEditing()
+            if presenter.canAddNewTransaction {
+                if let transaction = presenter.transaction {
+                    do {
+                        try Storage.shared.transaction.editTransaction(transaction, date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
+                        dismiss()
+                    } catch {
+                        isPresentedAlert.toggle()
+                    }
+                } else {
+                    do {
+                        try Storage.shared.transaction.addTransaction(date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
+                        dismiss()
+                    } catch {
+                        isPresentedAlert.toggle()
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: "checkmark.circle.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 25)
+                .symbolRenderingMode(.hierarchical)
+                .foregroundColor(presenter.buttonForegroundColor)
+        }
+    }
 }
 
 struct AddTransactionScene_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView { AddTransactionScene() }
-    }
-}
-
-class HalfSheetController<Content>: UIHostingController<Content> where Content : View {
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if let presentation = sheetPresentationController {
-            presentation.detents = [.medium()]
-        }
-    }
-}
-
-struct HalfSheet<Content>: UIViewControllerRepresentable where Content : View {
-    private let content: Content
-    
-    @inlinable init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-    
-    func makeUIViewController(context: Context) -> HalfSheetController<Content> {
-        return HalfSheetController(rootView: content)
-    }
-    
-    func updateUIViewController(_: HalfSheetController<Content>, context: Context) {
-
     }
 }
