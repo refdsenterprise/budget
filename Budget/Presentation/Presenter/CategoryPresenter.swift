@@ -68,12 +68,11 @@ final class CategoryPresenter: ObservableObject {
         isFilterPerDate ?
         category.budgets.first(where: {
             $0.date.asString(withDateFormat: "MM/yyyy") == date.asString(withDateFormat: "MM/yyyy")
-        }) : .init(amount: category.budgets.map({ $0.amount }).reduce(0, +) / Double(category.budgets.count))
+        }) : .init(amount: category.budgets.map({ $0.amount }).reduce(0, +))
     }
     
     func getTotalBudget() -> Double {
-        let total = getCategoriesFiltred().map({ getBudget(by: $0)?.amount ?? 0 }).reduce(0, +)
-        return isFilterPerDate ? total : total / Double(categories.count)
+        return getCategoriesFiltred().map({ getBudget(by: $0)?.amount ?? 0 }).reduce(0, +)
     }
     
     func getTotalActual() -> Double {

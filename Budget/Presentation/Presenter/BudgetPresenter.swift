@@ -61,7 +61,13 @@ final class BudgetPresenter: ObservableObject {
     }
     
     private func getTotalBudgetAll() -> Double {
-        categories.flatMap({ $0.budgets }).map({ $0.amount }).reduce(0, +)
+        let allBudgetPerPeriod = categories.flatMap({ $0.budgets }).filter({
+            let currentDate = $0.date.asString(withDateFormat: selectedPeriod.dateFormat)
+            let date = date.asString(withDateFormat: selectedPeriod.dateFormat)
+            return currentDate == date
+        }).map({ $0.amount }).reduce(0, +)
+        let allBudget = categories.flatMap({ $0.budgets }).map({ $0.amount }).reduce(0, +)
+        return isFilterPerDate ? allBudgetPerPeriod : allBudget
     }
     
     private func getTotalBudgetByPeriod() -> Double {
@@ -86,7 +92,7 @@ final class BudgetPresenter: ObservableObject {
     func getActualColor(actual: Double, budget: Double) -> Color {
         let accent = budget - actual > 0
         let secondary = budget - actual == 0
-        return accent ? .accentColor : secondary ? .secondary : .pink
+        return accent ? .accentColor : secondary ? .yellow : .pink
     }
     
     func getChartData() -> [(label: String, data: [(category: String, value: Double)])] {
@@ -116,6 +122,15 @@ final class BudgetPresenter: ObservableObject {
         categories.map({ getAmountTransactions(by: $0) }).max()
     }
     
+    func getPercent(budget: Double, actual: Double, hasPlaces: Bool = false) -> String {
+        let percent = (actual * 100) / budget
+        if !hasPlaces {
+            return String(format: "%02.0f", percent, actual, budget) + "%"
+        } else {
+            return String(format: "%02.02f", percent).replacingOccurrences(of: ".", with: ",") + "%"
+        }
+    }
+    
     func getDifferencePercent(budget: Double, actual: Double, hasPlaces: Bool = false) -> String {
         var percent = (actual * 100) / budget
         percent = 100 - percent
@@ -124,6 +139,11 @@ final class BudgetPresenter: ObservableObject {
         } else {
             return String(format: "%02.02f", percent).replacingOccurrences(of: ".", with: ",") + "%"
         }
+    }
+    
+    func getDifferencePercent(budget: Double, actual: Double) -> Double {
+        let percent = (actual * 100) / budget
+        return (100 - percent) / 100
     }
     
     func getTransactions() -> [TransactionEntity] {
@@ -137,7 +157,25 @@ final class BudgetPresenter: ObservableObject {
     }
     
     func getMaxTrasaction() -> TransactionEntity? {
-        getTransactions().max(by: { $0.amount < $1.amount })
+        return getTransactions().max(by: { $0.amount < $1.amount })
+    }
+    
+    func getMaxWeekday(completion: (String) -> Void) -> [String] {
+        var daysCount: [String: Double] = [:]
+        transactions.forEach { transaction in
+            let day = transaction.date.asString(withDateFormat: "EEEE").lowercased()
+            daysCount[day] = (daysCount[day] ?? 0) + transaction.amount
+        }
+        let maxDay = daysCount.max(by: { $0.value < $1.value })?.key ?? ""
+        completion(maxDay)
+        return daysCount.sorted(by: { $0.value > $1.value }).map({ $0.key })
+    }
+    
+    func getTransactionsWeekday(weekday: String) -> [TransactionEntity] {
+        transactions.filter { transaction in
+            let day = transaction.date.asString(withDateFormat: "EEEE").lowercased()
+            return weekday.lowercased() == day
+        }
     }
 }
 

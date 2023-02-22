@@ -12,7 +12,9 @@ import Charts
 struct TransactionScene: View {
     @StateObject private var presenter: TransactionPresenter
     @State private var isPresentedAddTransaction = false
-    @State private var isPresentedExporting: Bool = false
+    @State private var isPresentedExporting = false
+    @State private var isPresentedEditTransaction = false
+    @State private var transaction: TransactionEntity?
     private var category: CategoryEntity?
     @EnvironmentObject private var actionService: ActionService
     @Environment(\.scenePhase) private var scenePhase
@@ -68,6 +70,11 @@ struct TransactionScene: View {
                 EmptyView()
             }.hidden()
         )
+        .background(
+            NavigationLink(destination: AddTransactionScene(transaction: transaction), isActive: $isPresentedEditTransaction) {
+                EmptyView()
+            }.hidden()
+        )
     }
     
     private func sectionTotal(_ total: Double) -> some View {
@@ -112,13 +119,15 @@ struct TransactionScene: View {
                     rowTransaction2(transaction)
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: false, content: { swipeRemoveTransaction(transaction) })
+                .swipeActions(edge: .leading, allowsFullSwipe: false, content: { swipeEditTransaction(transaction) })
             }
         }
     }
     
     private func rowTransaction1(_ transaction: TransactionEntity) -> some View {
         HStack {
-            RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy"))
+            RefdsTag(transaction.date.asString(withDateFormat: "EEE"), color: .secondary)
+            RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy - HH:mm"))
             Spacer()
             RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
         }
@@ -128,7 +137,7 @@ struct TransactionScene: View {
         HStack {
             RefdsText(transaction.description.isEmpty ? "Sem descrição" : transaction.description, color: .secondary)
             Spacer()
-            RefdsText(transaction.amount.formatted(.currency(code: "BRL")), color: .accentColor, weight: .bold, family: .moderatMono, alignment: .trailing, lineLimit: 1)
+            RefdsText(transaction.amount.formatted(.currency(code: "BRL")), family: .moderatMono, alignment: .trailing, lineLimit: 1)
         }
     }
     
@@ -142,11 +151,15 @@ struct TransactionScene: View {
     }
     
     private func swipeEditTransaction(_ transaction: TransactionEntity) -> some View {
-        Button { } label: {
+        Button {
+            self.transaction = transaction
+            isPresentedEditTransaction.toggle()
+        } label: {
             Image(systemName: "square.and.pencil")
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.white)
         }
+        .tint(.orange)
     }
     
     private var buttonAddTransaction: some View {

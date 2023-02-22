@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6C4FF88429A5C3CE0026D8E0 /* SelectionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4FF88329A5C3CE0026D8E0 /* SelectionTabView.swift */; };
 		6C6584E629610D08003A9ABA /* CategoryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6584E529610D08003A9ABA /* CategoryPresenter.swift */; };
 		6C6584E82961167B003A9ABA /* AddCategoryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6584E72961167B003A9ABA /* AddCategoryPresenter.swift */; };
 		6C6584EA296124CD003A9ABA /* TransactionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6584E9296124CD003A9ABA /* TransactionPresenter.swift */; };
@@ -20,10 +21,12 @@
 		6C6F632A2965F20A007D7600 /* QuickActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F63292965F20A007D7600 /* QuickActionEntity.swift */; };
 		6C6F632C2965F4AB007D7600 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F632B2965F4AB007D7600 /* AppDelegate.swift */; };
 		6C7317AB2960C2D000AD0539 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7317AA2960C2D000AD0539 /* ColorExtension.swift */; };
+		6C82DB9F299CA465007F13C1 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C82DB9E299CA465007F13C1 /* SwiftUIView.swift */; };
 		6C8B933E298B87C9004496DE /* RefdsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6C8B933D298B87C9004496DE /* RefdsCore */; };
 		6CA9227F295F7F1C007B270F /* BudgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA9227E295F7F1C007B270F /* BudgetApp.swift */; };
 		6CA92283295F7F1E007B270F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CA92282295F7F1E007B270F /* Assets.xcassets */; };
 		6CA92287295F7F1E007B270F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CA92286295F7F1E007B270F /* Preview Assets.xcassets */; };
+		6CC9D1CB2993F0EC00F030F7 /* IndicatorPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC9D1CA2993F0EC00F030F7 /* IndicatorPointView.swift */; };
 		6CCBC288295F7FE600FAC11C /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC287295F7FE600FAC11C /* CategoryEntity.swift */; };
 		6CCBC28A295F807300FAC11C /* BudgetEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC289295F807300FAC11C /* BudgetEntity.swift */; };
 		6CCBC28C295F815400FAC11C /* TransactionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC28B295F815400FAC11C /* TransactionEntity.swift */; };
@@ -41,6 +44,7 @@
 		6CCBC2B0295FFAD700FAC11C /* AddBudgetScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC2AF295FFAD700FAC11C /* AddBudgetScene.swift */; };
 		6CCBC2B22960008400FAC11C /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC2B12960008400FAC11C /* DateExtensions.swift */; };
 		6CCBC2B42960021B00FAC11C /* ApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCBC2B32960021B00FAC11C /* ApplicationExtension.swift */; };
+		6CE350C82996CA3C00DDF9C6 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE350C72996CA3C00DDF9C6 /* CircularProgressView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -57,6 +61,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6C4FF88329A5C3CE0026D8E0 /* SelectionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTabView.swift; sourceTree = "<group>"; };
 		6C6584E529610D08003A9ABA /* CategoryPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPresenter.swift; sourceTree = "<group>"; };
 		6C6584E72961167B003A9ABA /* AddCategoryPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryPresenter.swift; sourceTree = "<group>"; };
 		6C6584E9296124CD003A9ABA /* TransactionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionPresenter.swift; sourceTree = "<group>"; };
@@ -73,11 +78,13 @@
 		6C6F63292965F20A007D7600 /* QuickActionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickActionEntity.swift; sourceTree = "<group>"; };
 		6C6F632B2965F4AB007D7600 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C7317AA2960C2D000AD0539 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
+		6C82DB9E299CA465007F13C1 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 		6CA9227B295F7F1C007B270F /* Budget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Budget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CA9227E295F7F1C007B270F /* BudgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetApp.swift; sourceTree = "<group>"; };
 		6CA92282295F7F1E007B270F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6CA92284295F7F1E007B270F /* Budget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Budget.entitlements; sourceTree = "<group>"; };
 		6CA92286295F7F1E007B270F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6CC9D1CA2993F0EC00F030F7 /* IndicatorPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorPointView.swift; sourceTree = "<group>"; };
 		6CCBC287295F7FE600FAC11C /* CategoryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEntity.swift; sourceTree = "<group>"; };
 		6CCBC289295F807300FAC11C /* BudgetEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetEntity.swift; sourceTree = "<group>"; };
 		6CCBC28B295F815400FAC11C /* TransactionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionEntity.swift; sourceTree = "<group>"; };
@@ -94,6 +101,7 @@
 		6CCBC2AF295FFAD700FAC11C /* AddBudgetScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBudgetScene.swift; sourceTree = "<group>"; };
 		6CCBC2B12960008400FAC11C /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
 		6CCBC2B32960021B00FAC11C /* ApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationExtension.swift; sourceTree = "<group>"; };
+		6CE350C72996CA3C00DDF9C6 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +180,16 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		6CC9D1CC2993F0F400F030F7 /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				6CC9D1CA2993F0EC00F030F7 /* IndicatorPointView.swift */,
+				6CE350C72996CA3C00DDF9C6 /* CircularProgressView.swift */,
+				6C4FF88329A5C3CE0026D8E0 /* SelectionTabView.swift */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
 		6CCBC285295F7F4B00FAC11C /* Domain */ = {
 			isa = PBXGroup;
 			children = (
@@ -244,6 +262,7 @@
 		6CCBC29F295F93B400FAC11C /* View */ = {
 			isa = PBXGroup;
 			children = (
+				6CC9D1CC2993F0F400F030F7 /* Component */,
 				6CCBC2A0295F93BD00FAC11C /* Scene */,
 			);
 			path = View;
@@ -260,6 +279,7 @@
 				6CCBC2A4295F93E000FAC11C /* TransactionScene.swift */,
 				6C6F63232964D0B7007D7600 /* SideBarScene.swift */,
 				6C6A5DF1298B6D5D00FB847F /* SelectCategoryScene.swift */,
+				6C82DB9E299CA465007F13C1 /* SwiftUIView.swift */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -345,6 +365,7 @@
 			files = (
 				6CCBC29A295F8A0300FAC11C /* TransactionStorage.swift in Sources */,
 				6C6F63282965D1DD007D7600 /* EncodableExtensions.swift in Sources */,
+				6C82DB9F299CA465007F13C1 /* SwiftUIView.swift in Sources */,
 				6C6A5DF2298B6D5D00FB847F /* SelectCategoryScene.swift in Sources */,
 				6C6F632A2965F20A007D7600 /* QuickActionEntity.swift in Sources */,
 				6CCBC2B22960008400FAC11C /* DateExtensions.swift in Sources */,
@@ -367,8 +388,11 @@
 				6C6584E82961167B003A9ABA /* AddCategoryPresenter.swift in Sources */,
 				6CCBC288295F7FE600FAC11C /* CategoryEntity.swift in Sources */,
 				6CA9227F295F7F1C007B270F /* BudgetApp.swift in Sources */,
+				6C4FF88429A5C3CE0026D8E0 /* SelectionTabView.swift in Sources */,
 				6C6584E629610D08003A9ABA /* CategoryPresenter.swift in Sources */,
 				6C6584F02961C9C8003A9ABA /* BudgetPresenter.swift in Sources */,
+				6CE350C82996CA3C00DDF9C6 /* CircularProgressView.swift in Sources */,
+				6CC9D1CB2993F0EC00F030F7 /* IndicatorPointView.swift in Sources */,
 				6C6584EC296131B4003A9ABA /* AddTransactionPresenter.swift in Sources */,
 				6CCBC290295F821B00FAC11C /* Storage.swift in Sources */,
 				6CCBC298295F882F00FAC11C /* CategoryStorage.swift in Sources */,

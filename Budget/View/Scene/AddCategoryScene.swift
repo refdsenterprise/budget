@@ -28,7 +28,7 @@ struct AddCategoryScene: View {
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     buttonAdd
-                    buttonImport
+                    //buttonImport
                 }
             }
             .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
@@ -56,7 +56,7 @@ struct AddCategoryScene: View {
         Section {
             HStack {
                 RefdsText("Nome")
-                RefdsTextField("Informe o nome da categoria", text: $presenter.name, alignment: .trailing, textInputAutocapitalization: .characters)
+                RefdsTextField("Informe o nome da categoria", text: $presenter.name, alignment: .leading, textInputAutocapitalization: .characters)
             }
             sectionCategoryColor
         } header: {
@@ -92,10 +92,10 @@ struct AddCategoryScene: View {
                 Button {
                     isPresentedAddBudget.toggle()
                 } label: {
-                    Image(systemName: "plus.rectangle.fill")
+                    Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 20)
+                        .frame(height: 25)
                         .symbolRenderingMode(.hierarchical)
                         .foregroundColor(.accentColor)
                 }

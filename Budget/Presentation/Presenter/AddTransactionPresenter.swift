@@ -8,13 +8,22 @@
 import SwiftUI
 
 final class AddTransactionPresenter: ObservableObject {
-    static var instance: Self { Self() }
-    @Published var date: Date = Date()
-    @Published var description: String = ""
-    @Published var amount: Double = 0
+    @Published var date: Date
+    @Published var description: String
+    @Published var amount: Double
     @Published var category: CategoryEntity? = Storage.shared.category.getCategories(from: .current).first
     @Published var selectionCategory: Int = 0
-    private var transaction: TransactionEntity?
+    var transaction: TransactionEntity?
+    
+    init(transaction: TransactionEntity?) {
+        self.transaction = transaction
+        self.date = transaction?.date ?? Date()
+        self.description = transaction?.description ?? ""
+        self.amount = transaction?.amount ?? 0
+        if let category = transaction?.category {
+            self.category = category
+        }
+    }
     
     var canAddNewTransaction: Bool {
         return amount > 0 && category != nil
@@ -30,6 +39,16 @@ final class AddTransactionPresenter: ObservableObject {
     
     func loadData() {
         category = Storage.shared.category.getCategories(from: date).first
+    }
+    
+    func loadData(newDate: Date) {
+        let categories = Storage.shared.category.getCategories(from: newDate)
+        
+        if category == nil {
+            self.category = categories.first
+        } else if let category = category, !categories.map({ $0.id }).contains(category.id) {
+            self.category = categories.first
+        }
     }
     
     func getCategories() -> [CategoryEntity] {

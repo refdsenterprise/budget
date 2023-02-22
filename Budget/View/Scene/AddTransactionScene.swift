@@ -9,11 +9,15 @@ import SwiftUI
 import RefdsUI
 
 struct AddTransactionScene: View {
-    @StateObject private var presenter: AddTransactionPresenter = .instance
+    @StateObject private var presenter: AddTransactionPresenter
     @State private var isPresentedAlert = false
     @State private var isPresentedSelectionCategory = false
     @State private var document: DataDocument = .init()
     @State private var isImporting: Bool = false
+    
+    init(transaction: TransactionEntity? = nil) {
+        self._presenter = StateObject(wrappedValue: AddTransactionPresenter(transaction: transaction))
+    }
     
     @Environment(\.dismiss) var dismiss
     
@@ -26,11 +30,20 @@ struct AddTransactionScene: View {
                     Button {
                         Application.shared.endEditing()
                         if presenter.canAddNewTransaction {
-                            do {
-                                try Storage.shared.transaction.addTransaction(date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
-                                dismiss()
-                            } catch {
-                                isPresentedAlert.toggle()
+                            if let transaction = presenter.transaction {
+                                do {
+                                    try Storage.shared.transaction.editTransaction(transaction, date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
+                                    dismiss()
+                                } catch {
+                                    isPresentedAlert.toggle()
+                                }
+                            } else {
+                                do {
+                                    try Storage.shared.transaction.addTransaction(date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
+                                    dismiss()
+                                } catch {
+                                    isPresentedAlert.toggle()
+                                }
                             }
                         }
                     } label: {
@@ -77,7 +90,10 @@ struct AddTransactionScene: View {
     }
     
     private var rowDate: some View {
-        DatePicker("Informe o mês", selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: [.date, .hourAndMinute])
+        DatePicker("Informe o mês", selection: Binding(get: { presenter.date }, set: {
+            presenter.loadData(newDate: $0)
+            presenter.date = $0
+        }), displayedComponents: [.date, .hourAndMinute])
             .font(.refds(size: 16, scaledSize: 1.2 * 16))
             .datePickerStyle(.graphical)
     }
@@ -141,7 +157,6 @@ class HalfSheetController<Content>: UIHostingController<Content> where Content :
         super.viewWillAppear(animated)
         
         if let presentation = sheetPresentationController {
-            // configure at will
             presentation.detents = [.medium()]
         }
     }

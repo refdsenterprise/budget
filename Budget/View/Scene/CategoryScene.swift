@@ -59,11 +59,7 @@ struct CategoryScene: View {
             }
             if !presenter.getCategoriesFiltred().isEmpty {
                 sectionCategories
-                if presenter.isFilterPerDate {
-                    sectionTotalBudget(presenter.getTotalBudget())
-                    sectionActualCategories
-                    sectionTotalBudget(presenter.getTotalActual(), isActual: true)
-                }
+                sectionTotal(budget: presenter.getTotalBudget(), actual: presenter.getTotalActual())
             }
         }
         .listStyle(.insetGrouped)
@@ -134,12 +130,12 @@ struct CategoryScene: View {
         }
     }
     
-    private func sectionTotalBudget(_ budget: Double, isActual: Bool = false) -> some View {
+    private func sectionTotal(budget: Double, actual: Double) -> some View {
         Section {} header: {
             VStack(spacing: 10) {
-                RefdsText("total \(isActual ? "atual" : "budget")".uppercased(), size: .custom(12), color: .secondary)
+                RefdsText("valor atual".uppercased(), size: .custom(12), color: .secondary)
                 RefdsText(
-                    budget.formatted(.currency(code: "BRL")),
+                    actual.formatted(.currency(code: "BRL")),
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
@@ -147,57 +143,44 @@ struct CategoryScene: View {
                     alignment: .center,
                     lineLimit: 1
                 )
+                RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(16), color: .accentColor, weight: .bold, family: .moderatMono)
             }
         }
         .frame(maxWidth: .infinity)
     }
     
-    private var sectionActualCategories: some View {
-        Section {
-            ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
-                rowActualCategory(category)
-            }
-        } header: {
-            if !presenter.getCategoriesFiltred().isEmpty {
-                RefdsText("atual", size: .extraSmall, color: .secondary)
-            }
-        }
-    }
-    
     private func rowCategory(_ category: CategoryEntity) -> some View {
-        HStack {
-            RefdsText(category.name.capitalized)
-            Spacer()
-            if let budget = presenter.getBudget(by: category) {
-                RefdsText(
-                    budget.amount.formatted(.currency(code: "BRL")),
-                    color: .secondary,
-                    weight: .bold,
-                    family: .moderatMono,
-                    lineLimit: 1
-                )
-            }
-        }
-    }
-    
-    private func rowActualCategory(_ category: CategoryEntity) -> some View {
-        HStack {
-            if let actual = presenter.getActualTransaction(by: category),
-               let budget = presenter.getBudget(by: category)?.amount,
-               let diffencePercent = presenter.getDifferencePercent(budget: budget, actual: actual) {
-                RefdsTag(diffencePercent, size: .custom(12), color: category.color)
-            }
-            
-            RefdsText(category.name.capitalized)
-            Spacer()
-            if let actual = presenter.getActualTransaction(by: category),
-               let budget = presenter.getBudget(by: category)?.amount {
-                RefdsText(
-                    actual.formatted(.currency(code: "BRL")),
-                    color: budget - actual > 0 ? .accentColor : budget - actual == 0 ? .secondary : .pink, weight: .bold,
-                    family: .moderatMono,
-                    lineLimit: 1
-                )
+        HStack(spacing: 10) {
+            IndicatorPointView(color: category.color)
+            VStack(spacing: 2) {
+                HStack {
+                    RefdsText(category.name.capitalized)
+                    Spacer()
+                    if let budget = presenter.getBudget(by: category) {
+                        RefdsText(
+                            budget.amount.formatted(.currency(code: "BRL")),
+                            color: .secondary,
+                            family: .moderatMono,
+                            lineLimit: 1
+                        )
+                    }
+                }
+                
+                HStack(spacing: 10) {
+                    if let actual = presenter.getActualTransaction(by: category),
+                       let budget = presenter.getBudget(by: category)?.amount,
+                       let diffencePercent = presenter.getDifferencePercent(budget: budget, actual: actual) {
+                        RefdsText(diffencePercent, size: .small, color: .secondary, family: .moderatMono)
+                        Spacer()
+                        RefdsText(
+                            actual.formatted(.currency(code: "BRL")),
+                            size: .small,
+                            color: budget - actual > 0 ? .accentColor : budget - actual == 0 ? .yellow : .pink,
+                            family: .moderatMono,
+                            lineLimit: 1
+                        )
+                    }
+                }
             }
         }
     }

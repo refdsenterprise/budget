@@ -28,7 +28,7 @@ struct SelectCategoryScene: View {
                             }
                         } label: {
                             HStack(spacing: 10) {
-                                indicatorPoint(color: selected?.id == category.id ? category.color : .secondary)
+                                IndicatorPointView(color: selected?.id == category.id ? category.color : .secondary)
                                 RefdsText(category.name.capitalized)
                                 Spacer()
                                 if let budget = category.budgets.first(where: { $0.date.asString(withDateFormat: "MM/yyyy") == date.asString(withDateFormat: "MM/yyyy") }) {
@@ -62,19 +62,6 @@ struct SelectCategoryScene: View {
             selected = selection
             categories = Storage.shared.category.getCategories(from: date, format: "MM/yyyy")
         }
-    }
-    
-    private func indicatorPoint(color: Color) -> some View {
-        VStack {
-            VStack {
-            }
-            .frame(width: 10, height: 10)
-            .background(color)
-            .clipShape(Circle())
-        }
-        .frame(width: 20, height: 20)
-        .background(color.opacity(0.2))
-        .clipShape(Circle())
     }
 }
 

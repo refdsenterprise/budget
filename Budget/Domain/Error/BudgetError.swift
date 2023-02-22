@@ -13,7 +13,6 @@ enum BudgetError: Error {
     case existingCategory
     case notFoundCategory
     case notFoundBudget
-    
     case existingTransaction
     case notFoundTransaction
     case cantDeleteCategory
