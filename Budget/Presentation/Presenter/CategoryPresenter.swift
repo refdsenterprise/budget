@@ -50,12 +50,12 @@ final class CategoryPresenter: ObservableObject {
     
     func containsCategory(_ category: CategoryEntity) -> Bool {
         guard !query.isEmpty else { return true }
-        let query = query.lowercased()
-        let name = category.name.lowercased().contains(query)
+        let query = query.stripingDiacritics.lowercased()
+        let name = category.name.stripingDiacritics.lowercased().contains(query)
         if let budget = category.budgets.first(where: {
             $0.date.asString(withDateFormat: "MM/yyyy") == date.asString(withDateFormat: "MM/yyyy")
         })?.amount, !isFilterPerDate {
-            return name || "\(budget)".lowercased().contains(query)
+            return name || "\(budget)".stripingDiacritics.lowercased().contains(query)
         }
         return name
     }

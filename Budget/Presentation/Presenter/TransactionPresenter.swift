@@ -69,9 +69,9 @@ final class TransactionPresenter: ObservableObject {
     
     func containsTransaction(_ transaction: TransactionEntity) -> Bool {
         guard !query.isEmpty else { return true }
-        let query = query.lowercased()
-        let description = transaction.description.lowercased().contains(query)
-        let category = transaction.category?.name.lowercased().contains(query) ?? false
+        let query = query.stripingDiacritics.lowercased()
+        let description = transaction.description.stripingDiacritics.lowercased().contains(query)
+        let category = transaction.category?.name.stripingDiacritics.lowercased().contains(query) ?? false
         let amount = "\(transaction.amount)".lowercased().contains(query)
         let date = transaction.date.asString(withDateFormat: selectedPeriod.dateFormat).lowercased().contains(query)
         return description || category || amount || date

@@ -25,12 +25,10 @@ struct CategoryScene: View {
         #if os(iOS)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    HStack { buttonAddCategory }
-                }
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
-                    //buttonExport
+                    HStack {
+                        buttonAddCategory
+                        //buttonExport
+                    }
                 }
             }
         #endif

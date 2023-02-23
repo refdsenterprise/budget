@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6C4FF88429A5C3CE0026D8E0 /* SelectionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4FF88329A5C3CE0026D8E0 /* SelectionTabView.swift */; };
 		6C4FF88629A68A7C0026D8E0 /* CollapsedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4FF88529A68A7C0026D8E0 /* CollapsedView.swift */; };
+		6C4FF88829A6D8B90026D8E0 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4FF88729A6D8B90026D8E0 /* StringExtensions.swift */; };
 		6C6584E629610D08003A9ABA /* CategoryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6584E529610D08003A9ABA /* CategoryPresenter.swift */; };
 		6C6584E82961167B003A9ABA /* AddCategoryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6584E72961167B003A9ABA /* AddCategoryPresenter.swift */; };
 		6C6584EA296124CD003A9ABA /* TransactionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6584E9296124CD003A9ABA /* TransactionPresenter.swift */; };
@@ -64,6 +65,7 @@
 /* Begin PBXFileReference section */
 		6C4FF88329A5C3CE0026D8E0 /* SelectionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTabView.swift; sourceTree = "<group>"; };
 		6C4FF88529A68A7C0026D8E0 /* CollapsedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsedView.swift; sourceTree = "<group>"; };
+		6C4FF88729A6D8B90026D8E0 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		6C6584E529610D08003A9ABA /* CategoryPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPresenter.swift; sourceTree = "<group>"; };
 		6C6584E72961167B003A9ABA /* AddCategoryPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryPresenter.swift; sourceTree = "<group>"; };
 		6C6584E9296124CD003A9ABA /* TransactionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionPresenter.swift; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 				6CCBC2B32960021B00FAC11C /* ApplicationExtension.swift */,
 				6C7317AA2960C2D000AD0539 /* ColorExtension.swift */,
 				6C6F63272965D1DD007D7600 /* EncodableExtensions.swift */,
+				6C4FF88729A6D8B90026D8E0 /* StringExtensions.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				6CCBC296295F851E00FAC11C /* BudgetError.swift in Sources */,
 				6C6584EA296124CD003A9ABA /* TransactionPresenter.swift in Sources */,
 				6CCBC2A5295F93E000FAC11C /* TransactionScene.swift in Sources */,
+				6C4FF88829A6D8B90026D8E0 /* StringExtensions.swift in Sources */,
 				6C6F63242964D0B7007D7600 /* SideBarScene.swift in Sources */,
 				6C6F63262965D161007D7600 /* DataDocument.swift in Sources */,
 				6CCBC2B42960021B00FAC11C /* ApplicationExtension.swift in Sources */,

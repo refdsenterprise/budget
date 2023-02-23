@@ -31,7 +31,10 @@ struct TransactionScene: View {
         #if os(iOS)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    HStack { buttonAddTransaction }
+                    HStack {
+                        buttonAddTransaction
+                        //buttonExport
+                    }
                 }
             }
         #endif

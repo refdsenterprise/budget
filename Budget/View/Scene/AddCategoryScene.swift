@@ -25,6 +25,13 @@ struct AddCategoryScene: View {
     var body: some View {
         form
             .navigationTitle("Nova Categoria")
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    HStack {
+                        //buttonImport
+                    }
+                }
+            }
             .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
                 switch result {
                 case .success(let url): Storage.shared.category.replaceAllCategories(try? Data(contentsOf: url))

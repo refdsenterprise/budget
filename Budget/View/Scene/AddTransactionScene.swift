@@ -27,17 +27,20 @@ struct AddTransactionScene: View {
             .onAppear { presenter.loadData() }
         #if os(iOS)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    buttonSave
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    HStack {
+                        buttonSave
+                        //buttonImport
+                    }
                 }
             }
         #endif
-//            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
-//                switch result {
-//                case .success(let url): Storage.shared.transaction.replaceAllTransactions(try? Data(contentsOf: url))
-//                case .failure(_): print("error import file")
-//                }
-//            }
+            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
+                switch result {
+                case .success(let url): Storage.shared.transaction.replaceAllTransactions(try? Data(contentsOf: url))
+                case .failure(_): print("error import file")
+                }
+            }
     }
     
     private var form: some View {
