@@ -9,6 +9,11 @@ import SwiftUI
 import RefdsUI
 import Charts
 import RefdsCore
+import Domain
+import Presentation
+import Core
+import Transaction
+import Category
 
 struct BudgetScene: View {
     @StateObject private var presenter: BudgetPresenter = .instance
@@ -19,7 +24,7 @@ struct BudgetScene: View {
     
     var body: some View {
         content
-            .navigationTitle(BudgetApp.TabItem.budget.title + " \(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: "MMMM").capitalized : "")")
+            .navigationTitle(BudgetApp.TabItem.budget.title + " \(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: .custom("MMMM")).capitalized : "")")
             .onAppear { presenter.loadData() }
     }
     
@@ -107,7 +112,7 @@ struct BudgetScene: View {
                     HStack(spacing: 15) {
                         RefdsText("Periodo")
                         Spacer()
-                        RefdsTag(presenter.date.asString(withDateFormat: "MMMM, yyyy"), color: .accentColor)
+                        RefdsTag(presenter.date.asString(withDateFormat: .custom("MMMM, yyyy")), color: .accentColor)
                     }
                 }
             }
@@ -131,7 +136,7 @@ struct BudgetScene: View {
                 selection
             }, set: { value, _ in
                 selection = value
-                if let period = BudgetPresenter.Period(rawValue: Int(value)) {
+                if let period = PeriodEntity(rawValue: Int(value)) {
                     presenter.selectedPeriod = period
                 }
             })) {
@@ -165,7 +170,7 @@ struct BudgetScene: View {
     
     private func valueView(actual: Double, budget: Double) -> some View {
         VStack(spacing: 10) {
-            RefdsText("valor atual \(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: "MMMM").capitalized : "")".uppercased(), size: .custom(12), color: .secondary)
+            RefdsText("valor atual \(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: .custom("MMMM")).capitalized : "")".uppercased(), size: .custom(12), color: .secondary)
             RefdsText(
                 actual.formatted(.currency(code: "BRL")),
                 size: .custom(40),
@@ -182,18 +187,19 @@ struct BudgetScene: View {
     private var sectionDifference: some View {
         Section {
             ForEach(presenter.categories) { category in
-                NavigationLink(destination: { TransactionScene(category: category, date: presenter.date) }, label: {
+                NavigationLink(destination: { TransactionScene(category: category, date: presenter.date, addCategoryScene: { AddCategoryScene() }) }, label: {
                     if let budget = presenter.getBudgetAmount(by: category),
                        let actual = presenter.getAmountTransactions(by: category) {
                         VStack(spacing: 5) {
                             HStack {
-                                RefdsText(category.name.capitalized)
+                                RefdsText(category.name.capitalized, weight: .bold)
                                 Spacer()
-                                RefdsText((budget - actual).formatted(.currency(code: "BRL")), color: budget - actual < 0 ? .pink : .secondary, family: .moderatMono)
+                                RefdsText((budget - actual).formatted(.currency(code: "BRL")), family: .moderatMono)
                             }
                             HStack(spacing: 10) {
                                 RefdsText(presenter.getDifferencePercent(budget: budget, actual: actual), color: .secondary)
-                                ProgressView(value: actual, total: budget, label: {  })
+                                let newActual = actual > budget ? budget : actual
+                                ProgressView(value: newActual, total: budget, label: {  })
                                     .tint(presenter.getActualColor(actual: actual, budget: budget))
                             }
                         }
@@ -310,8 +316,8 @@ struct BudgetScene: View {
         Section {
             VStack {
                 HStack {
-                    RefdsTag(transaction.date.asString(withDateFormat: "EEE"), color: .secondary)
-                    RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy - HH:mm"))
+                    RefdsTag(transaction.date.asString(withDateFormat: .custom("EEE HH:mm")), color: .secondary)
+                    RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy")))
                     Spacer()
                     RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
                 }
@@ -360,7 +366,7 @@ struct BudgetScene: View {
                                         VStack(alignment: .leading, spacing: 5) {
                                             RefdsText(transaction.description)
                                             HStack {
-                                                RefdsText(transaction.date.asString(withDateFormat: "dd MMMM, yyyy - HH:mm"), color: .secondary)
+                                                RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy - HH:mm")), color: .secondary)
                                                 Spacer()
                                                 RefdsText(transaction.amount.formatted(.currency(code: "BRL")), color: .secondary)
                                             }

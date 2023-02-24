@@ -5,6 +5,8 @@
 //  Created by Rafael Santos on 04/01/23.
 //
 
+import Domain
+
 #if os(iOS)
 import UIKit
 

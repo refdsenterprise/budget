@@ -7,6 +7,10 @@
 
 import SwiftUI
 import RefdsUI
+import Domain
+import Category
+import Transaction
+import Core
 
 @main
 struct BudgetApp: App {
@@ -17,6 +21,7 @@ struct BudgetApp: App {
     #endif
     @Environment(\.scenePhase) private var scenePhase
     @State private var tabItemSelection: BudgetApp.TabItem = .budget
+    @StateObject private var applicationViewModel = ApplicationViewModel()
     
     init() {
         #if os(iOS)
@@ -26,46 +31,59 @@ struct BudgetApp: App {
     
     var body: some Scene {
         WindowGroup {
-#if targetEnvironment(macCatalyst) || os(macOS)
-            SideBarScene()
+            if #available(iOS 16.0, *), (UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.userInterfaceIdiom == .mac) {
+                SideBarScene {
+                    applicationViewModel.content?() ?? EmptyView()
+                }
                 .environmentObject(actionService)
-#else
-            TabView(selection: $tabItemSelection) {
-                NavigationView {
-                    CategoryScene()
-                }
-                .tabItem {
-                    Image(systemName: "square.stack.3d.forward.dottedline.fill")
-                    RefdsText(BudgetApp.TabItem.category.title, size: .normal)
-                }
-                .tag(BudgetApp.TabItem.category)
+            } else {
                 
-                NavigationView {
-                    BudgetScene()
+                TabView(selection: $tabItemSelection) {
+                    NavigationView {
+                        CategoryScene { category, date in
+                            TransactionScene(category: category, date: date) {
+                                AddCategoryScene()
+                            }
+                            .environmentObject(applicationViewModel)
+                        }
+                        .environmentObject(applicationViewModel)
+                    }
+                    .tabItem {
+                        Image(systemName: "square.stack.3d.forward.dottedline.fill")
+                        RefdsText(BudgetApp.TabItem.category.title, size: .normal)
+                    }
+                    .tag(BudgetApp.TabItem.category)
+                    
+                    NavigationView {
+                        BudgetScene()
+                            .environmentObject(applicationViewModel)
+                    }
+                    .tabItem {
+                        Image(systemName: "dollarsign.square.fill")
+                        RefdsText(BudgetApp.TabItem.budget.title, size: .normal)
+                    }
+                    .tag(BudgetApp.TabItem.budget)
+                    
+                    NavigationView {
+                        TransactionScene {
+                            AddCategoryScene()
+                        }
+                        .environmentObject(applicationViewModel)
+                    }
+                    .tabItem {
+                        Image(systemName: "list.triangle")
+                        RefdsText(BudgetApp.TabItem.transaction.title, size: .normal)
+                    }
+                    .tag(BudgetApp.TabItem.transaction)
                 }
-                .tabItem {
-                    Image(systemName: "dollarsign.square.fill")
-                    RefdsText(BudgetApp.TabItem.budget.title, size: .normal)
+                .environmentObject(actionService)
+                .onChange(of: scenePhase) { newValue in
+                    switch newValue {
+                    case .active: performActionIfNeeded()
+                    default: break
+                    }
                 }
-                .tag(BudgetApp.TabItem.budget)
-                
-                NavigationView {
-                    TransactionScene()
-                }
-                .tabItem {
-                    Image(systemName: "list.triangle")
-                    RefdsText(BudgetApp.TabItem.transaction.title, size: .normal)
-                }
-                .tag(BudgetApp.TabItem.transaction)
             }
-            .environmentObject(actionService)
-            .onChange(of: scenePhase) { newValue in
-                switch newValue {
-                case .active: performActionIfNeeded()
-                default: break
-                }
-            }
-#endif
         }
     }
     
