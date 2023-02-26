@@ -8,16 +8,14 @@
 import SwiftUI
 import RefdsUI
 import Domain
-import Data
 import Presentation
-import Core
+import UserInterface
 
 public struct AddCategoryScene: View {
     @StateObject private var presenter: AddCategoryPresenter
-    @State private var isPresentedAddBudget = false
     @State private var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
     private var isEditMode: Bool
-    @State private var document: DataDocument = .init()
+    //@State private var document: DataDocument = .init()
     @State private var isImporting: Bool = false
     @Environment(\.dismiss) var dismiss
     
@@ -27,72 +25,135 @@ public struct AddCategoryScene: View {
     }
     
     public var body: some View {
-        form
-            .navigationTitle("Nova Categoria")
+        bodyView
+            .navigationTitle(Strings.AddCategory.navigationTitle.value)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     HStack {
-                        buttonImport
+                        if !Application.isLargeScreen { buttonSave }
+                        //buttonImport
                     }
                 }
             }
-            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
-                switch result {
-                case .success(let url): Storage.shared.category.replaceAllCategories(try? Data(contentsOf: url))
-                case .failure(_): print("error import file")
-                }
-            }
+            .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
             .alertBudgetError(isPresented: $isPresentedAlert)
+//            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
+//                switch result {
+//                case .success(let url): Storage.shared.category.replaceAllCategories(try? Data(contentsOf: url))
+//                case .failure(_): print("error import file")
+//                }
+//            }
     }
     
-    private var form: some View {
+    private var bodyView: some View {
+        Application.isLargeScreen ? AnyView(macView) : AnyView(phoneView)
+    }
+    
+    private var macView: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                LazyVGrid(columns: .columns(width: proxy.size.width, maxAmount: 2)) {
+                    VStack {
+                        GroupBox {
+                            VStack {
+                                rowName
+                                Divider().padding(.horizontal)
+                                rowColor
+                            }
+                        }
+                        
+                        GroupBox { buttonSave.frame(maxWidth: .infinity) }
+                            .padding(.vertical, 15)
+                        
+                        Spacer()
+                    }
+                    
+                    VStack {
+                        if !presenter.budgets.isEmpty {
+                            GroupBox {
+                                ForEach(presenter.budgets, id: \.id) { budget in
+                                    rowBudget(budget)
+                                        .contextMenu { contextMenuRemoveBudget(budget) }
+                                    if let index = presenter.budgets.firstIndex(of: budget), index != presenter.budgets.count - 1 {
+                                        Divider().padding(.horizontal)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        GroupBox {
+                            NavigationLink(destination: AddBudgetScene { presenter.addBudget($0) }) {
+                                HStack {
+                                    RefdsText(Strings.AddCategory.buttonAddBudget.value, color: .accentColor, weight: .bold)
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                        }
+                        .padding(.vertical, presenter.budgets.isEmpty ? 0 : 15)
+                        
+                        Spacer()
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+    
+    private var phoneView: some View {
         Form {
-            sectionCategoryName
+            sectionName
             sectionBudget
-            sectionSave
         }
-        .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
-    private var sectionCategoryName: some View {
+    private var sectionName: some View {
         Section {
-            HStack {
-                RefdsText("Nome")
-                RefdsTextField("Informe o nome da categoria", text: $presenter.name, alignment: .trailing, textInputAutocapitalization: .characters)
-            }
-            sectionCategoryColor
+            rowName
+            rowColor
         } header: {
-            RefdsText("categoria", size: .extraSmall, color: .secondary)
+            RefdsText(Strings.AddCategory.headerCategory.value, size: .extraSmall, color: .secondary)
         }
     }
     
-    private var sectionCategoryColor: some View {
+    private var rowName: some View {
         HStack {
-            RefdsText("Cor")
+            RefdsText(Strings.AddCategory.labelName.value)
+            RefdsTextField(Strings.AddCategory.labelPlaceholderName.value, text: $presenter.name, alignment: .trailing, textInputAutocapitalization: .characters)
+        }
+    }
+    
+    private var rowColor: some View {
+        HStack {
+            RefdsText(Strings.AddCategory.labelColor.value)
             Spacer()
-            ColorPicker(selection: $presenter.color, supportsOpacity: false) {
-            }
+            ColorPicker(selection: $presenter.color, supportsOpacity: false) {}
         }
     }
     
     private var sectionBudget: some View {
         Section {
+            rowBudget
+        } header: {
+            HStack {
+                RefdsText(Strings.AddCategory.headerBudgets.value, size: .extraSmall, color: .secondary)
+                Spacer()
+            }
+        }
+    }
+    
+    private var rowBudget: some View {
+        Group {
             if !presenter.budgets.isEmpty {
                 ForEach(presenter.budgets, id: \.id) { budget in
                     rowBudget(budget)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) { swipeRemoveBudget(budget) }
+                        .contextMenu { contextMenuRemoveBudget(budget) }
                 }
                 
             }
             NavigationLink(destination: AddBudgetScene { presenter.addBudget($0) }) {
                 HStack {
-                    RefdsText("Adicionar novo budget", color: .accentColor, weight: .bold)
+                    RefdsText(Strings.AddCategory.buttonAddBudget.value, color: .accentColor, weight: .bold)
                 }
-            }
-        } header: {
-            HStack {
-                RefdsText("Budgets", size: .extraSmall, color: .secondary)
-                Spacer()
             }
         }
     }
@@ -105,26 +166,30 @@ public struct AddCategoryScene: View {
         }
     }
     
-    private func swipeRemoveBudget(_ budget: BudgetEntity) -> some View {
+    private func contextMenuRemoveBudget(_ budget: BudgetEntity) -> some View {
         Button {
             do { try presenter.removeBudget(budget) }
             catch { isPresentedAlert = (true, error as! BudgetError) }
         } label: {
-            Image(systemName: "trash.fill")
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(.white)
+            Label(Strings.AddCategory.buttonRemoveBudget.value, systemImage: RefdsIconSymbol.trashFill.rawValue)
         }
-        .tint(.pink)
     }
     
-    private var sectionSave: some View {
-        Section {
-            Button {
-                Application.shared.endEditing()
-                if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
-                else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
-            } label: {
-                RefdsText("Salvar alterações", color: presenter.buttonForegroundColor, weight: .bold)
+    private var buttonSave: some View {
+        Button {
+            Application.shared.endEditing()
+            if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
+            else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
+        } label: {
+            if Application.isLargeScreen {
+                RefdsText(Strings.General.save.value, color: presenter.buttonForegroundColor, weight: .bold)
+            } else {
+                RefdsIcon(
+                    symbol: .checkmarkCircleFill,
+                    color: presenter.buttonForegroundColor,
+                    size: 20,
+                    renderingMode: .hierarchical
+                )
             }
         }
     }
@@ -134,12 +199,7 @@ public struct AddCategoryScene: View {
             Application.shared.endEditing()
             isImporting = !isEditMode
         } label: {
-            Image(systemName: "square.and.arrow.down")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 20)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(presenter.buttonForegroundColor)
+            RefdsIcon(symbol: .squareAndArrowDown, color: presenter.buttonForegroundColor, size: 20, weight: .regular, renderingMode: .hierarchical)
         }
     }
 }

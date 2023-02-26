@@ -4,8 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Category",
-    defaultLocalization: "pt",
+    name: "UserInterface",
     platforms: [
         .iOS(.v15),
         .macOS(.v12),
@@ -14,22 +13,20 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Category",
-            targets: ["Category"]),
+            name: "UserInterface",
+            targets: ["UserInterface"]),
     ],
     dependencies: [
         .package(path: "Domain"),
-        .package(path: "Presentation"),
-        .package(path: "UserInterface"),
+        .package(url: "https://github.com/refdsenterprise/refds-core.git", branch: "main"),
         .package(url: "https://github.com/refdsenterprise/refds-design-system.git", branch: "develop")
     ],
     targets: [
         .target(
-            name: "Category",
+            name: "UserInterface",
             dependencies: [
                 "Domain",
-                "Presentation",
-                "UserInterface",
+                .product(name: "RefdsCore", package: "refds-core"),
                 .product(name: "RefdsUI", package: "refds-design-system")
             ]),
     ]

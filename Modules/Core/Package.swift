@@ -18,20 +18,18 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "Domain"),
-        .package(path: "Data"),
-        .package(path: "Presentation"),
-        .package(url: "https://github.com/refdsenterprise/refds-core.git", branch: "main"),
-        .package(url: "https://github.com/refdsenterprise/refds-design-system.git", branch: "develop")
+        .package(path: "Category"),
+        .package(path: "Transaction"),
+        .package(path: "Budget")
     ],
     targets: [
         .target(
             name: "Core",
             dependencies: [
                 "Domain",
-                "Data",
-                "Presentation",
-                .product(name: "RefdsCore", package: "refds-core"),
-                .product(name: "RefdsUI", package: "refds-design-system")
+                "Category",
+                "Transaction",
+                "Budget"
             ]),
     ]
 )

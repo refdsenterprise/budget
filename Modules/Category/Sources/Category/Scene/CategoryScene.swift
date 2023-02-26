@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsUI
 import Domain
 import Presentation
-import Core
+import UserInterface
 
 public struct CategoryScene: View {
     @StateObject private var presenter: CategoryPresenter = .instance

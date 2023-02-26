@@ -7,10 +7,10 @@
 
 import SwiftUI
 import RefdsUI
+
 import Domain
-import Data
 import Presentation
-import Core
+import UserInterface
 
 public struct AddTransactionScene: View {
     @StateObject private var presenter: AddTransactionPresenter
@@ -32,7 +32,6 @@ public struct AddTransactionScene: View {
         form
             .navigationTitle("Nova Transação")
             .onAppear { presenter.loadData() }
-        #if os(iOS)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     HStack {
@@ -41,13 +40,12 @@ public struct AddTransactionScene: View {
                     }
                 }
             }
-        #endif
-            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
-                switch result {
-                case .success(let url): Storage.shared.transaction.replaceAllTransactions(try? Data(contentsOf: url))
-                case .failure(_): print("error import file")
-                }
-            }
+//            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
+//                switch result {
+//                case .success(let url): Storage.shared.transaction.replaceAllTransactions(try? Data(contentsOf: url))
+//                case .failure(_): print("error import file")
+//                }
+//            }
     }
     
     private var form: some View {
@@ -63,7 +61,7 @@ public struct AddTransactionScene: View {
             rowDescription
             rowCategory
             if showSelectedCategory {
-                ForEach(Storage.shared.category.getCategories(from: presenter.date, format: .monthYear), id: \.id) { category in
+                ForEach(presenter.getCategories(), id: \.id) { category in
                     Button {
                         presenter.category = category
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -162,16 +160,16 @@ public struct AddTransactionScene: View {
         Button {
             Application.shared.endEditing()
             if presenter.canAddNewTransaction {
-                if let transaction = presenter.transaction {
+                if presenter.transaction != nil {
                     do {
-                        try Storage.shared.transaction.editTransaction(transaction, date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
+                        try presenter.editTransaction()
                         dismiss()
                     } catch {
                         isPresentedAlert.toggle()
                     }
                 } else {
                     do {
-                        try Storage.shared.transaction.addTransaction(date: presenter.date, description: presenter.description, category: presenter.category!, amount: presenter.amount)
+                        try presenter.addTransaction()
                         dismiss()
                     } catch {
                         isPresentedAlert.toggle()

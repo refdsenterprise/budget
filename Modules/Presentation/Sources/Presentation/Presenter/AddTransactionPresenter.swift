@@ -56,4 +56,25 @@ public final class AddTransactionPresenter: ObservableObject {
     public func getCategories() -> [CategoryEntity] {
         Storage.shared.category.getCategories(from: date)
     }
+    
+    public func addTransaction() throws {
+        guard let category = category else { return }
+        try Storage.shared.transaction.addTransaction(
+            date: date,
+            description: description,
+            category: category,
+            amount: amount
+        )
+    }
+    
+    public func editTransaction() throws {
+        guard let category = category, let transaction = transaction else { return }
+        try Storage.shared.transaction.editTransaction(
+            transaction,
+            date: date,
+            description: description,
+            category: category,
+            amount: amount
+        )
+    }
 }

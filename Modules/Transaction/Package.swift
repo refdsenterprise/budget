@@ -17,22 +17,18 @@ let package = Package(
             targets: ["Transaction"]),
     ],
     dependencies: [
-        .package(path: "Core"),
         .package(path: "Domain"),
-        .package(path: "Data"),
         .package(path: "Presentation"),
-        .package(url: "https://github.com/refdsenterprise/refds-core.git", branch: "main"),
+        .package(path: "UserInterface"),
         .package(url: "https://github.com/refdsenterprise/refds-design-system.git", branch: "develop")
     ],
     targets: [
         .target(
             name: "Transaction",
             dependencies: [
-                "Core",
                 "Domain",
-                "Data",
                 "Presentation",
-                .product(name: "RefdsCore", package: "refds-core"),
+                "UserInterface",
                 .product(name: "RefdsUI", package: "refds-design-system")
             ]),
     ]

@@ -8,9 +8,10 @@
 import SwiftUI
 import RefdsUI
 import Charts
+
 import Domain
 import Presentation
-import Core
+import UserInterface
 
 public struct TransactionScene: View {
     @StateObject private var presenter: TransactionPresenter
@@ -21,7 +22,6 @@ public struct TransactionScene: View {
     @State private var transaction: TransactionEntity?
     private var category: CategoryEntity?
     @EnvironmentObject private var actionService: ActionService
-    @EnvironmentObject private var applicationViewModel: ApplicationViewModel
     @Environment(\.scenePhase) private var scenePhase
     
     let addCategoryScene: () -> any View
@@ -35,7 +35,6 @@ public struct TransactionScene: View {
     public var body: some View {
         list
             .navigationTitle(category == nil ? "Transações" : category!.name.capitalized)
-        #if os(iOS)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     HStack {
@@ -44,7 +43,6 @@ public struct TransactionScene: View {
                     }
                 }
             }
-        #endif
             .searchable(text: $presenter.query, prompt: "Busque por transações")
             .onAppear {
                 presenter.loadData()
@@ -53,13 +51,6 @@ public struct TransactionScene: View {
                     case .active: performActionIfNeeded()
                     default: break
                     }
-                }
-                if #available(iOS 16.0, *), (UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.userInterfaceIdiom == .mac), isPresentedAddTransaction {
-                    applicationViewModel.content = { AddTransactionScene(addCategoryScene: addCategoryScene) }
-                }
-                
-                if #available(iOS 16.0, *), (UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.userInterfaceIdiom == .mac), isPresentedAddTransaction {
-                    applicationViewModel.content = { AddTransactionScene(transaction: transaction, addCategoryScene: addCategoryScene) }
                 }
             }
             .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "trasactions.json") { result in

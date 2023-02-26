@@ -4,8 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Category",
-    defaultLocalization: "pt",
+    name: "Budget",
     platforms: [
         .iOS(.v15),
         .macOS(.v12),
@@ -14,8 +13,8 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Category",
-            targets: ["Category"]),
+            name: "Budget",
+            targets: ["Budget"]),
     ],
     dependencies: [
         .package(path: "Domain"),
@@ -25,7 +24,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Category",
+            name: "Budget",
             dependencies: [
                 "Domain",
                 "Presentation",

@@ -8,77 +8,101 @@
 import SwiftUI
 import RefdsUI
 import Domain
-import Core
+import Presentation
+import UserInterface
 
 public struct AddBudgetScene: View {
-    @State private var categoryBudgetAmount: Double = 0
-    @State private var categoryBudgetDate = Date()
-    private var delegate: ((BudgetEntity) -> Void)?
+    @StateObject private var presenter: AddBudgetPresenter = .instance
+    private let newBudget: (BudgetEntity) -> Void
     
     @Environment(\.dismiss) var dismiss
     
-    public init(delegate: ((BudgetEntity) -> Void)? = nil) {
-        self.delegate = delegate
+    public init(newBudget: @escaping (BudgetEntity) -> Void) {
+        self.newBudget = newBudget
     }
     
     public var body: some View {
-        form
-            .navigationTitle("Novo Budget")
+        bodyView
+            .navigationTitle(Strings.AddBudget.navigationTitle.value)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if !Application.isLargeScreen { buttonSave }
+                }
+            }
+            .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
-    private var form: some View {
+    private var bodyView: some View {
+        Application.isLargeScreen ? AnyView(macView) : AnyView(phoneView)
+    }
+    
+    private var macView: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                LazyVGrid(columns: .columns(width: proxy.size.width, maxAmount: 2)) {
+                    VStack {
+                        rowCurrency
+                        GroupBox { buttonSave }.padding()
+                    }
+                    rowDate
+                }
+                .padding()
+            }
+        }
+    }
+    
+    private var phoneView: some View {
         Form {
             sectionAmount
-            sectionSave
         }
-        .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
     private var sectionAmount: some View {
         Section {
-            sectionBudgetDate
+            rowDate
         } header: {
-            RefdsCurrency(value: $categoryBudgetAmount, size: .custom(40))
-                .padding()
+            rowCurrency
         }
     }
     
-    private var sectionBudgetDate: some View {
-        DatePicker("Informe o mês", selection: $categoryBudgetDate, displayedComponents: .date)
+    private var rowCurrency: some View {
+        RefdsCurrency(value: $presenter.categoryBudgetAmount, size: .custom(40))
+            .padding()
+    }
+    
+    private var rowDate: some View {
+        DatePicker(.empty, selection: $presenter.categoryBudgetDate, displayedComponents: .date)
             .font(.refds(size: 16, scaledSize: 1.2 * 16))
             .datePickerStyle(.graphical)
         
     }
     
-    private var sectionSave: some View {
-        Section {
-            Button {
-                Application.shared.endEditing()
-                if canAddNewBudget {
-                    delegate?(.init(date: categoryBudgetDate, amount: categoryBudgetAmount))
-                    dismiss()
-                }
-            } label: {
-                RefdsText("Salvar alterações", color: buttonForegroundColor, weight: .bold)
+    private var buttonSave: some View {
+        Button {
+            Application.shared.endEditing()
+            if presenter.canAddNewBudget {
+                newBudget(.init(date: presenter.categoryBudgetDate, amount: presenter.categoryBudgetAmount))
+                dismiss()
+            }
+        } label: {
+            if Application.isLargeScreen {
+                RefdsText(Strings.General.save.value, color: presenter.buttonForegroundColor, weight: .bold)
+            } else {
+                RefdsIcon(
+                    symbol: .checkmarkCircleFill,
+                    color: presenter.buttonForegroundColor,
+                    size: 20,
+                    renderingMode: .hierarchical
+                )
             }
         }
-    }
-    
-    private var canAddNewBudget: Bool {
-        return categoryBudgetAmount > 0 && delegate != nil
-    }
-    
-    private var buttonBackgroundColor: Color {
-        return canAddNewBudget ? .accentColor.opacity(0.2) : .secondary.opacity(0.2)
-    }
-    
-    private var buttonForegroundColor: Color {
-        return canAddNewBudget ? .accentColor : .secondary
     }
 }
 
 struct AddBudgetScene_Previews: PreviewProvider {
     static var previews: some View {
-        AddBudgetScene()
+        NavigationView {
+            AddBudgetScene { _ in }
+        }
     }
 }

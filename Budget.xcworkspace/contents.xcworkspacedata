@@ -2,24 +2,30 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Modules/Core">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/Budget">
+   </FileRef>
+   <FileRef
       location = "group:Modules/Transaction">
    </FileRef>
    <FileRef
       location = "group:Modules/Category">
    </FileRef>
    <FileRef
-      location = "group:Modules/Core">
-   </FileRef>
-   <FileRef
-      location = "group:Modules/Presentation">
-   </FileRef>
-   <FileRef
-      location = "group:Modules/Data">
+      location = "group:Main/Main.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Modules/Domain">
    </FileRef>
    <FileRef
-      location = "group:Budget.xcodeproj">
+      location = "group:Modules/Data">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/Presentation">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/UserInterface">
    </FileRef>
 </Workspace>

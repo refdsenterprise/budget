@@ -1,0 +1,16 @@
+// MARK: - Add Budget
+"addBudget.navigation.title" = "Novo Budget";
+"addBudget.infoMonth" = "Informe o mês";
+
+// MARK: - Add Category Scene
+"addCategory.navigation.title" = "Nova Categoria";
+"addCategory.button.addBudget" = "Adicionar Budget";
+"addCategory.label.name" = "Nome";
+"addCategory.label.color" = "Cor";
+"addCategory.label.placeholder.name" = "Informe o nome da categoria";
+"addCategory.header.category" = "categoria";
+"addCategory.header.budgets" = "budgets";
+"addCategory.button.removeBudget" = "Remover Budget";
+
+// MARK: - General
+"save.button" = "Salvar Alterações";
