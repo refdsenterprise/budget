@@ -10,12 +10,19 @@ import RefdsUI
 
 public struct CollapsedView: View {
     @State private var showOptions = false
-    let title: String
-    let content: () -> any View
+    private var title: String? = nil
+    private var row: (() -> any View)? = nil
+    private var content: () -> any View
 
     public init(showOptions: Bool = false, title: String, content: @escaping () -> any View) {
         self.showOptions = showOptions
         self.title = title
+        self.content = content
+    }
+    
+    public init(showOptions: Bool = false, row: @escaping () -> any View, content: @escaping () -> any View) {
+        self.showOptions = showOptions
+        self.row = row
         self.content = content
     }
     
@@ -26,17 +33,28 @@ public struct CollapsedView: View {
                     showOptions.toggle()
                 }
             } label: {
-                HStack {
-                    RefdsText(title)
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 16, weight: .medium))
-                        .rotationEffect(showOptions ? .degrees(90) : .degrees(0))
+                if let title = title {
+                    rowView(title: title)
+                } else if let row = row {
+                    rowView(row: row)
                 }
             }
             if showOptions {
                 AnyView(content())
             }
+        }
+    }
+    
+    private func rowView(row: () -> any View) -> some View {
+        AnyView(row())
+    }
+    
+    private func rowView(title: String) -> some View {
+        HStack {
+            RefdsText(title)
+            Spacer()
+            RefdsIcon(symbol: .chevronRight, color: .accentColor, size: 16, weight: .medium, renderingMode: .hierarchical)
+                .rotationEffect(showOptions ? .degrees(90) : .degrees(0))
         }
     }
 }

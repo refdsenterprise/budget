@@ -30,8 +30,7 @@ public struct CategoryScene: View {
     
     public var body: some View {
         list
-            .navigationTitle("Categorias")
-        #if os(iOS)
+            .navigationTitle(Strings.Category.navigationTitle.value)
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     HStack {
@@ -40,8 +39,7 @@ public struct CategoryScene: View {
                     }
                 }
             }
-        #endif
-            .searchable(text: $presenter.query, prompt: "Busque por categoria")
+            .searchable(text: $presenter.query, prompt: Strings.Category.searchPlaceholder.value)
             .onAppear {
                 presenter.loadData()
                 DispatchQueue.main.asyncAfter(deadline: .now()) {
@@ -51,16 +49,16 @@ public struct CategoryScene: View {
                     }
                 }
             }
-            .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "categories.json") { result in
-                if case .success = result { print("success to export")
-                } else { print("failed to export") }
-            }
+//            .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "categories.json") { result in
+//                if case .success = result { print("success to export")
+//                } else { print("failed to export") }
+//            }
             .alertBudgetError(isPresented: $isPresentedAlert)
     }
     
     private var list: some View {
         List {
-            CollapsedView(title: "Opções") {
+            CollapsedView(title: Strings.Category.sectionOptions.value) {
                 options
             }
             if let previousDate = presenter.getDateFromLastCategoriesByCurrentDate() {
@@ -87,30 +85,11 @@ public struct CategoryScene: View {
     private var options: some View {
         Group {
             HStack {
-                Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
+                Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText(Strings.Category.sectionOptionsFilterPerDate.value) }
             }
             if presenter.isFilterPerDate {
-                Button {
-                    withAnimation {
-                        showDatePicker.toggle()
-                    }
-                } label: {
-                    HStack(spacing: 15) {
-                        RefdsText("Periodo")
-                        Spacer()
-                        RefdsTag(presenter.date.asString(withDateFormat: .custom("MMMM, yyyy")), color: .accentColor)
-                    }
-                }
-            }
-            if showDatePicker {
-                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
-                    EmptyView()
-                }
-                .datePickerStyle(.graphical)
-                .onChange(of: presenter.date) { _ in
-                    withAnimation {
-                        showDatePicker.toggle()
-                    }
+                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
+                    presenter.loadData()
                 }
             }
         }
@@ -119,12 +98,12 @@ public struct CategoryScene: View {
     private func sectionDuplicateCategories(previousDate: Date) -> some View {
         Section {
             VStack(alignment: .center, spacing: 20) {
-                RefdsText("Nenhuma categoria encontrada", size: .large, weight: .bold, alignment: .center)
-                RefdsText("Podemos duplicar os budgets do mês anterior mantendo a mesma categoria", color: .secondary, alignment: .center)
+                RefdsText(Strings.Category.sectionDuplicateNotFound.value, size: .large, weight: .bold, alignment: .center)
+                RefdsText(Strings.Category.sectionDuplicateSuggestion.value, color: .secondary, alignment: .center)
                 Button {
                     presenter.duplicateCategories(from: previousDate)
                 } label: {
-                    RefdsText("DUPLICAR", size: .small, color: .accentColor, weight: .bold)
+                    RefdsText(Strings.Category.sectionDuplicateButton.value.uppercased(), size: .small, color: .accentColor, weight: .bold)
                         .frame(maxWidth: .infinity)
                 }
                 .padding()
@@ -141,13 +120,7 @@ public struct CategoryScene: View {
                 NavigationLink(destination: { AnyView(transactionScene(category, presenter.date)).tint(category.color) }, label: {
                     rowCategory(category)
                 })
-                .swipeActions(edge: .trailing, allowsFullSwipe: true, content: {
-                    Button(action: {
-                        self.category = category
-                        isPresentedEditCategory.toggle()
-                    }, label: { swipeEditCategory(category) })
-                        .tint(.orange)
-                })
+                .contextMenu { contextMenuEditCategory(category) }
             }
         } header: {
             if !presenter.getCategoriesFiltred().isEmpty {
@@ -218,6 +191,15 @@ public struct CategoryScene: View {
             Image(systemName: "square.and.pencil")
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(.white)
+        }
+    }
+    
+    private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
+        Button {
+            self.category = category
+            isPresentedEditCategory.toggle()
+        } label: {
+            Label("Editar \(category.name.lowercased())", systemImage: RefdsIconSymbol.squareAndPencil.rawValue)
         }
     }
     

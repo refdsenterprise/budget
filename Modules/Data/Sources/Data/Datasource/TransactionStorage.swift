@@ -74,6 +74,7 @@ public final class TransactionStorage {
         transactions[index].description = description
         transactions[index].categoryUUID = category.id
         transactions[index].amount = amount
+        transactions.sort(by: { $0.date > $1.date })
     }
     
     public func removeTransaction(_ current: TransactionEntity) throws {

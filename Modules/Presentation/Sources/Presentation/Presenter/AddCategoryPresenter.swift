@@ -16,9 +16,15 @@ public final class AddCategoryPresenter: ObservableObject {
     @Published public var name: String = ""
     @Published public var color: Color = .accentColor
     @Published public var budgets: [BudgetEntity] = []
+    @Published public var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
+    @Published public var document: DataDocument = .init()
+    @Published public var isImporting: Bool = false
+
     private var category: CategoryEntity?
+    public private(set) var isEditMode: Bool
     
     public init(category: CategoryEntity? = nil) {
+        isEditMode = category != nil
         self.category = category
         if let category = category {
             name = category.name

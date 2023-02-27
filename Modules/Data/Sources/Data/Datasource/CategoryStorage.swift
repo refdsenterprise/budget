@@ -54,6 +54,7 @@ public final class CategoryStorage {
         categories[index].budgets = budgets
         categories[index].color = color
         categoriesByUUID[current.id] = categories[index]
+        categories.sort(by: { $0.name.lowercased() < $1.name.lowercased() })
     }
     
     public func removeCategory(_ current: CategoryEntity) throws {

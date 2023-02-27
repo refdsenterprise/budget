@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "UserInterface",
+    defaultLocalization: "pt",
     platforms: [
         .iOS(.v15),
         .macOS(.v12),

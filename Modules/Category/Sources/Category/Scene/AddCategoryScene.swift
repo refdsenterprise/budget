@@ -13,14 +13,9 @@ import UserInterface
 
 public struct AddCategoryScene: View {
     @StateObject private var presenter: AddCategoryPresenter
-    @State private var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
-    private var isEditMode: Bool
-    //@State private var document: DataDocument = .init()
-    @State private var isImporting: Bool = false
     @Environment(\.dismiss) var dismiss
     
     public init(category: CategoryEntity? = nil) {
-        isEditMode = category != nil
         _presenter = StateObject(wrappedValue: AddCategoryPresenter(category: category))
     }
     
@@ -36,7 +31,7 @@ public struct AddCategoryScene: View {
                 }
             }
             .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
-            .alertBudgetError(isPresented: $isPresentedAlert)
+            .alertBudgetError(isPresented: $presenter.isPresentedAlert)
 //            .fileImporter(isPresented: $isImporting, allowedContentTypes: [.data]) { result in
 //                switch result {
 //                case .success(let url): Storage.shared.category.replaceAllCategories(try? Data(contentsOf: url))
@@ -169,7 +164,7 @@ public struct AddCategoryScene: View {
     private func contextMenuRemoveBudget(_ budget: BudgetEntity) -> some View {
         Button {
             do { try presenter.removeBudget(budget) }
-            catch { isPresentedAlert = (true, error as! BudgetError) }
+            catch { presenter.isPresentedAlert = (true, error as! BudgetError) }
         } label: {
             Label(Strings.AddCategory.buttonRemoveBudget.value, systemImage: RefdsIconSymbol.trashFill.rawValue)
         }
@@ -178,8 +173,8 @@ public struct AddCategoryScene: View {
     private var buttonSave: some View {
         Button {
             Application.shared.endEditing()
-            if presenter.canAddNewBudget, !isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
-            else if presenter.canAddNewBudget, isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { isPresentedAlert = (true, $0) }) }
+            if presenter.canAddNewBudget, !presenter.isEditMode { presenter.addCategory(onSuccess: { dismiss() }, onError: { presenter.isPresentedAlert = (true, $0) }) }
+            else if presenter.canAddNewBudget, presenter.isEditMode { presenter.editCategory(onSuccess: { dismiss() }, onError: { presenter.isPresentedAlert = (true, $0) }) }
         } label: {
             if Application.isLargeScreen {
                 RefdsText(Strings.General.save.value, color: presenter.buttonForegroundColor, weight: .bold)
@@ -197,7 +192,7 @@ public struct AddCategoryScene: View {
     private var buttonImport: some View {
         Button {
             Application.shared.endEditing()
-            isImporting = !isEditMode
+            presenter.isImporting = !presenter.isEditMode
         } label: {
             RefdsIcon(symbol: .squareAndArrowDown, color: presenter.buttonForegroundColor, size: 20, weight: .regular, renderingMode: .hierarchical)
         }

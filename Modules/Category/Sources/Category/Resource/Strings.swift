@@ -59,6 +59,37 @@ public extension Strings {
     }
 }
 
+// MARK: - Category
+public extension Strings {
+    enum Category {
+        case navigationTitle
+        case searchPlaceholder
+        case sectionOptions
+        case sectionOptionsFilterPerDate
+        case sectionOptionsPeriod
+        case sectionDuplicateNotFound
+        case sectionDuplicateSuggestion
+        case sectionDuplicateButton
+        
+        private var key: String {
+            switch self {
+            case .navigationTitle: return "category.navigation.title"
+            case .searchPlaceholder: return "category.search.placeholder"
+            case .sectionOptions: return "category.section.options"
+            case .sectionOptionsFilterPerDate: return "category.section.options.filterPerDate"
+            case .sectionOptionsPeriod: return "category.section.options.period"
+            case .sectionDuplicateNotFound: return "category.section.duplicate.notFound"
+            case .sectionDuplicateSuggestion: return "category.section.duplicate.suggestion"
+            case .sectionDuplicateButton: return "category.section.duplicate.button"
+            }
+        }
+        
+        public var value: String {
+            NSLocalizedString(key, tableName: "Category", bundle: .module, comment: "")
+        }
+    }
+}
+
 // MARK: - General
 public extension Strings {
     enum General {
