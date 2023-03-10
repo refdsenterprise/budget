@@ -144,7 +144,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     }
     
     private var buttonAddBudget: some View {
-        NavigationLink(destination: AddBudgetScene(device: .macOS, presenter: AddBudgetPresenter.instance) {
+        NavigationLink(destination: AddBudgetScreen(device: .macOS, presenter: AddBudgetPresenter.instance) {
             presenter.add(budget: $0) {
                 presenter.alert.present(error: $0)
             }

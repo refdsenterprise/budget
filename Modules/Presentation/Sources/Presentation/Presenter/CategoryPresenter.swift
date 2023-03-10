@@ -9,27 +9,120 @@ import Foundation
 import SwiftUI
 import Domain
 import Data
+import UserInterface
 
-public final class CategoryPresenter: ObservableObject {
+public protocol CategoryPresenterProtocol: ObservableObject {
+    var date: Date { get set }
+    var query: String { get set }
+    var isFilterPerDate: Bool { get set }
+    var isPresentedAddCategory: Bool { get set }
+    var isPresentedEditCategory: Bool { get set }
+    var alert: BudgetAlert { get set }
+    var category: CategoryEntity? { get set }
+    
+    var totalBudget: Double { get }
+    var totalActual: Double { get }
+    
+    func loadData()
+    func getCategoriesFiltred() -> [CategoryEntity]
+    func getDateFromLastCategoriesByCurrentDate() -> Date?
+    func duplicateCategories(from previousDate: Date)
+    func getBudget(by category: CategoryEntity) -> BudgetEntity?
+    func getDifferencePercent(on category: CategoryEntity, hasPlaces: Bool) -> String
+    func getTransactions(by category: CategoryEntity) -> [TransactionEntity]
+    func remove(category: CategoryEntity, onError: ((BudgetError) -> Void)?)
+}
+
+public final class CategoryPresenter: CategoryPresenterProtocol {
     public static var instance: Self { Self() }
     
-    @Published public var document: DataDocument = .init()
     @Published public var date: Date = Date()
-    @Published public var categories: [CategoryEntity] = []
-    @Published public var transactions: [TransactionEntity] = []
     @Published public var query: String = ""
-    @Published public var isFilterPerDate = true
+    @Published public var isFilterPerDate: Bool = true
+    @Published public var isPresentedAddCategory: Bool = false
+    @Published public var isPresentedEditCategory: Bool = false
+    @Published public var alert: BudgetAlert = .init()
+    @Published public var category: CategoryEntity?
     
-    public func loadData() {
-        let category = Storage.shared.category
-        let transaction = Storage.shared.transaction
-        categories = isFilterPerDate ? category.getCategories(from: date) : category.getAllCategories()
-        transactions = isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()
-        document.codable = categories.asString
+    private var categories: [CategoryEntity] = []
+    private var transactions: [TransactionEntity] = []
+    
+    public var totalBudget: Double {
+        getCategoriesFiltred().map({
+            getBudget(by: $0)?.amount ?? 0
+        }).reduce(0, +)
     }
     
-    public func removeCategory(_ category: CategoryEntity) throws {
-        guard !Storage.shared.transaction.getAllTransactions().contains(where: { $0.categoryUUID == category.id }) else { throw BudgetError.cantDeleteCategory }
+    public var totalActual: Double {
+        getCategoriesFiltred().map({
+            getActualTransaction(by: $0)
+        }).reduce(0, +)
+    }
+    
+    public func loadData() {
+        let categoryWorker = Storage.shared.category
+        let transactionWorker = Storage.shared.transaction
+        categories = isFilterPerDate ? categoryWorker.getCategories(from: date) : categoryWorker.getAllCategories()
+        transactions = isFilterPerDate ? transactionWorker.getTransactions(from: date) : transactionWorker.getAllTransactions()
+    }
+    
+    public func getCategoriesFiltred() -> [CategoryEntity] {
+        categories.filter({ containsCategory($0) })
+    }
+    
+    public func getDateFromLastCategoriesByCurrentDate() -> Date? {
+        guard isFilterPerDate, categories.isEmpty else { return nil }
+        guard let previousDate = Calendar.current.date(byAdding: .month, value: -1, to: date)?.asString(withDateFormat: .monthYear) else { return nil }
+        guard Storage.shared.category.getAllCategories().firstIndex(where: { category in
+            return category.budgets.map({ $0.date.asString(withDateFormat: .monthYear) }).contains(previousDate)
+        }) != nil else { return nil }
+        return Calendar.current.date(byAdding: .month, value: -1, to: date)
+    }
+    
+    public func duplicateCategories(from previousDate: Date) {
+        guard isFilterPerDate, categories.isEmpty else { return }
+        let categories = Storage.shared.category.getCategories(from: previousDate)
+        categories.forEach { category in
+            if let lastBudget = category.budgets.first(where: { $0.date.asString(withDateFormat: .monthYear) == previousDate.asString(withDateFormat: .monthYear) }) {
+                try? Storage.shared.category.editCategory(
+                    category,
+                    name: category.name,
+                    color: category.color,
+                    budgets: category.budgets + [BudgetEntity(date: date, amount: lastBudget.amount)]
+                )
+            }
+        }
+        loadData()
+    }
+    
+    public func getBudget(by category: CategoryEntity) -> BudgetEntity? {
+        isFilterPerDate ?
+        category.budgets.first(where: {
+            $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
+        }) : .init(amount: category.budgets.map({ $0.amount }).reduce(0, +))
+    }
+    
+    public func getDifferencePercent(on category: CategoryEntity, hasPlaces: Bool = false) -> String {
+        let budget = getBudget(by: category)?.amount ?? 1
+        let actual = getActualTransaction(by: category)
+        var percent = (actual * 100) / budget
+        percent = percent > 100 ? (100 - percent) : percent
+        if !hasPlaces {
+            let percentInteger = Int(percent)
+            return String(format: "%02d", percentInteger) + "%"
+        } else {
+            return String(format: "%02.02f", percent).replacingOccurrences(of: ".", with: ",") + "%"
+        }
+    }
+    
+    public func getTransactions(by category: CategoryEntity) -> [TransactionEntity] {
+        transactions.filter({ $0.category == category })
+    }
+    
+    public func remove(category: CategoryEntity, onError: ((BudgetError) -> Void)? = nil) {
+        guard !Storage.shared.transaction.getAllTransactions().contains(where: {
+            $0.categoryUUID == category.id
+        }) else { onError?(.cantDeleteCategory); return }
         isFilterPerDate ? removeBudgetInsideCategory(category) : removeAllCategory(category)
         loadData()
     }
@@ -65,60 +158,10 @@ public final class CategoryPresenter: ObservableObject {
         getTransactions(by: category).map({ $0.amount }).reduce(0, +)
     }
     
-    public func getBudget(by category: CategoryEntity) -> BudgetEntity? {
-        isFilterPerDate ?
-        category.budgets.first(where: {
-            $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
-        }) : .init(amount: category.budgets.map({ $0.amount }).reduce(0, +))
-    }
-    
-    public func getTotalBudget() -> Double {
-        return getCategoriesFiltred().map({ getBudget(by: $0)?.amount ?? 0 }).reduce(0, +)
-    }
-    
-    public func getTotalActual() -> Double {
-        getCategoriesFiltred().map({
-            getActualTransaction(by: $0)
-        }).reduce(0, +)
-    }
-    
-    public func getCategoriesFiltred() -> [CategoryEntity] {
-        categories.filter({ containsCategory($0) })
-    }
-    
-    public func getTransactions(by category: CategoryEntity) -> [TransactionEntity] {
-        transactions.filter({ $0.category == category })
-    }
-    
-    public func getDateFromLastCategoriesByCurrentDate() -> Date? {
-        guard isFilterPerDate, categories.isEmpty else { return nil }
-        guard let previousDate = Calendar.current.date(byAdding: .month, value: -1, to: date)?.asString(withDateFormat: .monthYear) else { return nil }
-        guard Storage.shared.category.getAllCategories().firstIndex(where: { category in
-            return category.budgets.map({ $0.date.asString(withDateFormat: .monthYear) }).contains(previousDate)
-        }) != nil else { return nil }
-        return Calendar.current.date(byAdding: .month, value: -1, to: date)
-    }
-    
-    public func duplicateCategories(from previousDate: Date) {
-        guard isFilterPerDate, categories.isEmpty else { return }
-        let categories = Storage.shared.category.getCategories(from: previousDate)
-        categories.forEach { category in
-            if let lastBudget = category.budgets.first(where: { $0.date.asString(withDateFormat: .monthYear) == previousDate.asString(withDateFormat: .monthYear) }) {
-                try? Storage.shared.category.editCategory(
-                    category,
-                    name: category.name,
-                    color: category.color,
-                    budgets: category.budgets + [BudgetEntity(date: date, amount: lastBudget.amount)]
-                )
-            }
-        }
-        loadData()
-    }
-    
     @available(iOS 15.0, *)
     public func csvStringWithTransactions() -> URL? {
         let header: String = "Data,Categoria,Valor,Descrição\n"
-        let footer: String = "\nBudget Total,\(getTotalActual().formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: "."))\n"
+        let footer: String = "\nBudget Total,\(totalActual.formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: "."))\n"
         var body: String = ""
         for transaction in transactions.sorted(by: { ($0.category?.name ?? "") < ($1.category?.name ?? "") }) {
             body += "\(transaction.date.asString(withDateFormat: .custom("dd/MM/yyyy - HH:mm"))),\(transaction.category?.name ?? ""),\(transaction.amount.formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: ".")),\(transaction.description.replacingOccurrences(of: ",", with: ""))\n"
@@ -135,16 +178,5 @@ public final class CategoryPresenter: ObservableObject {
             }
         }
         return nil
-    }
-    
-    public func getDifferencePercent(budget: Double, actual: Double, hasPlaces: Bool = false) -> String {
-        var percent = (actual * 100) / budget
-        percent = percent > 100 ? (100 - percent) : percent
-        if !hasPlaces {
-            let percentInteger = Int(percent)
-            return String(format: "%02d", percentInteger) + "%"
-        } else {
-            return String(format: "%02.02f", percent).replacingOccurrences(of: ".", with: ",") + "%"
-        }
     }
 }

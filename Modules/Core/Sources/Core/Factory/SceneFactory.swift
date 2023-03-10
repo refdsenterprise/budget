@@ -21,8 +21,9 @@ public final class SceneFactory {
         self.device = device
     }
     
-    public func makeCategoryScene() -> CategoryScene {
-        CategoryScene { category, date in
+    public func makeCategoryScene() -> some View {
+        let presenter = CategoryPresenter.instance
+        return CategoryScreen(device: device, presenter: presenter) { category, date in
             self.makeTransactionScene(category: category, date: date)
         }
     }
@@ -41,7 +42,7 @@ public final class SceneFactory {
     
     public func makeAddCategoryScene() -> some View {
         let presenter = AddCategoryPresenter.instance
-        return AddCategoryScene(device: device, presenter: presenter)
+        return AddCategoryScreen(device: device, presenter: presenter)
     }
     
     public func makeBudgetScene() -> BudgetScene {

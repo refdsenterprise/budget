@@ -137,7 +137,7 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
     }
     
     private var buttonAddBudget: some View {
-        NavigationLink(destination: AddBudgetScene(device: .iOS, presenter: AddBudgetPresenter.instance) {
+        NavigationLink(destination: AddBudgetScreen(device: .iOS, presenter: AddBudgetPresenter.instance) {
             presenter.add(budget: $0) {
                 presenter.alert.present(error: $0)
             }

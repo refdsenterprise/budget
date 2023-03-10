@@ -24,8 +24,11 @@ public struct AddBudgetScreen<Presenter: AddBudgetPresenterProtocol>: View {
     }
     
     public var body: some View {
-        if device == .iOS { AddBudgetiOSView(presenter: presenter, newBudget: newBudget) }
-        else { AddBudgetmacOSView(presenter: presenter, newBudget: newBudget) }
+        if device == .iOS {
+            AddBudgetiOSView(presenter: presenter, newBudget: newBudget)
+        } else {
+            AddBudgetmacOSView(presenter: presenter, newBudget: newBudget)
+        }
     }
 }
 

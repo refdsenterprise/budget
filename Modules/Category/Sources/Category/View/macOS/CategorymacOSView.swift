@@ -1,8 +1,8 @@
 //
-//  CategoryScene.swift
-//  Budget
+//  CategorymacOSView.swift
 //
-//  Created by Rafael Santos on 30/12/22.
+//
+//  Created by Rafael Santos on 10/03/23.
 //
 
 import SwiftUI
@@ -12,53 +12,24 @@ import Presentation
 import UserInterface
 import Resource
 
-public struct CategoryScene: View {
-    @StateObject private var presenter: CategoryPresenter = .instance
-    @State private var isPresentedAddCategory = false
-    @State private var isPresentedEditCategory = false
-    @State private var isPresentedExporting = false
-    @State private var showDatePicker = false
-    @State private var showShareSheet = false
-    @State private var isPresentedAlert: (Bool, BudgetError) = (false, .notFoundCategory)
-    @State private var category: CategoryEntity?
-    @EnvironmentObject private var actionService: ActionService
+struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
+    @StateObject private var presenter: Presenter
     @Environment(\.scenePhase) private var scenePhase
     
-    let transactionScene: (CategoryEntity, Date) -> any View
+    let transactionScene: ((CategoryEntity, Date) -> any View)?
     
-    public init(transactionScene: @escaping (CategoryEntity, Date) -> any View) {
+    init(presenter: Presenter, transactionScene: ((CategoryEntity, Date) -> any View)? = nil) {
+        self._presenter = StateObject(wrappedValue: presenter)
         self.transactionScene = transactionScene
     }
     
-    public var body: some View {
+    var body: some View {
         list
+            .budgetAlert($presenter.alert)
             .navigationTitle(Strings.Category.navigationTitle.value)
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    HStack {
-                        buttonAddCategory
-                        //buttonExport
-                    }
-                }
-            }
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
             .searchable(text: $presenter.query, prompt: Strings.Category.searchPlaceholder.value)
-            .onAppear {
-                presenter.loadData()
-                DispatchQueue.main.asyncAfter(deadline: .now()) {
-                    switch scenePhase {
-                    case .active: performActionIfNeeded()
-                    default: break
-                    }
-                }
-            }
-            .sheet(isPresented: $showShareSheet, content: {
-                if let url = presenter.csvStringWithTransactions() { ShareView(itemsToShare: [url]) }
-            })
-//            .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "categories.json") { result in
-//                if case .success = result { print("success to export")
-//                } else { print("failed to export") }
-//            }
-            .alertBudgetError(isPresented: $isPresentedAlert)
+            .onAppear { presenter.loadData()  }
     }
     
     private var list: some View {
@@ -69,20 +40,19 @@ public struct CategoryScene: View {
             if let previousDate = presenter.getDateFromLastCategoriesByCurrentDate() {
                 sectionDuplicateCategories(previousDate: previousDate)
             }
-            if !presenter.getCategoriesFiltred().isEmpty {
-                sectionCategories
-                sectionTotal(budget: presenter.getTotalBudget(), actual: presenter.getTotalActual())
-                Section { csvRow }
+            if !presenter.getCategoriesFiltred().isEmpty, let transactionScene = transactionScene {
+                sectionCategories(transactionScene: transactionScene)
+                sectionTotal(budget: presenter.totalBudget, actual: presenter.totalActual)
             }
         }
         .listStyle(.insetGrouped)
         .background(
-            NavigationLink(destination: AddCategoryScene(device: .iOS, presenter: AddCategoryPresenter.instance), isActive: $isPresentedAddCategory) {
+            NavigationLink(destination: AddCategoryScreen(device: .iOS, presenter: AddCategoryPresenter.instance), isActive: $presenter.isPresentedAddCategory) {
                 EmptyView()
             }.hidden()
         )
         .background(
-            NavigationLink(destination: AddCategoryScene(device: .iOS, presenter: AddCategoryPresenter(category: category)), isActive: $isPresentedEditCategory) {
+            NavigationLink(destination: AddCategoryScreen(device: .iOS, presenter: AddCategoryPresenter(category: presenter.category)), isActive: $presenter.isPresentedEditCategory) {
                 EmptyView()
             }.hidden()
         )
@@ -98,19 +68,6 @@ public struct CategoryScene: View {
                 PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
                     presenter.loadData()
                 }
-            }
-        }
-    }
-    
-    private var csvRow: some View {
-        Button {
-            if presenter.csvStringWithTransactions() != nil {
-                showShareSheet.toggle()
-            }
-        } label: {
-            HStack(spacing: 15) {
-                RefdsIcon(symbol: .squareAndArrowUp, color: .accentColor, size: 20, weight: .medium, renderingMode: .hierarchical)
-                RefdsText("Exportar transações em CSV")
             }
         }
     }
@@ -134,10 +91,13 @@ public struct CategoryScene: View {
         }
     }
     
-    private var sectionCategories: some View {
+    private func sectionCategories(transactionScene: @escaping (CategoryEntity, Date) -> any View) -> some View {
         Section {
             ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
-                NavigationLink(destination: { AnyView(transactionScene(category, presenter.date)).tint(category.color) }, label: {
+                NavigationLink(destination: {
+                    AnyView(transactionScene(category, presenter.date))
+                        .tint(category.color)
+                }, label: {
                     rowCategory(category)
                 })
                 .contextMenu {
@@ -186,7 +146,8 @@ public struct CategoryScene: View {
                         )
                     }
                 }
-                if let transactions = presenter.getTransactions(by: category), let actual = presenter.getActualTransaction(by: category), let percent = presenter.getDifferencePercent(budget: presenter.getBudget(by: category)?.amount ?? 1, actual: actual, hasPlaces: true) {
+                if let transactions = presenter.getTransactions(by: category),
+                   let percent = presenter.getDifferencePercent(on: category, hasPlaces: true) {
                     HStack {
                         RefdsText("\(percent) gasto", color: .secondary)
                         Spacer()
@@ -199,8 +160,9 @@ public struct CategoryScene: View {
     
     private func swipeRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
-            do { try presenter.removeCategory(category) }
-            catch { isPresentedAlert = (true, error as! BudgetError) }
+            presenter.remove(category: category) {
+                presenter.alert.present(error: $0)
+            }
         } label: {
             Image(systemName: "trash.fill")
                 .symbolRenderingMode(.hierarchical)
@@ -219,8 +181,8 @@ public struct CategoryScene: View {
     
     private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
         Button {
-            self.category = category
-            isPresentedEditCategory.toggle()
+            presenter.category = category
+            presenter.isPresentedEditCategory.toggle()
         } label: {
             Label("Editar \(category.name.lowercased())", systemImage: RefdsIconSymbol.squareAndPencil.rawValue)
         }
@@ -228,15 +190,16 @@ public struct CategoryScene: View {
     
     private func contextMenuRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
-            do { try presenter.removeCategory(category) }
-            catch { isPresentedAlert = (true, .cantDeleteCategory) }
+            presenter.remove(category: category) {
+                presenter.alert.present(error: $0)
+            }
         } label: {
             Label("Remover \(category.name.lowercased())", systemImage: RefdsIconSymbol.trashFill.rawValue)
         }
     }
     
     private var buttonAddCategory: some View {
-        Button { isPresentedAddCategory.toggle() } label: {
+        Button { presenter.isPresentedAddCategory.toggle() } label: {
             Image(systemName: "plus.circle.fill")
                 .resizable()
                 .scaledToFit()
@@ -245,35 +208,15 @@ public struct CategoryScene: View {
                 .foregroundColor(.accentColor)
         }
     }
-    
-    private var buttonExport: some View {
-        Button {
-            Application.shared.endEditing()
-            isPresentedExporting.toggle()
-        } label: {
-            Image(systemName: "square.and.arrow.up")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 20)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(.secondary)
-        }
-    }
-    
-    private func performActionIfNeeded() {
-        guard let action = actionService.action else { return }
-        switch action {
-        case .newCategory: isPresentedAddCategory.toggle()
-        default: break
-        }
-        actionService.action = nil
-    }
 }
 
-struct CategoryScene_Previews: PreviewProvider {
+struct CategorymacOSView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            CategoryScene { _, _ in EmptyView() }
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                CategoryScreen(device: .macOS, presenter: CategoryPresenter.instance)
+            }
+            .previewDevice(PreviewDevice(rawValue: "iPad Air (5th generation)"))
         }
     }
 }
