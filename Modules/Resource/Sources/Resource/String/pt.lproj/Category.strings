@@ -1,0 +1,30 @@
+// MARK: - Add Budget
+"addBudget.navigation.title" = "Novo Budget";
+"addBudget.infoMonth" = "Informe o mês";
+"addBudget.placeholder.description" = "Informe a descrição (Opcional)";
+"addBudget.description" = "Descrição";
+
+// MARK: - Add Category Scene
+"addCategory.navigation.title" = "Nova Categoria";
+"addCategory.button.addBudget" = "Adicionar Budget";
+"addCategory.label.name" = "Nome";
+"addCategory.label.color" = "Cor";
+"addCategory.label.placeholder.name" = "Informe o nome da categoria";
+"addCategory.header.category" = "categoria";
+"addCategory.header.budgets" = "budgets";
+"addCategory.button.removeBudget" = "Remover Budget";
+"addCategory.noBudgetAdded" = "Nenhum budget adicionado";
+
+// MARK: - Category
+"category.navigation.title" = "Categorias";
+"category.search.placeholder" = "Busque por categoria";
+"category.section.options" = "Opções";
+"category.section.options.filterPerDate" = "Filtrar por data";
+"category.section.options.period" = "Período";
+"category.section.duplicate.notFound" = "Nenhuma categoria encontrada";
+"category.section.duplicate.suggestion" = "Podemos duplicar os budgets do mês anterior mantendo a mesma categoria";
+"category.section.duplicate.button" = "Duplicar";
+
+// MARK: - General
+"save.button" = "Salvar Alterações";
+"budget.save.button" = "Adicionar Budget";

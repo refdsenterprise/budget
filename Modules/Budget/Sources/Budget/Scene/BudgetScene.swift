@@ -105,29 +105,11 @@ public struct BudgetScene: View {
         Group {
             HStack {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
+                    .toggleStyle(CheckBoxStyle())
             }
             if presenter.isFilterPerDate {
-                Button {
-                    withAnimation {
-                        showDatePicker.toggle()
-                    }
-                } label: {
-                    HStack(spacing: 15) {
-                        RefdsText("Periodo")
-                        Spacer()
-                        RefdsTag(presenter.date.asString(withDateFormat: .custom("MMMM, yyyy")), color: .accentColor)
-                    }
-                }
-            }
-            if showDatePicker {
-                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
-                    EmptyView()
-                }
-                .datePickerStyle(.graphical)
-                .onChange(of: presenter.date) { _ in
-                    withAnimation {
-                        showDatePicker.toggle()
-                    }
+                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
+                    presenter.loadData()
                 }
             }
         }

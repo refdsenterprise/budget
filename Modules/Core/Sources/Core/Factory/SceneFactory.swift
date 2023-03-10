@@ -10,9 +10,16 @@ import Domain
 import Category
 import Transaction
 import Budget
+import UserInterface
+import Presentation
+import SwiftUI
 
 public final class SceneFactory {
-    public static let shared = SceneFactory()
+    public let device: Device
+    
+    public init(device: Device) {
+        self.device = device
+    }
     
     public func makeCategoryScene() -> CategoryScene {
         CategoryScene { category, date in
@@ -32,8 +39,9 @@ public final class SceneFactory {
         }
     }
     
-    public func makeAddCategoryScene() -> AddCategoryScene {
-        AddCategoryScene()
+    public func makeAddCategoryScene() -> some View {
+        let presenter = AddCategoryPresenter.instance
+        return AddCategoryScene(device: device, presenter: presenter)
     }
     
     public func makeBudgetScene() -> BudgetScene {

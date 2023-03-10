@@ -45,7 +45,6 @@ public final class CategoryPresenter: ObservableObject {
             color: category.color,
             budgets: category.budgets.filter({
                 $0.date.asString(withDateFormat: .monthYear) != date.asString(withDateFormat: .monthYear)
-                
             })
         )
     }
@@ -114,6 +113,28 @@ public final class CategoryPresenter: ObservableObject {
             }
         }
         loadData()
+    }
+    
+    @available(iOS 15.0, *)
+    public func csvStringWithTransactions() -> URL? {
+        let header: String = "Data,Categoria,Valor,Descrição\n"
+        let footer: String = "\nBudget Total,\(getTotalActual().formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: "."))\n"
+        var body: String = ""
+        for transaction in transactions.sorted(by: { ($0.category?.name ?? "") < ($1.category?.name ?? "") }) {
+            body += "\(transaction.date.asString(withDateFormat: .custom("dd/MM/yyyy - HH:mm"))),\(transaction.category?.name ?? ""),\(transaction.amount.formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: ".")),\(transaction.description.replacingOccurrences(of: ",", with: ""))\n"
+        }
+        let csv = header + body + footer
+        if let jsonData = csv.data(using: .utf8),
+           let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let pathWithFileName = documentDirectory.appendingPathComponent("Transações.csv")
+            do {
+                try jsonData.write(to: pathWithFileName)
+                return pathWithFileName
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return nil
     }
     
     public func getDifferencePercent(budget: Double, actual: Double, hasPlaces: Bool = false) -> String {

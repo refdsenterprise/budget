@@ -21,6 +21,7 @@ let package = Package(
         .package(path: "Domain"),
         .package(path: "Presentation"),
         .package(path: "UserInterface"),
+        .package(path: "Resource"),
         .package(url: "https://github.com/refdsenterprise/refds-design-system.git", branch: "develop")
     ],
     targets: [
@@ -30,6 +31,7 @@ let package = Package(
                 "Domain",
                 "Presentation",
                 "UserInterface",
+                "Resource",
                 .product(name: "RefdsUI", package: "refds-design-system")
             ]),
     ]

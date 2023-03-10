@@ -20,7 +20,7 @@ struct MainApp: App {
     @State private var tabItemSelection: TabItem = .budget
     
     private let actionService = ActionService.shared
-    private let sceneFactory = SceneFactory.shared
+    private let sceneFactory = SceneFactory(device: Application.isLargeScreen ? .macOS : .iOS)
     
     init() {
         RefdsUI.shared.setNavigationBarAppearance()

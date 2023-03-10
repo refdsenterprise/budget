@@ -15,7 +15,16 @@
       "location" : "https://github.com/refdsenterprise/refds-design-system.git",
       "state" : {
         "branch" : "develop",
-        "revision" : "a0a334d3a41daf485855231f8de4316ac22874ff"
+        "revision" : "2bb958722352f071840d02a03996650059a2f9b0"
+      }
+    },
+    {
+      "identity" : "windowscenereader",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/divadretlaw/WindowSceneReader",
+      "state" : {
+        "revision" : "8700ee5260654666a63d8a21581a63a2972baf32",
+        "version" : "1.1.0"
       }
     }
   ],

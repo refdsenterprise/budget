@@ -78,6 +78,28 @@ public final class TransactionPresenter: ObservableObject {
         let date = transaction.date.asString(withDateFormat: selectedPeriod.dateFormat).lowercased().contains(query)
         return description || category || amount || date
     }
+    
+    @available(iOS 15.0, *)
+    public func csvStringWithTransactions() -> URL? {
+        let header: String = "Data,Categoria,Valor,Descrição\n"
+        let footer: String = "Total,\(getTotalAmount().formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: "."))\n"
+        var body: String = ""
+        for transaction in transactions {
+            body += "\(transaction.date.asString(withDateFormat: .custom("dd/MM/yyyy - HH:mm"))),\(transaction.category?.name ?? ""),\(transaction.amount.formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: ".")),\(transaction.description.replacingOccurrences(of: ",", with: ""))\n"
+        }
+        let csv = header + body + footer
+        if let jsonData = csv.data(using: .utf8),
+           let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let pathWithFileName = documentDirectory.appendingPathComponent("Transações - \(date.asString(withDateFormat: selectedPeriod.dateFormatFile).replacingOccurrences(of: "/", with: " de ")).csv")
+            do {
+                try jsonData.write(to: pathWithFileName)
+                return pathWithFileName
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return nil
+    }
 }
 
 public enum PeriodTransaction: CaseIterable {
@@ -100,6 +122,14 @@ public enum PeriodTransaction: CaseIterable {
         case .daily: return .dayMonthYear
         //case .weekly: return "EEE/MM/yyyy"
         case .monthly: return .monthYear
+        case .yearly: return .custom("yyyy")
+        }
+    }
+    
+    public var dateFormatFile: String.DateFormat {
+        switch self {
+        case .daily: return .custom("dd/MMMM/yyyy")
+        case .monthly: return .custom("MMMM/yyyy")
         case .yearly: return .custom("yyyy")
         }
     }

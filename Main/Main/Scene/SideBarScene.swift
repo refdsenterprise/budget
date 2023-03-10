@@ -9,11 +9,12 @@ import SwiftUI
 import RefdsUI
 
 import Core
+import UserInterface
 
 @available(iOS 16.0, *)
 struct SideBarScene: View {
     @State private var selectionTab: TabItem = .budget
-    private let sceneFactory = SceneFactory.shared
+    private let sceneFactory = SceneFactory(device: Application.isLargeScreen ? .macOS : .iOS)
     
     var body: some View {
         GeometryReader { proxy in

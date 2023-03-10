@@ -15,4 +15,5 @@ public enum BudgetError: Error {
     case notFoundTransaction
     case cantDeleteCategory
     case cantDeleteBudget
+    case existingBudget
 }

@@ -19,6 +19,7 @@ public struct TransactionScene: View {
     @State private var isPresentedExporting = false
     @State private var isPresentedEditTransaction = false
     @State private var showDatePicker = false
+    @State private var showShareSheet = false
     @State private var transaction: TransactionEntity?
     private var category: CategoryEntity?
     @EnvironmentObject private var actionService: ActionService
@@ -58,6 +59,9 @@ public struct TransactionScene: View {
                 } else { print("failed to export") }
             }
             .accentColor(category?.color != nil ? category!.color : .green)
+            .sheet(isPresented: $showShareSheet, content: {
+                if let url = presenter.csvStringWithTransactions() { ShareView(itemsToShare: [url]) }
+            })
     }
     
     private var list: some View {
@@ -73,6 +77,9 @@ public struct TransactionScene: View {
             }
             if !presenter.getTransactionsFiltred().isEmpty {
                 sectionTransactions
+                Section {
+                    csvRow
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -117,37 +124,40 @@ public struct TransactionScene: View {
         Group {
             HStack {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
+                    .toggleStyle(CheckBoxStyle())
             }
             if presenter.isFilterPerDate {
-                HStack {
-                    RefdsText("Período")
-                    Spacer()
-                    selectionPeriodView
+                CollapsedView(title: "Período", description: presenter.selectedPeriod.value.capitalized) {
+                    ForEach(PeriodTransaction.allCases, id: \.self) { period in
+                        Button {
+                            presenter.selectedPeriod = period
+                        } label: {
+                            HStack(spacing: 15) {
+                                IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
+                                RefdsText(period.value.capitalized, color: .secondary)
+                            }
+                        }
+                    }
                 }
             }
+            
             if presenter.isFilterPerDate {
-                Button {
-                    withAnimation {
-                        showDatePicker.toggle()
-                    }
-                } label: {
-                    HStack(spacing: 15) {
-                        RefdsText("Data")
-                        Spacer()
-                        RefdsTag(presenter.date.asString(withDateFormat: .custom("dd MMMM, yyyy")), color: .accentColor)
-                    }
+                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy")) { _ in
+                    presenter.loadData()
                 }
             }
-            if showDatePicker {
-                DatePicker(selection: Binding(get: { presenter.date }, set: { presenter.date = $0; presenter.loadData() }), displayedComponents: .date) {
-                    EmptyView()
-                }
-                .datePickerStyle(.graphical)
-                .onChange(of: presenter.date) { _ in
-                    withAnimation {
-                        showDatePicker.toggle()
-                    }
-                }
+        }
+    }
+    
+    private var csvRow: some View {
+        Button {
+            if presenter.csvStringWithTransactions() != nil {
+                showShareSheet.toggle()
+            }
+        } label: {
+            HStack(spacing: 15) {
+                RefdsIcon(symbol: .squareAndArrowUp, color: .accentColor, size: 20, weight: .medium, renderingMode: .hierarchical)
+                RefdsText("Exportar transações em CSV")
             }
         }
     }
