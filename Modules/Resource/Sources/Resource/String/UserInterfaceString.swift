@@ -13,12 +13,18 @@ public extension Strings {
         case periodTitle
         case currencyCode
         case ok
+        case currentValue
+        case edit
+        case remove
         
         private var key: String {
             switch self {
             case .periodTitle: return "component.periodSelection.title"
             case .currencyCode: return "currency.code"
             case .ok: return "ok"
+            case .currentValue: return "currentValue"
+            case .edit: return "edit"
+            case .remove: return "remove"
             }
         }
         

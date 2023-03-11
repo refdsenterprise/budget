@@ -1,4 +1,6 @@
 "component.periodSelection.title" = "Data";
 "currency.code" = "BRL";
 "ok" = "Ok";
-
+"currentValue" = "valor atual";
+"edit" = "Editar";
+"remove" = "Remover";

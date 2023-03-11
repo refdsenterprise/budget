@@ -10,6 +10,24 @@ import SwiftUI
 import Domain
 import Data
 import UserInterface
+import Resource
+
+public enum CategoryPresenterString {
+    case navigationTitle
+    case searchPlaceholder
+    case sectionOptions
+    case sectionOptionsFilterPerDate
+    case sectionDuplicateNotFound
+    case sectionDuplicateSuggestion
+    case sectionDuplicateButton
+    case sectionCategoriosHeader
+    case currentValue
+    case currency
+    case rowCategorySpending(String)
+    case rowCategoryTransaction(Int)
+    case edit
+    case remove
+}
 
 public protocol CategoryPresenterProtocol: ObservableObject {
     var date: Date { get set }
@@ -22,6 +40,8 @@ public protocol CategoryPresenterProtocol: ObservableObject {
     
     var totalBudget: Double { get }
     var totalActual: Double { get }
+    
+    func string(_ string: CategoryPresenterString) -> String
     
     func loadData()
     func getCategoriesFiltred() -> [CategoryEntity]
@@ -36,16 +56,16 @@ public protocol CategoryPresenterProtocol: ObservableObject {
 public final class CategoryPresenter: CategoryPresenterProtocol {
     public static var instance: Self { Self() }
     
-    @Published public var date: Date = Date()
+    @Published public var date: Date = Date() { didSet { loadData() } }
     @Published public var query: String = ""
-    @Published public var isFilterPerDate: Bool = true
+    @Published public var isFilterPerDate: Bool = true { didSet { loadData() } }
     @Published public var isPresentedAddCategory: Bool = false
     @Published public var isPresentedEditCategory: Bool = false
     @Published public var alert: BudgetAlert = .init()
     @Published public var category: CategoryEntity?
     
-    private var categories: [CategoryEntity] = []
-    private var transactions: [TransactionEntity] = []
+    @Published private var categories: [CategoryEntity] = []
+    @Published private var transactions: [TransactionEntity] = []
     
     public var totalBudget: Double {
         getCategoriesFiltred().map({
@@ -57,6 +77,25 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         getCategoriesFiltred().map({
             getActualTransaction(by: $0)
         }).reduce(0, +)
+    }
+    
+    public func string(_ string: CategoryPresenterString) -> String {
+        switch string {
+        case .navigationTitle: return Strings.Category.navigationTitle.value
+        case .searchPlaceholder: return Strings.Category.searchPlaceholder.value
+        case .sectionOptions: return Strings.Category.sectionOptions.value
+        case .sectionOptionsFilterPerDate: return Strings.Category.sectionOptionsFilterPerDate.value
+        case .sectionDuplicateNotFound: return Strings.Category.sectionDuplicateNotFound.value
+        case .sectionDuplicateSuggestion: return Strings.Category.sectionDuplicateSuggestion.value
+        case .sectionDuplicateButton: return Strings.Category.sectionDuplicateButton.value
+        case .sectionCategoriosHeader: return String(format: NSLocalizedString(Strings.Category.mediumBudget.value, comment: ""), isFilterPerDate ? "" : " \(Strings.Category.rowMedium.value)")
+        case .currentValue: return Strings.UserInterface.currentValue.value
+        case .currency: return Strings.UserInterface.currencyCode.value
+        case .rowCategorySpending(let percent): return String(format: NSLocalizedString(Strings.Category.rowSpending.value, comment: ""), percent)
+        case .rowCategoryTransaction(let count): return String(format: NSLocalizedString(Strings.Category.rowTransactionsAmount.value, comment: ""), count)
+        case .edit: return Strings.UserInterface.edit.value
+        case .remove: return Strings.UserInterface.remove.value
+        }
     }
     
     public func loadData() {
@@ -127,11 +166,11 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         loadData()
     }
     
-    public func removeAllCategory(_ category: CategoryEntity) {
+    private func removeAllCategory(_ category: CategoryEntity) {
         try? Storage.shared.category.removeCategory(category)
     }
     
-    public func removeBudgetInsideCategory(_ category: CategoryEntity) {
+    private func removeBudgetInsideCategory(_ category: CategoryEntity) {
         try? Storage.shared.category.editCategory(
             category,
             name: category.name,
@@ -142,7 +181,7 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         )
     }
     
-    public func containsCategory(_ category: CategoryEntity) -> Bool {
+    private func containsCategory(_ category: CategoryEntity) -> Bool {
         guard !query.isEmpty else { return true }
         let query = query.stripingDiacritics.lowercased()
         let name = category.name.stripingDiacritics.lowercased().contains(query)
@@ -154,7 +193,7 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         return name
     }
     
-    public func getActualTransaction(by category: CategoryEntity) -> Double {
+    private func getActualTransaction(by category: CategoryEntity) -> Double {
         getTransactions(by: category).map({ $0.amount }).reduce(0, +)
     }
     

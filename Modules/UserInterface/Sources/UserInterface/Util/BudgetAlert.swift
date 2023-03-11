@@ -12,9 +12,9 @@ import RefdsUI
 
 public class BudgetAlert: ObservableObject {
     @Published public var isPresented: Bool = false
-    public var title: String
-    public var message: String?
-    public var icon: RefdsIconSymbol?
+    @Published public var title: String
+    @Published public var message: String?
+    @Published public var icon: RefdsIconSymbol?
     
     public init(title: String? = nil, message: String? = nil, icon: RefdsIconSymbol? = nil) {
         self.title = title ?? ""

@@ -74,6 +74,10 @@ public extension Strings {
         case sectionDuplicateNotFound
         case sectionDuplicateSuggestion
         case sectionDuplicateButton
+        case mediumBudget
+        case rowSpending
+        case rowTransactionsAmount
+        case rowMedium
         
         private var key: String {
             switch self {
@@ -85,6 +89,10 @@ public extension Strings {
             case .sectionDuplicateNotFound: return "category.section.duplicate.notFound"
             case .sectionDuplicateSuggestion: return "category.section.duplicate.suggestion"
             case .sectionDuplicateButton: return "category.section.duplicate.button"
+            case .mediumBudget: return "category.section.header.category.mediumBudget"
+            case .rowSpending: return "category.row.spending"
+            case .rowTransactionsAmount: return "category.row.transactionsAmount"
+            case .rowMedium: return "category.row.medium"
             }
         }
         

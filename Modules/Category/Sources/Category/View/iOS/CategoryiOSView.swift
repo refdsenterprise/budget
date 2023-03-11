@@ -14,9 +14,7 @@ import Resource
 
 struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     @StateObject private var presenter: Presenter
-    @Environment(\.scenePhase) private var scenePhase
-    
-    let transactionScene: ((CategoryEntity, Date) -> any View)?
+    private let transactionScene: ((CategoryEntity, Date) -> any View)?
     
     init(presenter: Presenter, transactionScene: ((CategoryEntity, Date) -> any View)? = nil) {
         self._presenter = StateObject(wrappedValue: presenter)
@@ -26,47 +24,58 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     var body: some View {
         list
             .budgetAlert($presenter.alert)
-            .navigationTitle(Strings.Category.navigationTitle.value)
+            .navigationTitle(presenter.string(.navigationTitle))
             .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
-            .searchable(text: $presenter.query, prompt: Strings.Category.searchPlaceholder.value)
+            .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
             .onAppear { presenter.loadData()  }
+            .background(
+                NavigationLink(
+                    destination: AddCategoryScreen(
+                        device: .iOS,
+                        presenter: AddCategoryPresenter.instance
+                    ),
+                    isActive: $presenter.isPresentedAddCategory
+                ) { EmptyView() }.hidden()
+            )
+            .background(
+                NavigationLink(
+                    destination: AddCategoryScreen(
+                        device: .iOS,
+                        presenter: AddCategoryPresenter(category: presenter.category)
+                    ),
+                    isActive: $presenter.isPresentedEditCategory
+                ) { EmptyView() }.hidden()
+            )
     }
     
     private var list: some View {
         List {
-            CollapsedView(title: Strings.Category.sectionOptions.value) {
-                options
-            }
+            sectionOptions
+            
             if let previousDate = presenter.getDateFromLastCategoriesByCurrentDate() {
                 sectionDuplicateCategories(previousDate: previousDate)
             }
+            
             if !presenter.getCategoriesFiltred().isEmpty, let transactionScene = transactionScene {
                 sectionCategories(transactionScene: transactionScene)
-                sectionTotal(budget: presenter.totalBudget, actual: presenter.totalActual)
+                sectionTotal
             }
         }
         .listStyle(.insetGrouped)
-        .background(
-            NavigationLink(destination: AddCategoryScreen(device: .iOS, presenter: AddCategoryPresenter.instance), isActive: $presenter.isPresentedAddCategory) {
-                EmptyView()
-            }.hidden()
-        )
-        .background(
-            NavigationLink(destination: AddCategoryScreen(device: .iOS, presenter: AddCategoryPresenter(category: presenter.category)), isActive: $presenter.isPresentedEditCategory) {
-                EmptyView()
-            }.hidden()
-        )
     }
     
-    private var options: some View {
-        Group {
-            HStack {
-                Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText(Strings.Category.sectionOptionsFilterPerDate.value) }
+    private var sectionOptions: some View {
+        CollapsedView(title: presenter.string(.sectionOptions)) {
+            Group {
+                HStack {
+                    Toggle(isOn: $presenter.isFilterPerDate) {
+                        RefdsText(presenter.string(.sectionOptionsFilterPerDate))
+                    }
                     .toggleStyle(CheckBoxStyle())
-            }
-            if presenter.isFilterPerDate {
-                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
-                    presenter.loadData()
+                }
+                
+                if presenter.isFilterPerDate {
+                    PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy"))
                 }
             }
         }
@@ -75,12 +84,12 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private func sectionDuplicateCategories(previousDate: Date) -> some View {
         Section {
             VStack(alignment: .center, spacing: 20) {
-                RefdsText(Strings.Category.sectionDuplicateNotFound.value, size: .large, weight: .bold, alignment: .center)
-                RefdsText(Strings.Category.sectionDuplicateSuggestion.value, color: .secondary, alignment: .center)
+                RefdsText(presenter.string(.sectionDuplicateNotFound), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.sectionDuplicateSuggestion), color: .secondary, alignment: .center)
                 Button {
                     presenter.duplicateCategories(from: previousDate)
                 } label: {
-                    RefdsText(Strings.Category.sectionDuplicateButton.value.uppercased(), size: .small, color: .accentColor, weight: .bold)
+                    RefdsText(presenter.string(.sectionDuplicateButton).uppercased(), size: .small, color: .accentColor, weight: .bold)
                         .frame(maxWidth: .infinity)
                 }
                 .padding()
@@ -104,20 +113,30 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     contextMenuEditCategory(category)
                     contextMenuRemoveCategory(category)
                 }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    swipeEditCategory(category)
+                    swipeRemoveCategory(category)
+                }
             }
         } header: {
-            if !presenter.getCategoriesFiltred().isEmpty {
-                RefdsText("budget\(presenter.isFilterPerDate ? "" : " médio")", size: .extraSmall, color: .secondary)
-            }
+            RefdsText(
+                presenter.string(.sectionCategoriosHeader),
+                size: .extraSmall,
+                color: .secondary
+            )
         }
     }
     
-    private func sectionTotal(budget: Double, actual: Double) -> some View {
+    private var sectionTotal: some View {
         Section {} header: {
             VStack(spacing: 10) {
-                RefdsText("valor atual".uppercased(), size: .custom(12), color: .secondary)
                 RefdsText(
-                    actual.formatted(.currency(code: "BRL")),
+                    presenter.string(.currentValue).uppercased(),
+                    size: .custom(12),
+                    color: .secondary
+                )
+                RefdsText(
+                    presenter.totalActual.formatted(.currency(code: presenter.string(.currency))),
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
@@ -125,7 +144,13 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     alignment: .center,
                     lineLimit: 1
                 )
-                RefdsText(budget.formatted(.currency(code: "BRL")), size: .custom(20), color: .accentColor, weight: .bold, family: .moderatMono)
+                RefdsText(
+                    presenter.totalBudget.formatted(.currency(code: presenter.string(.currency))),
+                    size: .custom(20),
+                    color: .accentColor,
+                    weight: .bold,
+                    family: .moderatMono
+                )
             }
         }
         .frame(maxWidth: .infinity)
@@ -140,7 +165,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     Spacer()
                     if let budget = presenter.getBudget(by: category) {
                         RefdsText(
-                            budget.amount.formatted(.currency(code: "BRL")),
+                            budget.amount.formatted(.currency(code: presenter.string(.currency))),
                             family: .moderatMono,
                             lineLimit: 1
                         )
@@ -149,9 +174,9 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 if let transactions = presenter.getTransactions(by: category),
                    let percent = presenter.getDifferencePercent(on: category, hasPlaces: true) {
                     HStack {
-                        RefdsText("\(percent) gasto", color: .secondary)
+                        RefdsText(presenter.string(.rowCategorySpending(percent)), color: .secondary)
                         Spacer()
-                        RefdsText("\(transactions.count) transações", color: .secondary)
+                        RefdsText(presenter.string(.rowCategoryTransaction(transactions.count)), color: .secondary)
                     }
                 }
             }
@@ -164,19 +189,29 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 presenter.alert.present(error: $0)
             }
         } label: {
-            Image(systemName: "trash.fill")
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(.white)
+            RefdsIcon(
+                symbol: .trashFill,
+                color: .white,
+                size: 25,
+                renderingMode: .hierarchical
+            )
         }
-        .tint(.pink)
+        .tint(.red)
     }
     
     private func swipeEditCategory(_ category: CategoryEntity) -> some View {
-        Button { } label: {
-            Image(systemName: "square.and.pencil")
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(.white)
+        Button {
+            presenter.category = category
+            presenter.isPresentedEditCategory.toggle()
+        } label: {
+            RefdsIcon(
+                symbol: .squareAndPencil,
+                color: .white,
+                size: 25,
+                renderingMode: .hierarchical
+            )
         }
+        .tint(.orange)
     }
     
     private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
@@ -184,7 +219,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             presenter.category = category
             presenter.isPresentedEditCategory.toggle()
         } label: {
-            Label("Editar \(category.name.lowercased())", systemImage: RefdsIconSymbol.squareAndPencil.rawValue)
+            Label(presenter.string(.edit), systemImage: RefdsIconSymbol.squareAndPencil.rawValue)
         }
     }
     
@@ -194,18 +229,19 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 presenter.alert.present(error: $0)
             }
         } label: {
-            Label("Remover \(category.name.lowercased())", systemImage: RefdsIconSymbol.trashFill.rawValue)
+            Label(presenter.string(.remove), systemImage: RefdsIconSymbol.trashFill.rawValue)
         }
     }
     
     private var buttonAddCategory: some View {
         Button { presenter.isPresentedAddCategory.toggle() } label: {
-            Image(systemName: "plus.circle.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 25)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(.accentColor)
+            RefdsIcon(
+                symbol: .plusRectangleFill,
+                color: .accentColor,
+                size: 20,
+                weight: .medium,
+                renderingMode: .hierarchical
+            )
         }
     }
 }

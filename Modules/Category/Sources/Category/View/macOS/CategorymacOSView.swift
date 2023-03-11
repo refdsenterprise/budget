@@ -14,9 +14,7 @@ import Resource
 
 struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     @StateObject private var presenter: Presenter
-    @Environment(\.scenePhase) private var scenePhase
-    
-    let transactionScene: ((CategoryEntity, Date) -> any View)?
+    private let transactionScene: ((CategoryEntity, Date) -> any View)?
     
     init(presenter: Presenter, transactionScene: ((CategoryEntity, Date) -> any View)? = nil) {
         self._presenter = StateObject(wrappedValue: presenter)

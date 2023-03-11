@@ -10,10 +10,10 @@ import RefdsUI
 import Resource
 
 public struct BudgetAlertView: View {
-    private let alert: BudgetAlert
+    @Binding private var alert: BudgetAlert
     
-    public init(alert: BudgetAlert) {
-        self.alert = alert
+    public init(alert: Binding<BudgetAlert>) {
+        self._alert = alert
     }
     
     public var body: some View {
@@ -35,7 +35,7 @@ public struct BudgetAlertView: View {
 public extension View {
     func budgetAlert(_ alert: Binding<BudgetAlert>) -> some View {
         self.refdsAlert(isPresented: alert.isPresented) {
-            BudgetAlertView(alert: alert.wrappedValue)
+            BudgetAlertView(alert: alert)
         } actions: {
             Button(role: .cancel, action: {}, label: {
                 RefdsText(Strings.UserInterface.ok.value, size: .small, weight: .bold)
@@ -46,6 +46,6 @@ public extension View {
 
 struct BudgetAlertView_Previews: PreviewProvider {
     static var previews: some View {
-        BudgetAlertView(alert: .init())
+        BudgetAlertView(alert: .constant(.init()))
     }
 }
