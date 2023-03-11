@@ -159,7 +159,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     private func swipeRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.remove(category: category) {
-                presenter.alert.present(error: $0)
+                presenter.alert = .init(error: $0)
             }
         } label: {
             Image(systemName: "trash.fill")
@@ -189,7 +189,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     private func contextMenuRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.remove(category: category) {
-                presenter.alert.present(error: $0)
+                presenter.alert = .init(error: $0)
             }
         } label: {
             Label("Remover \(category.name.lowercased())", systemImage: RefdsIconSymbol.trashFill.rawValue)

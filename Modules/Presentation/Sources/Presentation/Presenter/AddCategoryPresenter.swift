@@ -49,7 +49,7 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
     @Published public var name: String = ""
     @Published public var color: Color = .accentColor
     @Published public var budgets: [BudgetEntity] = []
-    @Published public var alert: BudgetAlert = BudgetAlert()
+    @Published public var alert: BudgetAlert = .init()
 
     public private(set) var category: CategoryEntity?
     

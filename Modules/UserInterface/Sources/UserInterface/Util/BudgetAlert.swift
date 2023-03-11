@@ -10,21 +10,30 @@ import Domain
 import SwiftUI
 import RefdsUI
 
-public class BudgetAlert: ObservableObject {
-    @Published public var isPresented: Bool = false
-    @Published public var title: String
-    @Published public var message: String?
-    @Published public var icon: RefdsIconSymbol?
+public struct BudgetAlert {
+    public var isPresented: Bool
+    public var title: String
+    public var message: String?
+    public var icon: RefdsIconSymbol?
     
-    public init(title: String? = nil, message: String? = nil, icon: RefdsIconSymbol? = nil) {
-        self.title = title ?? ""
-        self.message = message
+    public init() {
+        self.title = ""
+        self.message = nil
+        self.icon = nil
+        self.isPresented = false
     }
     
-    public func present(error: BudgetError) {
+    public init(title: String, message: String? = nil, icon: RefdsIconSymbol? = nil) {
+        self.title = title
+        self.message = message
+        self.icon = icon
+        self.isPresented = true
+    }
+    
+    public init(error: BudgetError) {
         self.title = error.alertTitle
         self.message = error.alertMessage
-        self.icon = .exclamationmarkOctagonFill
-        isPresented = true
+        self.icon = error.alertIcon
+        self.isPresented = true
     }
 }

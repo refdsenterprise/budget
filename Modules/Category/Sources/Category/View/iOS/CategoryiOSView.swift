@@ -186,7 +186,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private func swipeRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.remove(category: category) {
-                presenter.alert.present(error: $0)
+                presenter.alert = .init(error: $0)
             }
         } label: {
             RefdsIcon(
@@ -226,7 +226,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private func contextMenuRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.remove(category: category) {
-                presenter.alert.present(error: $0)
+                presenter.alert = .init(error: $0)
             }
         } label: {
             Label(presenter.string(.remove), systemImage: RefdsIconSymbol.trashFill.rawValue)

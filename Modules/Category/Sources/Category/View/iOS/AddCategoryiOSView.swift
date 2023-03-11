@@ -107,7 +107,7 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
     private func contextMenuRemoveBudget(category: CategoryEntity, budget: BudgetEntity) -> some View {
         Button {
             presenter.remove(budget: budget, on: category, onSuccess: nil, onError: {
-                presenter.alert.present(error: $0)
+                presenter.alert = .init(error: $0)
             })
         } label: {
             Label(
@@ -123,7 +123,7 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
             presenter.save {
                 dismiss()
             } onError: {
-                presenter.alert.present(error: $0)
+                presenter.alert = .init(error: $0)
             }
         } label: {
             RefdsIcon(
@@ -139,7 +139,7 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
     private var buttonAddBudget: some View {
         NavigationLink(destination: AddBudgetScreen(device: .iOS, presenter: AddBudgetPresenter.instance) {
             presenter.add(budget: $0) {
-                presenter.alert.present(error: $0)
+                presenter.alert = .init(error: $0)
             }
         }) {
             RefdsText(

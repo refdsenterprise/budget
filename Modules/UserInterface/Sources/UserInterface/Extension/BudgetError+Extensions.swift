@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RefdsUI
 import Domain
 
 public extension BudgetError {
@@ -32,6 +33,19 @@ public extension BudgetError {
         case .cantDeleteCategory: return "A categoria que deseja remover está sendo utilizada em alguma transação"
         case .cantDeleteBudget: return "O budget que deseja remover está sendo utilizado em alguma transação"
         case .existingBudget: return "Já existe o budget para o mês informado"
+        }
+    }
+    
+    var alertIcon: RefdsIconSymbol {
+        switch self {
+        case .existingCategory: return .exclamationmarkTriangleFill
+        case .notFoundCategory: return .exclamationmarkTriangleFill
+        case .notFoundBudget: return .exclamationmarkTriangleFill
+        case .existingTransaction: return .exclamationmarkTriangleFill
+        case .notFoundTransaction: return .exclamationmarkTriangleFill
+        case .cantDeleteCategory: return .exclamationmarkOctagonFill
+        case .cantDeleteBudget: return .exclamationmarkOctagonFill
+        case .existingBudget: return .exclamationmarkTriangleFill
         }
     }
 }
