@@ -30,6 +30,8 @@ public enum CategoryPresenterString {
 }
 
 public protocol CategoryPresenterProtocol: ObservableObject {
+    var router: CategoryRouter { get set }
+    
     var date: Date { get set }
     var query: String { get set }
     var isFilterPerDate: Bool { get set }
@@ -54,7 +56,7 @@ public protocol CategoryPresenterProtocol: ObservableObject {
 }
 
 public final class CategoryPresenter: CategoryPresenterProtocol {
-    public static var instance: Self { Self() }
+    @Published public var router: CategoryRouter
     
     @Published public var date: Date = Date() { didSet { loadData() } }
     @Published public var query: String = ""
@@ -77,6 +79,10 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         getCategoriesFiltred().map({
             getActualTransaction(by: $0)
         }).reduce(0, +)
+    }
+    
+    public init(router: CategoryRouter) {
+        self.router = router
     }
     
     public func string(_ string: CategoryPresenterString) -> String {

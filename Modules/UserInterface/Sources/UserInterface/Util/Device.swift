@@ -10,4 +10,8 @@ import Foundation
 public enum Device {
     case macOS
     case iOS
+    
+    public static var current: Device {
+        Application.currentDevice
+    }
 }

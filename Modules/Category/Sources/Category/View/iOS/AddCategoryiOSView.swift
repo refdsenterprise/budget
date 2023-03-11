@@ -13,12 +13,8 @@ import UserInterface
 import Resource
 
 struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
-    @StateObject private var presenter: Presenter
+    @EnvironmentObject private var presenter: Presenter
     @Environment(\.dismiss) var dismiss
-    
-    init(presenter: Presenter) {
-        _presenter = StateObject(wrappedValue: presenter)
-    }
     
     var body: some View {
         List {
@@ -137,28 +133,17 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
     }
     
     private var buttonAddBudget: some View {
-        NavigationLink(destination: AddBudgetScreen(device: .iOS, presenter: AddBudgetPresenter.instance) {
+        NavigationLink(destination: presenter.router.configure(routes: .addBudget {
             presenter.add(budget: $0) {
                 presenter.alert = .init(error: $0)
             }
-        }) {
+        })) {
             RefdsText(
                 presenter.string(.addBudget),
                 size: .small,
                 color: .accentColor,
                 weight: .bold
             )
-        }
-    }
-}
-
-struct AddCategoryiOSView_Previews: PreviewProvider {
-    static var previews: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                AddCategoryiOSView(presenter: AddCategoryPresenter.instance)
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
         }
     }
 }

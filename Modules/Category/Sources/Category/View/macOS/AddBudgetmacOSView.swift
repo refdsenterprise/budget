@@ -13,12 +13,11 @@ import UserInterface
 import Resource
 
 struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
+    @EnvironmentObject private var presenter: Presenter
+    private let newBudget: ((BudgetEntity) -> Void)?
     @Environment(\.dismiss) var dismiss
-    @StateObject private var presenter: Presenter
-    private let newBudget: (BudgetEntity) -> Void
     
-    init(presenter: Presenter, newBudget: @escaping (BudgetEntity) -> Void) {
-        self._presenter = StateObject(wrappedValue: presenter)
+    init(newBudget: ((BudgetEntity) -> Void)? = nil) {
         self.newBudget = newBudget
     }
     
@@ -75,7 +74,7 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
         Button {
             Application.shared.endEditing()
             presenter.add { budget in
-                newBudget(budget)
+                newBudget?(budget)
                 dismiss()
             }
         } label: {
@@ -91,12 +90,5 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
             .padding(.vertical)
             .listGroupBoxStyle()
         }
-    }
-}
-
-struct AddBudgetmacOSView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddBudgetmacOSView(presenter: AddBudgetPresenter.instance) { _ in }
-            .previewDevice(PreviewDevice(rawValue: "iPad Air (5th generation)"))
     }
 }

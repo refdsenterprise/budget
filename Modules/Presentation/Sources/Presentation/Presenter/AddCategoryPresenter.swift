@@ -26,7 +26,7 @@ public enum AddCategoryPresenterString {
 }
 
 public protocol AddCategoryPresenterProtocol: ObservableObject {
-    static var instance: Self { get }
+    var router: AddCategoryRouter { get set }
     
     var name: String { get set }
     var color: Color { get set }
@@ -44,7 +44,7 @@ public protocol AddCategoryPresenterProtocol: ObservableObject {
 }
 
 public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
-    public static var instance: Self { Self() }
+    public var router: AddCategoryRouter
     
     @Published public var name: String = ""
     @Published public var color: Color = .accentColor
@@ -57,7 +57,8 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
         canAddNewBudget ? .accentColor : .secondary
     }
     
-    public init(category: CategoryEntity? = nil) {
+    public init(router: AddCategoryRouter, category: CategoryEntity? = nil) {
+        self.router = router
         self.category = category
         if let category = category {
             name = category.name

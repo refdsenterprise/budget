@@ -12,12 +12,11 @@ import Presentation
 import UserInterface
 
 struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
+    @EnvironmentObject private var presenter: Presenter
+    private let newBudget: ((BudgetEntity) -> Void)?
     @Environment(\.dismiss) var dismiss
-    @StateObject private var presenter: Presenter
-    private let newBudget: (BudgetEntity) -> Void
     
-    init(presenter: Presenter, newBudget: @escaping (BudgetEntity) -> Void) {
-        self._presenter = StateObject(wrappedValue: presenter)
+    init(newBudget: ((BudgetEntity) -> Void)? = nil) {
         self.newBudget = newBudget
     }
     
@@ -68,20 +67,11 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
         Button {
             Application.shared.endEditing()
             presenter.add { budget in
-                newBudget(budget)
+                newBudget?(budget)
                 dismiss()
             }
         } label: {
             RefdsIcon(symbol: .checkmarkRectangleFill, color: presenter.buttonForegroundColor, size: 20, weight: .medium, renderingMode: .hierarchical)
-        }
-    }
-}
-
-struct AddBudgetiOSView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            AddBudgetiOSView(presenter: AddBudgetPresenter.instance) { _ in }
-                .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
         }
     }
 }

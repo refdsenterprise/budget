@@ -32,18 +32,6 @@ public struct BudgetAlertView: View {
     }
 }
 
-public extension View {
-    func budgetAlert(_ alert: Binding<BudgetAlert>) -> some View {
-        self.refdsAlert(isPresented: alert.isPresented) {
-            BudgetAlertView(alert: alert)
-        } actions: {
-            Button(role: .cancel, action: {}, label: {
-                RefdsText(Strings.UserInterface.ok.value, size: .small, weight: .bold)
-            })
-        }
-    }
-}
-
 struct BudgetAlertView_Previews: PreviewProvider {
     static var previews: some View {
         BudgetAlertView(alert: .constant(.init()))

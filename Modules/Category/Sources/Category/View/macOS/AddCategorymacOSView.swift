@@ -13,12 +13,8 @@ import UserInterface
 import Resource
 
 struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
-    @StateObject private var presenter: Presenter
+    @EnvironmentObject private var presenter: Presenter
     @Environment(\.dismiss) var dismiss
-    
-    init(presenter: Presenter) {
-        _presenter = StateObject(wrappedValue: presenter)
-    }
     
     var body: some View {
         MacUIView(maxAmount: 2) {
@@ -144,11 +140,11 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     }
     
     private var buttonAddBudget: some View {
-        NavigationLink(destination: AddBudgetScreen(device: .macOS, presenter: AddBudgetPresenter.instance) {
+        NavigationLink(destination: presenter.router.configure(routes: .addBudget {
             presenter.add(budget: $0) {
                 presenter.alert = .init(error: $0)
             }
-        }) {
+        })) {
             SectionGroup {
                 RefdsText(
                     presenter.string(.addBudget),
@@ -157,17 +153,6 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
                     weight: .bold
                 )
             }
-        }
-    }
-}
-
-struct AddCategorymacOSView_Previews: PreviewProvider {
-    static var previews: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                AddCategorymacOSView(presenter: AddCategoryPresenter.instance)
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPad Air (5th generation)"))
         }
     }
 }

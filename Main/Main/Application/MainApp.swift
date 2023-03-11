@@ -9,6 +9,7 @@ import SwiftUI
 import RefdsUI
 import Domain
 import UserInterface
+import Presentation
 
 import Core
 
@@ -20,7 +21,8 @@ struct MainApp: App {
     @State private var tabItemSelection: TabItem = .budget
     
     private let actionService = ActionService.shared
-    private let sceneFactory = SceneFactory(device: Application.isLargeScreen ? .macOS : .iOS)
+    private let device: Device = .current
+    private let router: MainRouter = .init(factory: Factory.shared)
     
     init() {
         RefdsUI.shared.setNavigationBarAppearance()
@@ -30,29 +32,29 @@ struct MainApp: App {
         WindowGroup {
             if #available(iOS 16.0, *), Application.isLargeScreen {
                 SideBarScene()
-                .environmentObject(actionService)
+                    .environmentObject(actionService)
             } else {
                 TabView(selection: $tabItemSelection) {
-                    NavigationView { sceneFactory.makeCategoryScene() }
-                    .tabItem {
-                        Image(systemName: "square.stack.3d.forward.dottedline.fill")
-                        RefdsText(TabItem.category.title, size: .normal)
-                    }
-                    .tag(TabItem.category)
+                    NavigationView { router.configure(routes: .category) }
+                        .tabItem {
+                            Image(systemName: "square.stack.3d.forward.dottedline.fill")
+                            RefdsText(TabItem.category.title, size: .normal)
+                        }
+                        .tag(TabItem.category)
                     
-                    NavigationView { sceneFactory.makeBudgetScene() }
-                    .tabItem {
-                        Image(systemName: "dollarsign.square.fill")
-                        RefdsText(TabItem.budget.title, size: .normal)
-                    }
-                    .tag(TabItem.budget)
+                    NavigationView { router.configure(routes: .budget) }
+                        .tabItem {
+                            Image(systemName: "dollarsign.square.fill")
+                            RefdsText(TabItem.budget.title, size: .normal)
+                        }
+                        .tag(TabItem.budget)
                     
-                    NavigationView { sceneFactory.makeTransactionScene() }
-                    .tabItem {
-                        Image(systemName: "list.triangle")
-                        RefdsText(TabItem.transaction.title, size: .normal)
-                    }
-                    .tag(TabItem.transaction)
+                    NavigationView { router.configure(routes: .transactions) }
+                        .tabItem {
+                            Image(systemName: "list.triangle")
+                            RefdsText(TabItem.transaction.title, size: .normal)
+                        }
+                        .tag(TabItem.transaction)
                 }
                 .environmentObject(actionService)
                 .onChange(of: scenePhase) { newValue in

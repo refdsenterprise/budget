@@ -10,11 +10,12 @@ import RefdsUI
 
 import Core
 import UserInterface
+import Presentation
 
 @available(iOS 16.0, *)
 struct SideBarScene: View {
     @State private var selectionTab: TabItem = .budget
-    private let sceneFactory = SceneFactory(device: Application.isLargeScreen ? .macOS : .iOS)
+    private let router = MainRouter(factory: Factory.shared)
     
     var body: some View {
         GeometryReader { proxy in
@@ -22,9 +23,9 @@ struct SideBarScene: View {
                 List(TabItem.allCases, id: \.title) { item in
                     NavigationLink {
                         switch item {
-                        case .category: NavigationStack { sceneFactory.makeCategoryScene() }
-                        case .budget: NavigationStack { sceneFactory.makeBudgetScene() }
-                        case .transaction: NavigationStack { sceneFactory.makeTransactionScene() }
+                        case .category: NavigationStack { router.configure(routes: .category) }
+                        case .budget: NavigationStack { router.configure(routes: .budget) }
+                        case .transaction: NavigationStack { router.configure(routes: .transactions) }
                         }
                     } label: {
                         Label {
@@ -34,9 +35,10 @@ struct SideBarScene: View {
                         }
                     }
                 }
+                .listStyle(.sidebar)
                 .navigationTitle("Menu")
             } detail: {
-                sceneFactory.makeBudgetScene()
+                router.configure(routes: .budget)
                     .navigationSplitViewColumnWidth(proxy.size.width / 2)
             }
             .navigationSplitViewStyle(.balanced)

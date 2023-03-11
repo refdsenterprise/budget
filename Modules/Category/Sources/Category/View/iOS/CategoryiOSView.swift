@@ -13,13 +13,7 @@ import UserInterface
 import Resource
 
 struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
-    @StateObject private var presenter: Presenter
-    private let transactionScene: ((CategoryEntity, Date) -> any View)?
-    
-    init(presenter: Presenter, transactionScene: ((CategoryEntity, Date) -> any View)? = nil) {
-        self._presenter = StateObject(wrappedValue: presenter)
-        self.transactionScene = transactionScene
-    }
+    @EnvironmentObject private var presenter: Presenter
     
     var body: some View {
         list
@@ -28,24 +22,12 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
             .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
             .onAppear { presenter.loadData()  }
-            .background(
-                NavigationLink(
-                    destination: AddCategoryScreen(
-                        device: .iOS,
-                        presenter: AddCategoryPresenter.instance
-                    ),
-                    isActive: $presenter.isPresentedAddCategory
-                ) { EmptyView() }.hidden()
-            )
-            .background(
-                NavigationLink(
-                    destination: AddCategoryScreen(
-                        device: .iOS,
-                        presenter: AddCategoryPresenter(category: presenter.category)
-                    ),
-                    isActive: $presenter.isPresentedEditCategory
-                ) { EmptyView() }.hidden()
-            )
+            .navigation(isPresented: $presenter.isPresentedAddCategory) {
+                presenter.router.configure(routes: .addActegory(nil))
+            }
+            .navigation(isPresented: $presenter.isPresentedEditCategory) {
+                presenter.router.configure(routes: .addActegory(presenter.category))
+            }
     }
     
     private var list: some View {
@@ -56,8 +38,8 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 sectionDuplicateCategories(previousDate: previousDate)
             }
             
-            if !presenter.getCategoriesFiltred().isEmpty, let transactionScene = transactionScene {
-                sectionCategories(transactionScene: transactionScene)
+            if !presenter.getCategoriesFiltred().isEmpty {
+                sectionCategories
                 sectionTotal
             }
         }
@@ -100,11 +82,11 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         }
     }
     
-    private func sectionCategories(transactionScene: @escaping (CategoryEntity, Date) -> any View) -> some View {
+    private var sectionCategories: some View {
         Section {
             ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
                 NavigationLink(destination: {
-                    AnyView(transactionScene(category, presenter.date))
+                    presenter.router.configure(routes: .transactions(category, presenter.date))
                         .tint(category.color)
                 }, label: {
                     rowCategory(category)
@@ -202,7 +184,9 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private func swipeEditCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.category = category
-            presenter.isPresentedEditCategory.toggle()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                presenter.isPresentedEditCategory.toggle()
+            }
         } label: {
             RefdsIcon(
                 symbol: .squareAndPencil,
@@ -217,7 +201,9 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.category = category
-            presenter.isPresentedEditCategory.toggle()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                presenter.isPresentedEditCategory.toggle()
+            }
         } label: {
             Label(presenter.string(.edit), systemImage: RefdsIconSymbol.squareAndPencil.rawValue)
         }
@@ -242,17 +228,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 weight: .medium,
                 renderingMode: .hierarchical
             )
-        }
-    }
-}
-
-struct CategoryiOSView_Previews: PreviewProvider {
-    static var previews: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                CategoryScreen(device: .iOS, presenter: CategoryPresenter.instance)
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro"))
         }
     }
 }

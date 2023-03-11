@@ -21,6 +21,10 @@ public final class Application {
         UIDevice.current.userInterfaceIdiom == .mac || UIDevice.current.userInterfaceIdiom == .pad
     }
     
+    public static var currentDevice: Device {
+        isLargeScreen ? .macOS : .iOS
+    }
+    
     public func endEditing() {
         UIApplication.shared.endEditing()
     }
