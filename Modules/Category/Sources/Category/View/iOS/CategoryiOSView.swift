@@ -16,21 +16,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
     var body: some View {
-        list
-            .budgetAlert($presenter.alert)
-            .navigationTitle(presenter.string(.navigationTitle))
-            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
-            .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
-            .onAppear { presenter.loadData()  }
-            .navigation(isPresented: $presenter.isPresentedAddCategory) {
-                presenter.router.configure(routes: .addActegory(nil))
-            }
-            .navigation(isPresented: $presenter.isPresentedEditCategory) {
-                presenter.router.configure(routes: .addActegory(presenter.category))
-            }
-    }
-    
-    private var list: some View {
         List {
             sectionOptions
             
@@ -44,17 +29,26 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             }
         }
         .listStyle(.insetGrouped)
+        .budgetAlert($presenter.alert)
+        .navigationTitle(presenter.string(.navigationTitle))
+        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
+        .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
+        .onAppear { presenter.loadData()  }
+        .navigation(isPresented: $presenter.isPresentedAddCategory) {
+            presenter.router.configure(routes: .addTransaction(nil))
+        }
+        .navigation(isPresented: $presenter.isPresentedEditCategory) {
+            presenter.router.configure(routes: .addTransaction(presenter.category))
+        }
     }
     
     private var sectionOptions: some View {
         CollapsedView(title: presenter.string(.sectionOptions)) {
             Group {
-                HStack {
-                    Toggle(isOn: $presenter.isFilterPerDate) {
-                        RefdsText(presenter.string(.sectionOptionsFilterPerDate))
-                    }
-                    .toggleStyle(CheckBoxStyle())
+                Toggle(isOn: $presenter.isFilterPerDate) {
+                    RefdsText(presenter.string(.sectionOptionsFilterPerDate))
                 }
+                .toggleStyle(CheckBoxStyle())
                 
                 if presenter.isFilterPerDate {
                     PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy"))
@@ -118,7 +112,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     color: .secondary
                 )
                 RefdsText(
-                    presenter.totalActual.formatted(.currency(code: presenter.string(.currency))),
+                    presenter.totalActual.currency,
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
@@ -127,7 +121,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     lineLimit: 1
                 )
                 RefdsText(
-                    presenter.totalBudget.formatted(.currency(code: presenter.string(.currency))),
+                    presenter.totalBudget.currency,
                     size: .custom(20),
                     color: .accentColor,
                     weight: .bold,
@@ -147,7 +141,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     Spacer()
                     if let budget = presenter.getBudget(by: category) {
                         RefdsText(
-                            budget.amount.formatted(.currency(code: presenter.string(.currency))),
+                            budget.amount.currency,
                             family: .moderatMono,
                             lineLimit: 1
                         )
@@ -184,7 +178,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private func swipeEditCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.category = category
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 presenter.isPresentedEditCategory.toggle()
             }
         } label: {
@@ -201,7 +195,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.category = category
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 presenter.isPresentedEditCategory.toggle()
             }
         } label: {

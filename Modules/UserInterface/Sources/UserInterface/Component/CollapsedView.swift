@@ -29,37 +29,45 @@ public struct CollapsedView: View {
     }
     
     public var body: some View {
-        Section {
-            Button {
-                withAnimation {
-                    showOptions.toggle()
-                }
-            } label: {
-                if let title = title {
-                    rowView(title: title)
-                } else if let row = row {
-                    rowView(row: row)
-                }
+        Button {
+            Application.shared.endEditing()
+            withAnimation {
+                showOptions.toggle()
             }
-            if showOptions {
-                AnyView(content())
+        } label: {
+            if let title = title {
+                rowView(title: title)
+            } else if let row = row {
+                rowView(row: row)
             }
+        }
+        if showOptions {
+            AnyView(content())
         }
     }
     
     private func rowView(row: () -> any View) -> some View {
-        AnyView(row())
+        Section {
+            HStack(spacing: 7) {
+                AnyView(row())
+                Spacer(minLength: 0)
+                RefdsIcon(symbol: .chevronRight, color: .accentColor, size: 16, weight: .medium, renderingMode: .hierarchical)
+                    .rotationEffect(showOptions ? .degrees(90) : .degrees(0))
+            }
+        }
     }
     
     private func rowView(title: String) -> some View {
-        HStack(spacing: 15) {
-            RefdsText(title)
-            Spacer()
-            if let description = description {
-                RefdsText(description, color: .secondary)
+        Section {
+            HStack(spacing: 15) {
+                RefdsText(title)
+                Spacer()
+                if let description = description {
+                    RefdsText(description, color: .secondary)
+                }
+                RefdsIcon(symbol: .chevronRight, color: .accentColor, size: 16, weight: .medium, renderingMode: .hierarchical)
+                    .rotationEffect(showOptions ? .degrees(90) : .degrees(0))
             }
-            RefdsIcon(symbol: .chevronRight, color: .accentColor, size: 16, weight: .medium, renderingMode: .hierarchical)
-                .rotationEffect(showOptions ? .degrees(90) : .degrees(0))
         }
     }
 }

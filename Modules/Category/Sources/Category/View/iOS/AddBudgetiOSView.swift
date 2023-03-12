@@ -24,7 +24,7 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
         List {
             sectionAmount
         }
-        .navigationTitle(presenter.stringNavigationTitle)
+        .navigationTitle(presenter.string(.navigationTitle))
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
@@ -48,9 +48,9 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
     
     private var rowDescription: some View {
         HStack {
-            RefdsText(presenter.stringDescription)
+            RefdsText(presenter.string(.description))
             Spacer()
-            RefdsTextField(presenter.stringPlaceholderDescription, text: $presenter.description, alignment: .trailing)
+            RefdsTextField(presenter.string(.placeholderDescription), text: $presenter.description, alignment: .trailing)
         }
     }
     

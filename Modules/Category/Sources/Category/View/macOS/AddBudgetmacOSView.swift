@@ -23,7 +23,7 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
     
     var body: some View {
         AnyView(macView)
-            .navigationTitle(Strings.AddBudget.navigationTitle.value)
+            .navigationTitle(presenter.string(.navigationTitle))
             .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
@@ -62,9 +62,9 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
     private var rowDescription: some View {
         GroupBox {
             HStack {
-                RefdsText(presenter.stringDescription)
+                RefdsText(presenter.string(.description))
                 Spacer()
-                RefdsTextField(presenter.stringPlaceholderDescription, text: $presenter.description, alignment: .trailing)
+                RefdsTextField(presenter.string(.placeholderDescription), text: $presenter.description, alignment: .trailing)
             }
         }
         .listGroupBoxStyle()

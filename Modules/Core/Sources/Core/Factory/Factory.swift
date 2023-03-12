@@ -23,14 +23,10 @@ public final class Factory: FactoryProtocol {
         return CategoryScreen(presenter: presenter)
     }
     
-    public func makeTransactionScene(category: CategoryEntity, date: Date) -> any View {
-        TransactionScene(category: category, date: date) {
-            self.makeAddCategoryScreen()
-        }
-    }
-    
-    public func makeTransactionScene() -> any View {
-        TransactionScene {
+    public func makeTransactionScreen(category: CategoryEntity? = nil, date: Date? = nil) -> any View {
+        let router = TransactionRouter(factory: self)
+        let presenter = TransactionPresenter(router: router, category: category, date: date)
+        return TransactionScreen(presenter: presenter, category: category, date: date) {
             self.makeAddCategoryScreen()
         }
     }
@@ -46,9 +42,15 @@ public final class Factory: FactoryProtocol {
         return AddBudgetScreen(presenter: presenter, newBudget: newBudget)
     }
     
+    public func makeAddTransactionScreen(transaction: TransactionEntity? = nil) -> any View {
+        let router = AddTransactionRouter(factory: self)
+        let presenter = AddTransactionPresenter(router: router, transaction: transaction)
+        return AddTransactionScreen(presenter: presenter)
+    }
+    
     public func makeBudgetScene() -> any View {
         BudgetScene { category, date in
-            self.makeTransactionScene(category: category, date: date)
+            self.makeTransactionScreen(category: category, date: date)
         }
     }
 }

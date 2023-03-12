@@ -19,7 +19,6 @@ public enum AddCategoryPresenterString {
     case rowColor
     case sectionBudget
     case noBudgetAdd
-    case currency
     case removeBudget
     case save
     case addBudget
@@ -114,7 +113,6 @@ public extension AddCategoryPresenter {
         case .rowColor: return Strings.AddCategory.labelColor.value
         case .sectionBudget: return Strings.AddCategory.headerBudgets.value
         case .noBudgetAdd: return Strings.AddCategory.noBudgetAdded.value
-        case .currency: return Strings.UserInterface.currencyCode.value
         case .removeBudget: return Strings.AddCategory.buttonRemoveBudget.value
         case .save: return Strings.General.save.value
         case .addBudget: return Strings.AddCategory.buttonAddBudget.value

@@ -1,5 +1,5 @@
 //
-//  TransactionScene.swift
+//  TransactionScreen.swift
 //  Budget
 //
 //  Created by Rafael Santos on 30/12/22.
@@ -13,7 +13,7 @@ import Domain
 import Presentation
 import UserInterface
 
-public struct TransactionScene: View {
+public struct TransactionScreen: View {
     @StateObject private var presenter: TransactionPresenter
     @State private var isPresentedAddTransaction = false
     @State private var isPresentedExporting = false
@@ -24,12 +24,13 @@ public struct TransactionScene: View {
     private var category: CategoryEntity?
     @EnvironmentObject private var actionService: ActionService
     @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject private var appConfigurator: AppConfiguration
     
     let addCategoryScene: () -> any View
     
-    public init(category: CategoryEntity? = nil, date: Date? = nil, addCategoryScene: @escaping () -> any View) {
+    public init(presenter: TransactionPresenter, category: CategoryEntity? = nil, date: Date? = nil, addCategoryScene: @escaping () -> any View) {
         self.category = category
-        _presenter = StateObject(wrappedValue: TransactionPresenter(category: category, date: date))
+        _presenter = StateObject(wrappedValue: presenter)
         self.addCategoryScene = addCategoryScene
     }
     
@@ -47,6 +48,7 @@ public struct TransactionScene: View {
             .searchable(text: $presenter.query, prompt: "Busque por transações")
             .onAppear {
                 presenter.loadData()
+                appConfigurator.themeColor = category?.color ?? .accentColor
                 DispatchQueue.main.asyncAfter(deadline: .now()) {
                     switch scenePhase {
                     case .active: performActionIfNeeded()
@@ -54,21 +56,20 @@ public struct TransactionScene: View {
                     }
                 }
             }
-            .fileExporter(isPresented: $isPresentedExporting, document: presenter.document, contentType: .json, defaultFilename: "trasactions.json") { result in
-                if case .success = result { print("success to export")
-                } else { print("failed to export") }
+            .onDisappear { appConfigurator.themeColor = .accentColor }
+            .navigation(isPresented: $isPresentedAddTransaction) {
+                presenter.router.configure(routes: .addTransaction(nil))
             }
-            .accentColor(category?.color != nil ? category!.color : .green)
-            .sheet(isPresented: $showShareSheet, content: {
-                if let url = presenter.csvStringWithTransactions() { ShareView(itemsToShare: [url]) }
-            })
+            .navigation(isPresented: $isPresentedEditTransaction) {
+                presenter.router.configure(routes: .addTransaction(transaction))
+            }
+        
     }
     
     private var list: some View {
         List {
-            CollapsedView(title: "Opções") {
-                sectionOptions
-            }
+            sectionOptions
+            
             sectionTotal(presenter.getTotalAmount())
             if #available(iOS 16.0, *), let chartData = presenter.getChartData(), !chartData.compactMap({ $0.value }).isEmpty {
                 CollapsedView(title: "Gráfico") {
@@ -83,16 +84,6 @@ public struct TransactionScene: View {
             }
         }
         .listStyle(.insetGrouped)
-        .background(
-            NavigationLink(destination: AddTransactionScene(addCategoryScene: addCategoryScene), isActive: $isPresentedAddTransaction) {
-                EmptyView()
-            }.hidden()
-        )
-        .background(
-            NavigationLink(destination: AddTransactionScene(transaction: transaction, addCategoryScene: addCategoryScene), isActive: $isPresentedEditTransaction) {
-                EmptyView()
-            }.hidden()
-        )
     }
     
     private func sectionTotal(_ total: Double) -> some View {
@@ -121,29 +112,30 @@ public struct TransactionScene: View {
     }
     
     private var sectionOptions: some View {
-        Group {
-            HStack {
+        CollapsedView(title: "Opções") {
+            Group {
                 Toggle(isOn: Binding(get: { presenter.isFilterPerDate }, set: { presenter.isFilterPerDate = $0; presenter.loadData() })) { RefdsText("Filtrar por data") }
                     .toggleStyle(CheckBoxStyle())
-            }
-            if presenter.isFilterPerDate {
-                CollapsedView(title: "Período", description: presenter.selectedPeriod.value.capitalized) {
-                    ForEach(PeriodTransaction.allCases, id: \.self) { period in
-                        Button {
-                            presenter.selectedPeriod = period
-                        } label: {
-                            HStack(spacing: 15) {
-                                IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                RefdsText(period.value.capitalized, color: .secondary)
+                
+                if presenter.isFilterPerDate {
+                    CollapsedView(title: "Período", description: presenter.selectedPeriod.value.capitalized) {
+                        ForEach(PeriodTransaction.allCases, id: \.self) { period in
+                            Button {
+                                presenter.selectedPeriod = period
+                            } label: {
+                                HStack(spacing: 15) {
+                                    IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
+                                    RefdsText(period.value.capitalized, color: .secondary)
+                                }
                             }
                         }
                     }
                 }
-            }
-            
-            if presenter.isFilterPerDate {
-                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy")) { _ in
-                    presenter.loadData()
+                
+                if presenter.isFilterPerDate {
+                    PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy")) { _ in
+                        presenter.loadData()
+                    }
                 }
             }
         }
@@ -270,11 +262,5 @@ public struct TransactionScene: View {
         )
         .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
         .position(by: .value("date", data.date))
-    }
-}
-
-struct TransactionScene_Previews: PreviewProvider {
-    static var previews: some View {
-        TransactionScene { EmptyView() }
     }
 }

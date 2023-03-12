@@ -20,19 +20,37 @@ struct SideBarScene: View {
     var body: some View {
         GeometryReader { proxy in
             NavigationSplitView {
-                List(TabItem.allCases, id: \.title) { item in
-                    NavigationLink {
-                        switch item {
-                        case .category: NavigationStack { router.configure(routes: .category) }
-                        case .budget: NavigationStack { router.configure(routes: .budget) }
-                        case .transaction: NavigationStack { router.configure(routes: .transactions) }
+                List {
+                    Section {
+                        ForEach(TabItem.allCases, id: \.title) { item in
+                            NavigationLink {
+                                switch item {
+                                case .category: NavigationStack { router.configure(routes: .category) }
+                                case .budget: NavigationStack { router.configure(routes: .budget) }
+                                case .transaction: NavigationStack { router.configure(routes: .transactions) }
+                                }
+                            } label: {
+                                Label {
+                                    RefdsText(item.title, size: .large)
+                                } icon: {
+                                    item.image
+                                }
+                            }
                         }
-                    } label: {
-                        Label {
-                            RefdsText(item.title)
-                        } icon: {
-                            item.image
+                    } header: {
+                        RefdsText("Exibição", size: .large, weight: .bold)
+                    }
+                    
+                    Section {
+                        NavigationLink(destination: { router.configure(routes: .addTransaction) }) {
+                            Label(title: { RefdsText("Adicionar Transação", size: .large) }, icon: { Image(systemName: "text.badge.plus") })
                         }
+                        
+                        NavigationLink(destination: { router.configure(routes: .addCategory) }) {
+                            Label(title: { RefdsText("Adicionar Categoria", size: .large) }, icon: { Image(systemName: "rectangle.stack.fill.badge.plus") })
+                        }
+                    } header: {
+                        RefdsText("Criação", size: .large, weight: .bold)
                     }
                 }
                 .listStyle(.sidebar)

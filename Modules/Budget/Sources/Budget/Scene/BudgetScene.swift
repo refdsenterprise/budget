@@ -19,10 +19,10 @@ public struct BudgetScene: View {
     @State private var showDatePicker = false
     @Environment(\.colorScheme) var colorScheme
     
-    private let transactionScene: (CategoryEntity, Date) -> any View
+    private let TransactionScreen: (CategoryEntity, Date) -> any View
     
-    public init(transactionScene: @escaping (CategoryEntity, Date) -> any View) {
-        self.transactionScene = transactionScene
+    public init(TransactionScreen: @escaping (CategoryEntity, Date) -> any View) {
+        self.TransactionScreen = TransactionScreen
     }
     
     public var body: some View {
@@ -172,7 +172,7 @@ public struct BudgetScene: View {
     private var sectionDifference: some View {
         Section {
             ForEach(presenter.categories) { category in
-                NavigationLink(destination: { AnyView(transactionScene(category, presenter.date)) }, label: {
+                NavigationLink(destination: { AnyView(TransactionScreen(category, presenter.date)) }, label: {
                     if let budget = presenter.getBudgetAmount(by: category),
                        let actual = presenter.getAmountTransactions(by: category) {
                         VStack(spacing: 5) {

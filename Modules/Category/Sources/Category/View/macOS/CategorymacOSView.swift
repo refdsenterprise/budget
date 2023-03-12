@@ -27,17 +27,17 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 sectionCategories
             })
         ])
-            .budgetAlert($presenter.alert)
-            .navigationTitle(presenter.string(.navigationTitle))
-            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
-            .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
-            .onAppear { presenter.loadData()  }
-            .navigation(isPresented: $presenter.isPresentedAddCategory) {
-                presenter.router.configure(routes: .addActegory(nil))
-            }
-            .navigation(isPresented: $presenter.isPresentedEditCategory) {
-                presenter.router.configure(routes: .addActegory(presenter.category))
-            }
+        .budgetAlert($presenter.alert)
+        .navigationTitle(presenter.string(.navigationTitle))
+        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
+        .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
+        .onAppear { presenter.loadData()  }
+        .navigation(isPresented: $presenter.isPresentedAddCategory) {
+            presenter.router.configure(routes: .addTransaction(nil))
+        }
+        .navigation(isPresented: $presenter.isPresentedEditCategory) {
+            presenter.router.configure(routes: .addTransaction(presenter.category))
+        }
     }
     
     private var sectionTotal: some View {
@@ -48,7 +48,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 color: .secondary
             )
             RefdsText(
-                presenter.totalActual.formatted(.currency(code: presenter.string(.currency))),
+                presenter.totalActual.currency,
                 size: .custom(40),
                 color: .primary,
                 weight: .bold,
@@ -58,7 +58,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
             )
             .frame(maxWidth: .infinity)
             RefdsText(
-                presenter.totalBudget.formatted(.currency(code: presenter.string(.currency))),
+                presenter.totalBudget.currency,
                 size: .custom(20),
                 color: .accentColor,
                 weight: .bold,
@@ -137,7 +137,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                     Spacer()
                     if let budget = presenter.getBudget(by: category) {
                         RefdsText(
-                            budget.amount.formatted(.currency(code: presenter.string(.currency))),
+                            budget.amount.currency,
                             family: .moderatMono,
                             lineLimit: 1
                         )
@@ -174,7 +174,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     private func swipeEditCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.category = category
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 presenter.isPresentedEditCategory.toggle()
             }
         } label: {
@@ -191,7 +191,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
         Button {
             presenter.category = category
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 presenter.isPresentedEditCategory.toggle()
             }
         } label: {
@@ -218,18 +218,6 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 weight: .medium,
                 renderingMode: .hierarchical
             )
-        }
-    }
-}
-
-struct CategorymacOSView_Previews: PreviewProvider {
-    static var previews: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                HStack {}
-                //CategoryScreen(device: .macOS, presenter: CategoryPresenter.instance)
-            }
-            .previewDevice(PreviewDevice(rawValue: "iPad Air (5th generation)"))
         }
     }
 }

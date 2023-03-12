@@ -10,7 +10,7 @@ import Domain
 import Data
 
 public final class TransactionPresenter: ObservableObject {
-    public static var instance: Self { Self() }
+    public var router: TransactionRouter
     
     @Published public var date: Date = Date()
     @Published public var transactions: [TransactionEntity] = []
@@ -35,7 +35,8 @@ public final class TransactionPresenter: ObservableObject {
     
     private var category: CategoryEntity?
     
-    public init(category: CategoryEntity? = nil, date: Date? = nil) {
+    public init(router: TransactionRouter, category: CategoryEntity? = nil, date: Date? = nil) {
+        self.router = router
         self.category = category
         if let date = date {
             _date = Published(initialValue: date)

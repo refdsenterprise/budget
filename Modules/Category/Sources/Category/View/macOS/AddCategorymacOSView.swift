@@ -25,6 +25,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
         }
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
+        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
     
@@ -37,7 +38,6 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
                     rowColor
                 }
             }
-            buttonSave
             Spacer()
         }
     }
@@ -92,16 +92,18 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     }
     
     private func rowBudget(_ budget: BudgetEntity) -> some View {
-        HStack(spacing: 15) {
-            RefdsText(budget.date.asString(withDateFormat: .custom("MMMM yyyy")).capitalized)
-            Spacer()
-            RefdsText(
-                budget.amount.formatted(.currency(code: presenter.string(.currency))),
-                size: .normal,
-                color: .secondary,
-                family: .moderatMono,
-                lineLimit: 1
-            )
+        Button {} label: {
+            HStack(spacing: 15) {
+                RefdsText(budget.date.asString(withDateFormat: .custom("MMMM yyyy")).capitalized)
+                Spacer()
+                RefdsText(
+                    budget.amount.currency,
+                    size: .normal,
+                    color: .secondary,
+                    family: .moderatMono,
+                    lineLimit: 1
+                )
+            }
         }
         .padding(.vertical, 4)
     }
@@ -128,14 +130,13 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
                 presenter.alert = .init(error: $0)
             }
         } label: {
-            SectionGroup {
-                RefdsText(
-                    presenter.string(.save),
-                    size: .small,
-                    color: presenter.buttonForegroundColor,
-                    weight: .bold
-                )
-            }
+            RefdsIcon(
+                symbol: .checkmarkRectangleFill,
+                color: presenter.buttonForegroundColor,
+                size: 20,
+                weight: .medium,
+                renderingMode: .hierarchical
+            )
         }
     }
     
@@ -147,7 +148,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
         })) {
             SectionGroup {
                 RefdsText(
-                    presenter.string(.addBudget),
+                    presenter.string(.addBudget).uppercased(),
                     size: .small,
                     color: .accentColor,
                     weight: .bold

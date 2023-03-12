@@ -16,6 +16,7 @@ import Core
 @main
 struct MainApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var appConfiguration = AppConfiguration.shared
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.scenePhase) private var scenePhase
     @State private var tabItemSelection: TabItem = .budget
@@ -32,6 +33,9 @@ struct MainApp: App {
         WindowGroup {
             if #available(iOS 16.0, *), Application.isLargeScreen {
                 SideBarScene()
+                    .accentColor(appConfiguration.themeColor)
+                    .environment(\.appTheme, appConfiguration.themeColor)
+                    .environmentObject(appConfiguration)
                     .environmentObject(actionService)
             } else {
                 TabView(selection: $tabItemSelection) {
@@ -56,6 +60,9 @@ struct MainApp: App {
                         }
                         .tag(TabItem.transaction)
                 }
+                .accentColor(appConfiguration.themeColor)
+                .environment(\.appTheme, appConfiguration.themeColor)
+                .environmentObject(appConfiguration)
                 .environmentObject(actionService)
                 .onChange(of: scenePhase) { newValue in
                     switch newValue {

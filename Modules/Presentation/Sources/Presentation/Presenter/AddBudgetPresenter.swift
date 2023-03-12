@@ -9,15 +9,20 @@ import SwiftUI
 import Domain
 import Resource
 
+public enum AddBudgetPresenterString {
+    case navigationTitle
+    case placeholderDescription
+    case description
+}
+
 public protocol AddBudgetPresenterProtocol: ObservableObject {
     var amount: Double { get set }
     var date: Date { get set }
     var description: String { get set }
-    var stringNavigationTitle: String { get }
-    var stringPlaceholderDescription: String { get }
-    var stringDescription: String { get }
+    
     var buttonForegroundColor: Color { get }
     
+    func string(_ string: AddBudgetPresenterString) -> String
     func add(budget: (BudgetEntity) -> Void)
 }
 
@@ -28,24 +33,20 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
     @Published public var date: Date = Date()
     @Published public var description: String = ""
     
-    public var stringNavigationTitle: String {
-        return Strings.AddBudget.navigationTitle.value
-    }
-    
-    public var stringPlaceholderDescription: String {
-        return Strings.AddBudget.placeholderDescription.value
-    }
-    
-    public var stringDescription: String {
-        return Strings.AddBudget.description.value
-    }
-    
     private var canAddNewBudget: Bool {
         return amount > 0
     }
     
     public var buttonForegroundColor: Color {
         return canAddNewBudget ? .accentColor : .secondary
+    }
+    
+    public func string(_ string: AddBudgetPresenterString) -> String {
+        switch string {
+        case .navigationTitle: return Strings.AddBudget.navigationTitle.value
+        case .placeholderDescription: return Strings.AddBudget.placeholderDescription.value
+        case .description: return Strings.AddBudget.description.value
+        }
     }
     
     public func add(budget: (BudgetEntity) -> Void) {

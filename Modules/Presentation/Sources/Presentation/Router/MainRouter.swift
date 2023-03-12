@@ -13,6 +13,8 @@ public enum MainRoutes {
     case category
     case budget
     case transactions
+    case addTransaction
+    case addCategory
 }
 
 public struct MainRouter {
@@ -27,7 +29,9 @@ public struct MainRouter {
         switch routes {
         case .category: AnyView(factory.makeCategoryScreen())
         case .budget: AnyView(factory.makeBudgetScene())
-        case .transactions: AnyView(factory.makeTransactionScene())
+        case .transactions: AnyView(factory.makeTransactionScreen(category: nil, date: nil))
+        case .addTransaction: AnyView(factory.makeAddTransactionScreen(transaction: nil))
+        case .addCategory: AnyView(factory.makeAddCategoryScreen(category: nil))
         }
     }
 }

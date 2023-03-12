@@ -90,7 +90,7 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
             RefdsText(budget.date.asString(withDateFormat: .custom("MMMM yyyy")).capitalized)
             Spacer()
             RefdsText(
-                budget.amount.formatted(.currency(code: presenter.string(.currency))),
+                budget.amount.currency,
                 size: .normal,
                 color: .secondary,
                 family: .moderatMono,

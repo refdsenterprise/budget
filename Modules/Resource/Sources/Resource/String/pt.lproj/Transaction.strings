@@ -1,0 +1,7 @@
+"addTransaction.navigationTitle" = "Nova Transação";
+"addTransaction.dateAndTime" = "Data e hora";
+"addTransaction.inputMonth" = "Informe o mês";
+"addTransaction.description" = "Descrição";
+"addTransaction.inputDescription" = "Informe a descrição";
+"addTransaction.category" = "Categoria";
+"addTransaction.addNewCategory" = "Adicionar nova categoria";

@@ -8,35 +8,57 @@
 import SwiftUI
 import Domain
 import Data
+import Resource
+import UserInterface
 
-public final class AddTransactionPresenter: ObservableObject {
+public protocol AddTransactionPresenterProtocol: ObservableObject {
+    var router: AddTransactionRouter { get }
+    
+    var date: Date { get set }
+    var description: String { get set }
+    var amount: Double { get set }
+    var category: CategoryEntity? { get set }
+    var transaction: TransactionEntity? { get }
+    var alert: BudgetAlert { get set }
+    var buttonForegroundColor: Color { get }
+    
+    func loadData()
+    func loadData(newDate: Date)
+    func string(_ string: Strings.AddTransaction) -> String
+    func getBudget(on category: CategoryEntity) -> BudgetEntity?
+    func getCategories() -> [CategoryEntity]
+    func save(onSuccess: (() -> Void)?, onError: ((BudgetError) -> Void)?)
+}
+
+public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
+    public var router: AddTransactionRouter
+    
     @Published public var date: Date
     @Published public var description: String
     @Published public var amount: Double
-    @Published public var category: CategoryEntity? = Storage.shared.category.getCategories(from: Date.current).first
-    @Published public var selectionCategory: Int = 0
-    public var transaction: TransactionEntity?
+    @Published public var category: CategoryEntity?
+    @Published public var transaction: TransactionEntity?
+    @Published public var alert: BudgetAlert = .init()
     
-    public init(transaction: TransactionEntity?) {
+    private var canAddNewTransaction: Bool {
+        return amount > 0 && category != nil && !description.isEmpty
+    }
+    
+    public var buttonForegroundColor: Color {
+        return canAddNewTransaction ? (category?.color ?? .accentColor) : .secondary
+    }
+    
+    public init(router: AddTransactionRouter, transaction: TransactionEntity? = nil) {
+        self.router = router
         self.transaction = transaction
         self.date = transaction?.date ?? Date()
         self.description = transaction?.description ?? ""
         self.amount = transaction?.amount ?? 0
         if let category = transaction?.category {
             self.category = category
+        } else {
+            self.category = Storage.shared.category.getCategories(from: .current).first
         }
-    }
-    
-    public var canAddNewTransaction: Bool {
-        return amount > 0 && category != nil && !description.isEmpty
-    }
-    
-    public var buttonBackgroundColor: Color {
-        return canAddNewTransaction ? .accentColor.opacity(0.2) : .secondary.opacity(0.2)
-    }
-    
-    public var buttonForegroundColor: Color {
-        return canAddNewTransaction ? (category?.color ?? .accentColor) : .secondary
     }
     
     public func loadData() {
@@ -53,28 +75,57 @@ public final class AddTransactionPresenter: ObservableObject {
         }
     }
     
+    public func string(_ string: Strings.AddTransaction) -> String {
+        string.value
+    }
+    
+    public func getBudget(on category: CategoryEntity) -> BudgetEntity? {
+        category.budgets.first { budget in
+            budget.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
+        }
+    }
+    
     public func getCategories() -> [CategoryEntity] {
         Storage.shared.category.getCategories(from: date)
     }
     
-    public func addTransaction() throws {
-        guard let category = category else { return }
-        try Storage.shared.transaction.addTransaction(
-            date: date,
-            description: description,
-            category: category,
-            amount: amount
-        )
+    public func save(onSuccess: (() -> Void)? = nil, onError: ((BudgetError) -> Void)? = nil) {
+        if canAddNewTransaction {
+            if transaction != nil { editTransaction(onSuccess: onSuccess, onError: onError) }
+            else { addTransaction(onSuccess: onSuccess, onError: onError) }
+        }
     }
     
-    public func editTransaction() throws {
-        guard let category = category, let transaction = transaction else { return }
-        try Storage.shared.transaction.editTransaction(
-            transaction,
-            date: date,
-            description: description,
-            category: category,
-            amount: amount
-        )
+    private func addTransaction(onSuccess: (() -> Void)? = nil, onError: ((BudgetError) -> Void)? = nil) {
+        guard let category = category else { onError?(.notFoundCategory); return }
+        do {
+            try Storage.shared.transaction.addTransaction(
+                date: date,
+                description: description,
+                category: category,
+                amount: amount
+            )
+            onSuccess?()
+        } catch {
+            guard let error = error as? BudgetError else { return }
+            onError?(error)
+        }
+    }
+    
+    private func editTransaction(onSuccess: (() -> Void)? = nil, onError: ((BudgetError) -> Void)? = nil) {
+        guard let category = category, let transaction = transaction else { onError?(.notFoundTransaction); return }
+        do {
+            try Storage.shared.transaction.editTransaction(
+                transaction,
+                date: date,
+                description: description,
+                category: category,
+                amount: amount
+            )
+            onSuccess?()
+        } catch {
+            guard let error = error as? BudgetError else { return }
+            onError?(error)
+        }
     }
 }

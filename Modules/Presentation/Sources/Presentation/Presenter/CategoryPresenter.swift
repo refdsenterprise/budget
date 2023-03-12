@@ -22,7 +22,6 @@ public enum CategoryPresenterString {
     case sectionDuplicateButton
     case sectionCategoriosHeader
     case currentValue
-    case currency
     case rowCategorySpending(String)
     case rowCategoryTransaction(Int)
     case edit
@@ -96,7 +95,6 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         case .sectionDuplicateButton: return Strings.Category.sectionDuplicateButton.value
         case .sectionCategoriosHeader: return String(format: NSLocalizedString(Strings.Category.mediumBudget.value, comment: ""), isFilterPerDate ? "" : " \(Strings.Category.rowMedium.value)")
         case .currentValue: return Strings.UserInterface.currentValue.value
-        case .currency: return Strings.UserInterface.currencyCode.value
         case .rowCategorySpending(let percent): return String(format: NSLocalizedString(Strings.Category.rowSpending.value, comment: ""), percent)
         case .rowCategoryTransaction(let count): return String(format: NSLocalizedString(Strings.Category.rowTransactionsAmount.value, comment: ""), count)
         case .edit: return Strings.UserInterface.edit.value
