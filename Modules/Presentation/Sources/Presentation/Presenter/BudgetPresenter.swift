@@ -18,6 +18,7 @@ public protocol BudgetPresenterProtocol: ObservableObject {
     var isFilterPerDate: Bool { get set }
     var selectedPeriod: PeriodEntity { get set }
     var isSelectedVersus: Bool { get set }
+    var maxDay: String { get set }
     
     var totalActual: Double { get }
     var totalBudget: Double { get }
@@ -46,6 +47,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     @Published public var isFilterPerDate: Bool = true { didSet { loadData() } }
     @Published public var selectedPeriod: PeriodEntity = .month
     @Published public var isSelectedVersus: Bool = false
+    @Published public var maxDay: String = ""
     
     public init(router: BudgetRouter) {
         self.router = router
