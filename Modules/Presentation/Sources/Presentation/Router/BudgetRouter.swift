@@ -1,20 +1,19 @@
 //
-//  CategoryRouter.swift
+//  BudgetRouter.swift
 //  
 //
-//  Created by Rafael Santos on 11/03/23.
+//  Created by Rafael Santos on 12/03/23.
 //
 
 import SwiftUI
 import Domain
 import UserInterface
 
-public enum CategoryRoutes {
-    case addCategory(CategoryEntity?)
+public enum BudgetRoutes {
     case transactions(CategoryEntity, Date)
 }
 
-public struct CategoryRouter {
+public struct BudgetRouter {
     private let factory: FactoryProtocol
     
     public init(factory: FactoryProtocol) {
@@ -22,10 +21,10 @@ public struct CategoryRouter {
     }
     
     @ViewBuilder
-    public func configure(routes: CategoryRoutes) -> some View {
+    public func configure(routes: BudgetRoutes) -> some View {
         switch routes {
-        case .addCategory(let category): AnyView(factory.makeAddCategoryScreen(category: category))
         case .transactions(let category, let date): AnyView(factory.makeTransactionScreen(category: category, date: date))
         }
     }
 }
+

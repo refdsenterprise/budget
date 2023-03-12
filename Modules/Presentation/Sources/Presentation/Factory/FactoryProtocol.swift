@@ -15,6 +15,6 @@ public protocol FactoryProtocol {
     func makeTransactionScreen(category: CategoryEntity?, date: Date?) -> any View
     func makeAddCategoryScreen(category: CategoryEntity?) -> any View
     func makeAddBudgetScreen(newBudget: ((BudgetEntity) -> Void)?) -> any View
-    func makeBudgetScene() -> any View
+    func makeBudgetScreen() -> any View
     func makeAddTransactionScreen(transaction: TransactionEntity?) -> any View
 }

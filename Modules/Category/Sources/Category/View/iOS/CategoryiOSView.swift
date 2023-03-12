@@ -35,10 +35,10 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
         .onAppear { presenter.loadData()  }
         .navigation(isPresented: $presenter.isPresentedAddCategory) {
-            presenter.router.configure(routes: .addTransaction(nil))
+            presenter.router.configure(routes: .addCategory(nil))
         }
         .navigation(isPresented: $presenter.isPresentedEditCategory) {
-            presenter.router.configure(routes: .addTransaction(presenter.category))
+            presenter.router.configure(routes: .addCategory(presenter.category))
         }
     }
     

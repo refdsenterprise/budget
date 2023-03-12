@@ -46,9 +46,9 @@ public final class Factory: FactoryProtocol {
         return AddTransactionScreen(presenter: presenter)
     }
     
-    public func makeBudgetScene() -> any View {
-        BudgetScene { category, date in
-            self.makeTransactionScreen(category: category, date: date)
-        }
+    public func makeBudgetScreen() -> any View {
+        let router = BudgetRouter(factory: self)
+        let presenter = BudgetPresenter(router: router)
+        return BudgetScreen(presenter: presenter)
     }
 }

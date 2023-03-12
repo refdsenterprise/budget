@@ -28,7 +28,7 @@ public struct MainRouter {
     public func configure(routes: MainRoutes) -> some View {
         switch routes {
         case .category: AnyView(factory.makeCategoryScreen())
-        case .budget: AnyView(factory.makeBudgetScene())
+        case .budget: AnyView(factory.makeBudgetScreen())
         case .transactions: AnyView(factory.makeTransactionScreen(category: nil, date: nil))
         case .addTransaction: AnyView(factory.makeAddTransactionScreen(transaction: nil))
         case .addCategory: AnyView(factory.makeAddCategoryScreen(category: nil))
