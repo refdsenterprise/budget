@@ -27,10 +27,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
         ])
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
-        .onAppear {
-            presenter.loadData()
-            appConfigurator.themeColor = presenter.category?.color ?? .accentColor
-        }
+        .onAppear { presenter.loadData() }
         .onDisappear { appConfigurator.themeColor = .accentColor }
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
@@ -41,6 +38,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
             RefdsCurrency(value: $presenter.amount, size: .custom(40))
                 .padding()
             rowInformation
+            Spacer()
         }
     }
     

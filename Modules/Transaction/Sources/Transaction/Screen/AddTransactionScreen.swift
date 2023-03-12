@@ -12,7 +12,6 @@ import UserInterface
 
 public struct AddTransactionScreen<Presenter: AddTransactionPresenterProtocol>: View {
     @StateObject private var presenter: Presenter
-    @EnvironmentObject private var appConfigurator: AppConfiguration
     
     public init(presenter: Presenter) {
         self._presenter = StateObject(wrappedValue: presenter)

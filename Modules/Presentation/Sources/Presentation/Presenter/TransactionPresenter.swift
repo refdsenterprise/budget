@@ -8,15 +8,43 @@
 import SwiftUI
 import Domain
 import Data
+import Resource
+import UserInterface
 
-public final class TransactionPresenter: ObservableObject {
+public protocol TransactionPresenterProtocol: ObservableObject {
+    var router: TransactionRouter { get }
+    var date: Date { get set }
+    var query: String { get set }
+    var isFilterPerDate: Bool { get set }
+    var isPresentedAddTransaction: Bool { get set }
+    var isPresentedEditTransaction: Bool { get set }
+    var alert: BudgetAlert { get set }
+    var transaction: TransactionEntity? { get set }
+    var category: CategoryEntity? { get }
+    var selectedPeriodString: String { get set }
+    var selectedPeriod: PeriodTransaction { get set }
+    var totalAmount: Double { get }
+    var chartData: [(date: Date, value: Double)] { get }
+    var transactionsFiltred: [TransactionEntity] { get }
+    
+    func string(_ string: Strings.Transaction) -> String
+    func loadData()
+    func remove(transaction: TransactionEntity, onError: ((BudgetError) -> Void)?)
+}
+
+public final class TransactionPresenter: TransactionPresenterProtocol {
     public var router: TransactionRouter
     
     @Published public var date: Date = Date()
     @Published public var transactions: [TransactionEntity] = []
     @Published public var query: String = ""
-    @Published public var isFilterPerDate = true
-    @Published public var document: DataDocument = .init()
+    @Published public var isFilterPerDate: Bool = true { didSet { loadData() } }
+    @Published public var isPresentedAddTransaction: Bool = false
+    @Published public var isPresentedEditTransaction: Bool = false
+    @Published public var alert: BudgetAlert = .init()
+    @Published public var transaction: TransactionEntity?
+    public var category: CategoryEntity?
+    
     @Published public var selectedPeriodString: String = PeriodTransaction.monthly.value {
         didSet {
             for period in PeriodTransaction.allCases {
@@ -28,19 +56,33 @@ public final class TransactionPresenter: ObservableObject {
     }
     
     @Published public var selectedPeriod: PeriodTransaction = .monthly {
-        didSet {
-            loadData()
-        }
+        didSet { loadData() }
     }
     
-    private var category: CategoryEntity?
+    public var totalAmount: Double {
+        transactions.filter({
+            containsTransaction($0)
+        }).map({ $0.amount }).reduce(0, +)
+    }
+    
+    public var chartData: [(date: Date, value: Double)] {
+        transactionsFiltred.map({
+            (date: $0.date, value: $0.amount)
+        })
+    }
+    
+    public var transactionsFiltred: [TransactionEntity] {
+        transactions.filter({ containsTransaction($0) })
+    }
     
     public init(router: TransactionRouter, category: CategoryEntity? = nil, date: Date? = nil) {
         self.router = router
         self.category = category
-        if let date = date {
-            _date = Published(initialValue: date)
-        }
+        if let date = date { _date = Published(initialValue: date) }
+    }
+    
+    public func string(_ string: Strings.Transaction) -> String {
+        string.value
     }
     
     public func loadData() {
@@ -50,27 +92,19 @@ public final class TransactionPresenter: ObservableObject {
         } else {
             transactions = isFilterPerDate ? transaction.getTransactions(from: date, format: selectedPeriod.dateFormat) : transaction.getAllTransactions()
         }
-        document.codable = transactions.asString
     }
     
-    public func getTransactionsFiltred() -> [TransactionEntity] {
-        transactions.filter({ containsTransaction($0) })
+    public func remove(transaction: TransactionEntity, onError: ((BudgetError) -> Void)? = nil) {
+        do {
+            try Storage.shared.transaction.removeTransaction(transaction)
+            loadData()
+        } catch {
+            guard let error = error as? BudgetError else { return }
+            onError?(error)
+        }
     }
     
-    public func getTotalAmount() -> Double {
-        transactions.filter({ containsTransaction($0) }).map({ $0.amount }).reduce(0, +)
-    }
-    
-    public func removeTransaction(_ transaction: TransactionEntity) {
-        try? Storage.shared.transaction.removeTransaction(transaction)
-        loadData()
-    }
-    
-    public func getChartData() -> [(date: Date, value: Double)]{
-        getTransactionsFiltred().map({ (date: $0.date, value: $0.amount) })
-    }
-    
-    public func containsTransaction(_ transaction: TransactionEntity) -> Bool {
+    private func containsTransaction(_ transaction: TransactionEntity) -> Bool {
         guard !query.isEmpty else { return true }
         let query = query.stripingDiacritics.lowercased()
         let description = transaction.description.stripingDiacritics.lowercased().contains(query)
@@ -78,28 +112,6 @@ public final class TransactionPresenter: ObservableObject {
         let amount = "\(transaction.amount)".lowercased().contains(query)
         let date = transaction.date.asString(withDateFormat: selectedPeriod.dateFormat).lowercased().contains(query)
         return description || category || amount || date
-    }
-    
-    @available(iOS 15.0, *)
-    public func csvStringWithTransactions() -> URL? {
-        let header: String = "Data,Categoria,Valor,Descrição\n"
-        let footer: String = "Total,\(getTotalAmount().formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: "."))\n"
-        var body: String = ""
-        for transaction in transactions {
-            body += "\(transaction.date.asString(withDateFormat: .custom("dd/MM/yyyy - HH:mm"))),\(transaction.category?.name ?? ""),\(transaction.amount.formatted(.currency(code: "BRL")).replacingOccurrences(of: ".", with: " ").replacingOccurrences(of: ",", with: ".")),\(transaction.description.replacingOccurrences(of: ",", with: ""))\n"
-        }
-        let csv = header + body + footer
-        if let jsonData = csv.data(using: .utf8),
-           let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            let pathWithFileName = documentDirectory.appendingPathComponent("Transações - \(date.asString(withDateFormat: selectedPeriod.dateFormatFile).replacingOccurrences(of: "/", with: " de ")).csv")
-            do {
-                try jsonData.write(to: pathWithFileName)
-                return pathWithFileName
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-        return nil
     }
 }
 

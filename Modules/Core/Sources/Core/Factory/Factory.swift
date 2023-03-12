@@ -26,9 +26,7 @@ public final class Factory: FactoryProtocol {
     public func makeTransactionScreen(category: CategoryEntity? = nil, date: Date? = nil) -> any View {
         let router = TransactionRouter(factory: self)
         let presenter = TransactionPresenter(router: router, category: category, date: date)
-        return TransactionScreen(presenter: presenter, category: category, date: date) {
-            self.makeAddCategoryScreen()
-        }
+        return TransactionScreen(presenter: presenter)
     }
     
     public func makeAddCategoryScreen(category: CategoryEntity? = nil) -> any View {

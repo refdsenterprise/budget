@@ -161,8 +161,10 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     
     private func swipeRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
-            presenter.remove(category: category) {
-                presenter.alert = .init(error: $0)
+            withAnimation {
+                presenter.remove(category: category) {
+                    presenter.alert = .init(error: $0)
+                }
             }
         } label: {
             RefdsIcon(
@@ -177,9 +179,11 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     
     private func swipeEditCategory(_ category: CategoryEntity) -> some View {
         Button {
-            presenter.category = category
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                presenter.isPresentedEditCategory.toggle()
+            withAnimation {
+                presenter.category = category
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    presenter.isPresentedEditCategory.toggle()
+                }
             }
         } label: {
             RefdsIcon(
@@ -194,9 +198,11 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     
     private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
         Button {
-            presenter.category = category
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                presenter.isPresentedEditCategory.toggle()
+            withAnimation {
+                presenter.category = category
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    presenter.isPresentedEditCategory.toggle()
+                }
             }
         } label: {
             Label(presenter.string(.edit), systemImage: RefdsIconSymbol.squareAndPencil.rawValue)
@@ -205,8 +211,10 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     
     private func contextMenuRemoveCategory(_ category: CategoryEntity) -> some View {
         Button {
-            presenter.remove(category: category) {
-                presenter.alert = .init(error: $0)
+            withAnimation {
+                presenter.remove(category: category) {
+                    presenter.alert = .init(error: $0)
+                }
             }
         } label: {
             Label(presenter.string(.remove), systemImage: RefdsIconSymbol.trashFill.rawValue)

@@ -5,3 +5,14 @@
 "addTransaction.inputDescription" = "Informe a descrição";
 "addTransaction.category" = "Categoria";
 "addTransaction.addNewCategory" = "Adicionar nova categoria";
+
+"transaction.navigationTitle" = "Transações";
+"transaction.searchForTransactions" = "Busque por transações";
+"transaction.chart" = "Gráfico";
+"transaction.totalTransactions" = "total das transações";
+"transaction.options" = "Opções";
+"transaction.filterPerDate" = "Filtrar por data";
+"transaction.period" = "Período";
+"transaction.noDescription" = "Sem descrição";
+"transaction.chartDate" = "date";
+"transaction.chartValue" = "value";
