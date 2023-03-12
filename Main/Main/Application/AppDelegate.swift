@@ -20,6 +20,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             actionService.action = Action(shortcutItem: shortcutItem)
         }
         
+        for scene in application.connectedScenes {
+            if let windowScene = (scene as? UIWindowScene) {
+                #if targetEnvironment(macCatalyst)
+                if let titlebar = windowScene.titlebar {
+                    titlebar.titleVisibility = .hidden
+                    titlebar.toolbar = nil
+                }
+                #endif
+            }
+        }
+        
         let configuration = UISceneConfiguration(
             name: connectingSceneSession.configuration.name,
             sessionRole: connectingSceneSession.role

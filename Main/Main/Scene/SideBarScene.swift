@@ -57,7 +57,6 @@ struct SideBarScene: View {
                 .navigationTitle("Menu")
             } detail: {
                 router.configure(routes: .budget)
-                    .navigationSplitViewColumnWidth(proxy.size.width / 2)
             }
             .navigationSplitViewStyle(.balanced)
         }
