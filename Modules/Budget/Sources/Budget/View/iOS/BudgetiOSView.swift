@@ -301,7 +301,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         Chart(chartData, id: \.label) { chartData in
             ForEach(chartData.data, id: \.category) {
                 BarMark(
-                    x: .value(presenter.string(.category), $0.category),
+                    x: .value(presenter.string(.category), String($0.category.prefix(3))),
                     y: .value(presenter.string(.value), $0.value)
                 )
                 .foregroundStyle(by: .value(presenter.string(.category), chartData.label))
@@ -325,7 +325,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         Chart {
             ForEach(chartData[1].data, id: \.category) {
                 LineMark(
-                    x: .value(presenter.string(.category), $0.category),
+                    x: .value(presenter.string(.category), String($0.category.prefix(3))),
                     y: .value(presenter.string(.value), $0.value)
                 )
                 .interpolationMethod(.catmullRom)
@@ -335,7 +335,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 .position(by: .value(presenter.string(.category), chartData[1].label))
                 
                 AreaMark(
-                    x: .value(presenter.string(.category), $0.category),
+                    x: .value(presenter.string(.category), String($0.category.prefix(3))),
                     y: .value(presenter.string(.value), $0.value)
                 )
                 .interpolationMethod(.catmullRom)
@@ -347,7 +347,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
             
             ForEach(chartData[0].data, id: \.category) {
                 LineMark(
-                    x: .value(presenter.string(.category), $0.category),
+                    x: .value(presenter.string(.category), String($0.category.prefix(3))),
                     y: .value(presenter.string(.value), $0.value)
                 )
                 .interpolationMethod(.catmullRom)

@@ -7,6 +7,7 @@
 
 import Domain
 import UIKit
+import ActivityKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     private let actionService = ActionService.shared
@@ -18,6 +19,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> UISceneConfiguration {
         if let shortcutItem = options.shortcutItem {
             actionService.action = Action(shortcutItem: shortcutItem)
+        }
+        
+        if #available(iOS 16.1, *) {
+            if ActivityAuthorizationInfo().areActivitiesEnabled {
+                do {
+                    _ = try Activity.request(
+                        attributes: BudgetWidgetAttributes(name: ""),
+                        contentState: .init(value: 0)
+                    )
+                } catch {
+                    print("\(error.localizedDescription).")
+                }
+            }
         }
         
         for scene in application.connectedScenes {

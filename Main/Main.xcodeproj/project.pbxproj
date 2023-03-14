@@ -29,6 +29,7 @@
 		6CC3B5FF29BF9ED50051C036 /* RefdsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC3B5FE29BF9ED50051C036 /* RefdsCore */; };
 		6CC3B60729BFA1060051C036 /* Presentation in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC3B60629BFA1060051C036 /* Presentation */; };
 		6CC3B63429BFD2CE0051C036 /* UserInterface in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC3B63329BFD2CE0051C036 /* UserInterface */; };
+		6CC3B63629C0404F0051C036 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC3B63529C0404F0051C036 /* Domain */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CC3B63629C0404F0051C036 /* Domain in Frameworks */,
 				6CC3B60729BFA1060051C036 /* Presentation in Frameworks */,
 				6CC3B63429BFD2CE0051C036 /* UserInterface in Frameworks */,
 				6CC3B5FA29BF9E180051C036 /* RefdsUI in Frameworks */,
@@ -245,6 +247,7 @@
 				6CC3B5F929BF9E180051C036 /* RefdsUI */,
 				6CC3B60629BFA1060051C036 /* Presentation */,
 				6CC3B63329BFD2CE0051C036 /* UserInterface */,
+				6CC3B63529C0404F0051C036 /* Domain */,
 			);
 			productName = BudgetWidgetExtension;
 			productReference = 6CC3B5E229BF975F0051C036 /* BudgetWidgetExtension.appex */;
@@ -471,6 +474,7 @@
 				INFOPLIST_FILE = Main/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Budget;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -515,6 +519,7 @@
 				INFOPLIST_FILE = Main/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Budget;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -555,6 +560,7 @@
 				INFOPLIST_FILE = BudgetWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -586,6 +592,7 @@
 				INFOPLIST_FILE = BudgetWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BudgetWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -691,6 +698,10 @@
 		6CC3B63329BFD2CE0051C036 /* UserInterface */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UserInterface;
+		};
+		6CC3B63529C0404F0051C036 /* Domain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Domain;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

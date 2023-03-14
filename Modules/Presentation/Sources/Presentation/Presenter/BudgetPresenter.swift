@@ -115,8 +115,6 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
         }
     }
     
-    
-    
     public func getTransactions(by category: CategoryEntity) -> [TransactionEntity] {
         isFilterPerDate ? getTransactionsByPeriod(by: category) : getTransactionsAll(by: category)
     }
@@ -155,9 +153,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
             (selectedPeriod == .week ? selectedPeriod.containsWeek(originalDate: date, compareDate: $0.date) : $0.date.asString(withDateFormat: selectedPeriod.dateFormat) == date.asString(withDateFormat: selectedPeriod.dateFormat))
         })
     }
-    
-    
-    
+
     public func getBudgetData() -> [(category: String, value: Double)] {
         categories.map({
             (category: $0.name.capitalized, value: getBudgetAmount(by: $0))
@@ -177,8 +173,6 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     public func getMaxActual() -> Double? {
         categories.map({ getAmountTransactions(by: $0) }).max()
     }
-    
-    
     
     public func getDifferencePercent(budget: Double, actual: Double) -> Double {
         let percent = (actual * 100) / budget
