@@ -18,18 +18,16 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "Domain"),
-        .package(path: "Category"),
-        .package(path: "Transaction"),
-        .package(path: "Budget")
+        .package(path: "Presentation"),
+        .package(path: "UserInterface")
     ],
     targets: [
         .target(
             name: "Core",
             dependencies: [
                 "Domain",
-                "Category",
-                "Transaction",
-                "Budget"
+                "Presentation",
+                "UserInterface"
             ]),
     ]
 )

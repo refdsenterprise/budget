@@ -20,7 +20,6 @@ let package = Package(
         .package(path: "Domain"),
         .package(path: "Data"),
         .package(path: "Resource"),
-        .package(path: "UserInterface"),
         .package(url: "https://github.com/refdsenterprise/refds-core.git", branch: "main")
     ],
     targets: [
@@ -30,7 +29,6 @@ let package = Package(
                 "Domain",
                 "Data",
                 "Resource",
-                "UserInterface",
                 .product(name: "RefdsCore", package: "refds-core")
             ]),
     ]

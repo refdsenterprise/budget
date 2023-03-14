@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Domain
-import UserInterface
 
 public enum TransactionRoutes {
     case addTransaction(TransactionEntity?)

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Domain
-import UserInterface
 
 public enum AddCategoryRoutes {
     case addBudget(((BudgetEntity) -> Void)?)

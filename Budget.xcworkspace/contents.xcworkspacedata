@@ -8,15 +8,6 @@
       location = "group:Modules/Core">
    </FileRef>
    <FileRef
-      location = "group:Modules/Budget">
-   </FileRef>
-   <FileRef
-      location = "group:Modules/Transaction">
-   </FileRef>
-   <FileRef
-      location = "group:Modules/Category">
-   </FileRef>
-   <FileRef
       location = "group:Main/Main.xcodeproj">
    </FileRef>
    <FileRef

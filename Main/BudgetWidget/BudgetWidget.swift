@@ -92,26 +92,50 @@ struct BudgetWidgetEntryView : View {
 
     private func systemSmall(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color) -> some View {
         ProgressView(value: totalActual, total: totalBudget) {
-            Text("Budget")
-                .font(.system(size: 20, weight: .bold))
-                .lineLimit(1)
-                .padding(.bottom, 5)
-            Text(presenter.string(.currentValue(.current)).uppercased())
-                .font(.system(size: 8))
-                .foregroundColor(.secondary)
-                .lineLimit(1)
-            Text(totalActual.currency)
-                .font(.system(size: 30, weight: .bold, design: .monospaced))
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
-            Text(totalBudget.currency)
-                .font(.system(size: 15, weight: .bold, design: .monospaced))
-                .foregroundColor(.green)
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
-                .padding(.bottom, 5)
-            Text(presenter.string(.diff).uppercased())
-                .font(.system(size: 10))
+            VStack(alignment: .leading) {
+                Label {
+                    (
+                        Text("Budget ") +
+                        Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
+                            .foregroundColor(.secondary)
+                    )
+                    .font(.system(size: 20, weight: .bold))
+                    .minimumScaleFactor(0.5)
+                } icon: {
+                    Image(systemName: "dollarsign.square.fill")
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundColor(diffColor)
+                        .scaleEffect(1.3)
+                }
+                
+                Spacer()
+                Text("valor atual".uppercased())
+                    .font(.system(size: 8))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                Text(totalActual.currency)
+                    .font(.system(size: 20, weight: .bold, design: .monospaced))
+                    .foregroundColor(diffColor)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                Text(totalBudget.currency)
+                    .font(.system(size: 20, weight: .bold, design: .monospaced))
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                Text("valor budget".uppercased())
+                    .font(.system(size: 8))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                Spacer()
+                HStack(spacing: 5) {
+                    Text(presenter.string(.diff).uppercased())
+                        .font(.system(size: 10, weight: .bold))
+                    Text("restante".uppercased())
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
+            }
         }
         .progressViewStyle(.linear)
         .accentColor(diffColor)
@@ -120,39 +144,44 @@ struct BudgetWidgetEntryView : View {
     
     private func systemMedium(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color, chartData: [(label: String, data: [(category: String, value: Double)])]) -> some View {
         ViewThatFits {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 4) {
-                            Text("Budget")
-                                .font(.system(size: 17, weight: .bold))
-                            Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
-                                .font(.system(size: 17, weight: .bold))
+                    HStack {
+                        Image(systemName: "dollarsign.square.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundColor(diffColor)
+                            .scaleEffect(1.3)
+                        VStack(alignment: .leading) {
+                            (
+                                Text("Budget ") +
+                                Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
+                                    .foregroundColor(.secondary)
+                            )
+                            .font(.system(size: 17, weight: .bold))
+                            Text(totalBudget.currency)
+                                .font(.system(size: 12, design: .monospaced))
                                 .foregroundColor(.secondary)
-                                .lineLimit(1)
                         }
-                        Text(totalBudget.currency)
-                            .font(.system(size: 12, design: .monospaced))
                     }
                     ProgressView(value: totalActual, total: totalBudget) {
                         HStack(spacing: 5) {
-                            Image(systemName: "dollarsign.square.fill")
-                                .symbolRenderingMode(.hierarchical)
-                                .foregroundColor(diffColor)
-                                .scaleEffect(1.1)
                             Text(totalActual.currency)
-                                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                                .font(.system(size: 10, weight: .bold, design: .monospaced))
                                 .lineLimit(1)
-                            
                             
                             Spacer()
                             Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
-                                .font(.system(size: 12, weight: .bold))
+                                .font(.system(size: 10))
                             
                         }
+                        .padding(.bottom, 2)
                     }
+                    .scaleEffect(1.3)
                     .progressViewStyle(.linear)
                     .tint(diffColor)
+                    .padding()
+                    .padding(.horizontal, 3)
+                    .padding(.leading, 3)
                 }
                 sectionChartBar(chartData: chartData)
             }
@@ -160,20 +189,28 @@ struct BudgetWidgetEntryView : View {
         }
     }
     
+    
+    
     private func accessoryRectangular(diff: Double, totalBudget: Double, totalActual: Double) -> some View {
         ViewThatFits {
             VStack(alignment: .leading) {
-                ProgressView(value: diff, total: totalBudget) {
-                    Label(presenter.string(.diff), systemImage: "dollarsign.square.fill")
+                HStack {
+                    Image(systemName: "dollarsign.square.fill")
                         .symbolRenderingMode(.hierarchical)
                         .fontWeight(.bold)
-                        .padding(.bottom, 3)
+                        .scaleEffect(1.2)
+                    Text(presenter.string(.diff) + " Restante")
+                        .fontWeight(.bold)
                 }
+                
+                ProgressView(value: totalActual, total: totalBudget)
                 .progressViewStyle(.linear)
+                .scaleEffect(1.5)
+                .padding(.horizontal, 25)
                 
                 HStack {
-                    Text("Atual:")
-                    Text(totalActual.currency)
+                    Text("Valor:")
+                    Text((totalBudget - totalActual).currency)
                         .foregroundColor(.secondary)
                     Spacer()
                 }
@@ -221,7 +258,7 @@ struct BudgetWidgetEntryView : View {
         ])
         .chartLegend(.hidden)
         .chartYAxis { AxisMarks(position: .trailing) }
-        .frame(height: 85)
+        .frame(height: 90)
         .scaledToFill()
         .minimumScaleFactor(0.1)
         .frame(maxWidth: .infinity)

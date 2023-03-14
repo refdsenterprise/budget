@@ -7,6 +7,7 @@
 
 import SwiftUI
 import RefdsUI
+import Domain
 import Resource
 
 public struct BudgetAlertView: View {

@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Data",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v15),
         .macOS(.v12),
         .macCatalyst(.v15),
         .tvOS(.v13)

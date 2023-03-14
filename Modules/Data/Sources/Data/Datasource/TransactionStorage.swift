@@ -8,6 +8,7 @@
 import SwiftUI
 import RefdsCore
 import Domain
+import WidgetKit
 
 public final class TransactionStorage {
     public static let shared = TransactionStorage()
@@ -24,6 +25,7 @@ public final class TransactionStorage {
         set {
             let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
             userDefaults?.set(newValue.asData, forKey: "transactions")
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
     

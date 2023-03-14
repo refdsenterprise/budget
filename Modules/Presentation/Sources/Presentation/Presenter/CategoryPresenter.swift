@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 import Domain
 import Data
-import UserInterface
 import Resource
 
 public enum CategoryPresenterString {

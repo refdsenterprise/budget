@@ -98,7 +98,7 @@ public final class WidgetPresenter {
     public func string(_ string: WidgetString) -> String {
         switch string {
         case .currentValue(let date): return Strings.UserInterface.currentValue.value + " " + date.asString(withDateFormat: .custom("MMMM"))
-        case .diff: return String(format: "%02d", 100 - Int((totalActual * 100) / totalBudget)) + "% Restante"
+        case .diff: return String(format: "%02d", 100 - Int((totalActual * 100) / totalBudget)) + "%"
         case .value: return Strings.Budget.value.value
         case .category: return Strings.Budget.category.value
         case .budget: return Strings.Budget.budget.value

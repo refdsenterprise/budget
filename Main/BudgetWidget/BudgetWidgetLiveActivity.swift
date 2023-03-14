@@ -107,7 +107,7 @@ struct BudgetWidgetLiveActivity: Widget {
         ])
         .chartLegend(.hidden)
         .chartYAxis { AxisMarks(position: .trailing) }
-        .frame(height: 85)
+        .frame(height: 90)
         .scaledToFill()
         .minimumScaleFactor(0.1)
         .frame(maxWidth: .infinity)

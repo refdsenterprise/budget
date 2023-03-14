@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Domain
-import UserInterface
 
 public enum AddTransactionRoutes {
     case addCategory

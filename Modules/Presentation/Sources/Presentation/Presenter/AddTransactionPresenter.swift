@@ -9,7 +9,6 @@ import SwiftUI
 import Domain
 import Data
 import Resource
-import UserInterface
 
 public protocol AddTransactionPresenterProtocol: ObservableObject {
     var router: AddTransactionRouter { get }

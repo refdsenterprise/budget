@@ -5,14 +5,11 @@
 //  Created by Rafael Santos on 25/02/23.
 //
 
-import Foundation
+import SwiftUI
 import Domain
-import Category
-import Transaction
-import Budget
 import UserInterface
 import Presentation
-import SwiftUI
+
 
 public final class Factory: FactoryProtocol {
     public static let shared = Factory()

@@ -5,9 +5,7 @@
 //  Created by Rafael Santos on 11/03/23.
 //
 
-import Foundation
 import Domain
-import UserInterface
 import SwiftUI
 
 public protocol FactoryProtocol {
