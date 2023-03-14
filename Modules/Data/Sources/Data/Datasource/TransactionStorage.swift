@@ -11,7 +11,21 @@ import Domain
 
 public final class TransactionStorage {
     public static let shared = TransactionStorage()
-    @AppStorage("transactions") private var transactions = [TransactionEntity]()
+    private var transactions: [TransactionEntity] {
+        get {
+            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
+            if let transactionsData = userDefaults?.data(forKey: "transactions"),
+               let decoded: [TransactionEntity] = transactionsData.asModel() {
+                return decoded
+            }
+            return []
+        }
+        
+        set {
+            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
+            userDefaults?.set(newValue.asData, forKey: "transactions")
+        }
+    }
     
     public func getAllTransactions() -> [TransactionEntity] { transactions }
     

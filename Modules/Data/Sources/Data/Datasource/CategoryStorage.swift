@@ -11,7 +11,22 @@ import Domain
 
 public final class CategoryStorage {
     public static let shared =  CategoryStorage()
-    @AppStorage("categories") private var categories = [CategoryEntity]()
+    
+    private var categories: [CategoryEntity] {
+        get {
+            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
+            if let categoriesData = userDefaults?.data(forKey: "categories"),
+               let decoded: [CategoryEntity] = categoriesData.asModel() {
+                return decoded
+            }
+            return []
+        }
+        set {
+            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
+            userDefaults?.set(newValue.asData, forKey: "categories")
+        }
+    }
+    
     private var categoriesByUUID: [UUID: CategoryEntity] = [:]
     
     private init() { updateCategoriesByUUID() }
