@@ -235,15 +235,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 size: .custom(12),
                 color: .secondary
             )
-            RefdsText(
-                actual.currency,
-                size: .custom(40),
-                color: budget - actual < 0 ? .pink : .primary,
-                weight: .bold,
-                family: .moderatMono,
-                alignment: .center,
-                lineLimit: 1
-            )
+            NumberAnimator(finalNumber: actual, color: budget - actual < 0 ? .pink : .primary)
             RefdsText(budget.currency, size: .custom(20), color: .accentColor, weight: .bold, family: .moderatMono)
         }
     }

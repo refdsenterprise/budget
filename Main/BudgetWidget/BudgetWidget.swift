@@ -23,7 +23,8 @@ struct Provider: IntentTimelineProvider {
             totalBudget: Self.presenter.totalBudget,
             diffColor: Self.presenter.diffColor,
             totalActual: Self.presenter.totalActual,
-            chartData: Self.presenter.chartData
+            chartData: Self.presenter.chartData,
+            categories: Self.presenter.categories
         )
     }
 
@@ -34,7 +35,8 @@ struct Provider: IntentTimelineProvider {
             totalBudget: Self.presenter.totalBudget,
             diffColor: Self.presenter.diffColor,
             totalActual: Self.presenter.totalActual,
-            chartData: Self.presenter.chartData
+            chartData: Self.presenter.chartData,
+            categories: Self.presenter.categories
         )
         completion(entry)
     }
@@ -47,7 +49,8 @@ struct Provider: IntentTimelineProvider {
                 totalBudget: Self.presenter.totalBudget,
                 diffColor: Self.presenter.diffColor,
                 totalActual: Self.presenter.totalActual,
-                chartData: Self.presenter.chartData
+                chartData: Self.presenter.chartData,
+                categories: Self.presenter.categories
             )
         ]
         let timeline = Timeline(entries: entries, policy: .never)
@@ -62,6 +65,7 @@ struct CurrencyEntry: TimelineEntry {
     let diffColor: Color
     let totalActual: Double
     let chartData: [(label: String, data: [(category: String, value: Double)])]
+    let categories: [(color: Color, name: String, percent: Double, percentColor: Color)]
 }
 
 struct BudgetWidgetEntryView : View {
@@ -79,10 +83,12 @@ struct BudgetWidgetEntryView : View {
         let diffColor = entry.diffColor
         let totalActual = entry.totalActual
         let chartData = entry.chartData
+        let categories = entry.categories
         
         switch size {
         case .systemSmall: systemSmall(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor)
         case .systemMedium: systemMedium(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData)
+        case .systemLarge: systemLarge(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData, categories: categories)
         case .accessoryInline: accessoryInline(diff: diff)
         case .accessoryRectangular: accessoryRectangular(diff: diff, totalBudget: totalBudget, totalActual: totalActual)
         case .accessoryCircular: accessoryCircular(diff: diff, totalBudget: totalBudget)
@@ -91,7 +97,7 @@ struct BudgetWidgetEntryView : View {
     }
 
     private func systemSmall(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color) -> some View {
-        ProgressView(value: totalActual, total: totalBudget) {
+        ViewThatFits {
             VStack(alignment: .leading) {
                 Label {
                     (
@@ -127,18 +133,24 @@ struct BudgetWidgetEntryView : View {
                     .foregroundColor(.secondary)
                     .lineLimit(1)
                 Spacer()
-                HStack(spacing: 5) {
-                    Text(presenter.string(.diff).uppercased())
-                        .font(.system(size: 10, weight: .bold))
-                    Text("restante".uppercased())
-                        .font(.system(size: 8))
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(spacing: 5) {
+                        Text(presenter.string(.diff).uppercased())
+                            .font(.system(size: 10, weight: .bold))
+                        Text("restante".uppercased())
+                            .font(.system(size: 8))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                    ProgressView(value: totalActual, total: totalBudget)
+                        .progressViewStyle(.linear)
+                        .scaleEffect(1.5)
+                        .tint(diffColor)
+                        .padding(.horizontal, 20)
                 }
             }
         }
-        .progressViewStyle(.linear)
-        .accentColor(diffColor)
         .padding()
     }
     
@@ -150,7 +162,7 @@ struct BudgetWidgetEntryView : View {
                         Image(systemName: "dollarsign.square.fill")
                             .symbolRenderingMode(.hierarchical)
                             .foregroundColor(diffColor)
-                            .scaleEffect(1.3)
+                            .scaleEffect(1.5)
                         VStack(alignment: .leading) {
                             (
                                 Text("Budget ") +
@@ -166,30 +178,109 @@ struct BudgetWidgetEntryView : View {
                     ProgressView(value: totalActual, total: totalBudget) {
                         HStack(spacing: 5) {
                             Text(totalActual.currency)
-                                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
                                 .lineLimit(1)
                             
                             Spacer()
                             Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
-                                .font(.system(size: 10))
+                                .font(.system(size: 8.5))
                             
                         }
-                        .padding(.bottom, 2)
                     }
-                    .scaleEffect(1.3)
+                    .scaleEffect(1.5)
                     .progressViewStyle(.linear)
                     .tint(diffColor)
                     .padding()
-                    .padding(.horizontal, 3)
+                    .padding(.horizontal, 15)
                     .padding(.leading, 3)
                 }
-                sectionChartBar(chartData: chartData)
+                sectionChartBar(chartData: chartData, isLarge: false)
             }
             .padding()
         }
     }
     
-    
+    private func systemLarge(
+        diff: Double,
+        totalBudget: Double,
+        totalActual: Double,
+        diffColor: Color,
+        chartData: [(label: String, data: [(category: String, value: Double)])],
+        categories: [(color: Color, name: String, percent: Double, percentColor: Color)]
+    ) -> some View {
+        ViewThatFits {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    HStack {
+                        Image(systemName: "dollarsign.square.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundColor(diffColor)
+                            .scaleEffect(1.5)
+                        VStack(alignment: .leading) {
+                            (
+                                Text("Budget ") +
+                                Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
+                                    .foregroundColor(.secondary)
+                            )
+                            .font(.system(size: 17, weight: .bold))
+                            Text(totalBudget.currency)
+                                .font(.system(size: 12, design: .monospaced))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    ProgressView(value: totalActual, total: totalBudget) {
+                        HStack(spacing: 5) {
+                            Text(totalActual.currency)
+                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                .lineLimit(1)
+                            
+                            Spacer()
+                            Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
+                                .font(.system(size: 8.5))
+                            
+                        }
+                    }
+                    .scaleEffect(1.5)
+                    .progressViewStyle(.linear)
+                    .tint(diffColor)
+                    .padding()
+                    .padding(.horizontal, 15)
+                    .padding(.leading, 3)
+                }
+                
+                LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
+                    ForEach(categories.indices, id: \.self) { index in
+                        let category = categories[index]
+                        VStack(alignment: .leading, spacing: 3) {
+                            HStack(spacing: 0) {
+                                IndicatorPointView(color: category.color)
+                                    .scaleEffect(0.5)
+                                Text(category.name.capitalized)
+                                    .font(.system(size: 12))
+                                    .lineLimit(1)
+                                Spacer()
+                                Text(String(format: "%d", Int(category.percent)) + "%")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(1)
+                            }
+                            
+                            ProgressView(value: category.percent, total: 100)
+                                .scaleEffect(1.5)
+                                .padding(.horizontal, 28)
+                                .tint(category.percentColor)
+                        }
+                        
+                    }
+                }
+                
+                Spacer()
+                
+                sectionChartBar(chartData: chartData, isLarge: true)
+            }
+            .padding()
+        }
+    }
     
     private func accessoryRectangular(diff: Double, totalBudget: Double, totalActual: Double) -> some View {
         ViewThatFits {
@@ -241,7 +332,7 @@ struct BudgetWidgetEntryView : View {
         }
     }
     
-    private func sectionChartBar(chartData: [(label: String, data: [(category: String, value: Double)])]) -> some View {
+    private func sectionChartBar(chartData: [(label: String, data: [(category: String, value: Double)])], isLarge: Bool) -> some View {
         Chart(chartData, id: \.label) { chartData in
             ForEach(chartData.data, id: \.category) {
                 BarMark(
@@ -258,7 +349,7 @@ struct BudgetWidgetEntryView : View {
         ])
         .chartLegend(.hidden)
         .chartYAxis { AxisMarks(position: .trailing) }
-        .frame(height: 90)
+        .frame(height: isLarge ? 150 : 90)
         .scaledToFill()
         .minimumScaleFactor(0.1)
         .frame(maxWidth: .infinity)
@@ -287,24 +378,38 @@ struct BudgetWidget: Widget {
 
 struct BudgetWidget_Previews: PreviewProvider {
     static var previews: some View {
-        BudgetWidgetEntryView(entry: .init(
+        let entryView = BudgetWidgetEntryView(entry: .init(
             date: .current,
-            diff: 30,
-            totalBudget: 50,
+            diff: 9584.56 - 3510.05,
+            totalBudget: 9584.56,
             diffColor: .teal,
-            totalActual: 20,
-            chartData: []
+            totalActual: 3510.05,
+            chartData: [],
+            categories: []
         ))
-        .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
         
-        BudgetWidgetEntryView(entry: .init(
-            date: .current,
-            diff: 30,
-            totalBudget: 50,
-            diffColor: .teal,
-            totalActual: 20,
-            chartData: []
-        ))
-        .previewContext(WidgetPreviewContext(family: .systemMedium))
+        entryView
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+            .previewDisplayName("Accessory Rectangular")
+        
+        entryView
+            .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            .previewDisplayName("Accessory Circular")
+        
+        entryView
+            .previewContext(WidgetPreviewContext(family: .accessoryInline))
+            .previewDisplayName("Accessory Inline")
+        
+        entryView
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewDisplayName("System Small")
+        
+        entryView
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+            .previewDisplayName("System Medium")
+        
+        entryView
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .previewDisplayName("System Large")
     }
 }

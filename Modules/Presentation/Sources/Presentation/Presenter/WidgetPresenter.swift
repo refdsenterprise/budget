@@ -109,7 +109,25 @@ public final class WidgetPresenter {
     public var diffColor: Color {
         let diffPercent = 100 - Int((totalActual * 100) / totalBudget)
         if diffPercent <= 10 { return .red }
-        else if diffPercent <= 60 { return .yellow }
+        else if diffPercent <= 30 { return .yellow }
         else { return .green }
+    }
+    
+    public var categories: [(color: Color, name: String, percent: Double, percentColor: Color)] {
+        var categories: [(color: Color, name: String, percent: (Double, Date), percentColor: Color)] = []
+        for category in categoriesFiltred {
+            var budget = getBudgetAmountByPeriod(by: category)
+            budget = budget == 0 ? 1 : budget
+            let transactions = transactionsWorker.getTransactions(on: category, from: .current, format: .monthYear)
+            let actual = transactions.map({ $0.amount }).reduce(0, +)
+            let percent = (actual * 100) / budget
+            let percentColor = percent >= 70 ? Color.yellow : percent >= 90 ? Color.red : .green
+            categories.append((color: category.color, name: category.name, percent: (percent, transactions.first?.date ?? .current), percentColor: percentColor))
+        }
+        categories.sort(by: { $0.percent.1 > $1.percent.1 })
+        if categories.count > 6 {
+            categories = Array(categories[0...5])
+        }
+        return categories.map({ (color: $0.color, name: $0.name, percent: $0.percent.0, percentColor: $0.percentColor) })
     }
 }
