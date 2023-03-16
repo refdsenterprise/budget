@@ -105,6 +105,7 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                 amount: amount
             )
             onSuccess?()
+            checkWarning()
         } catch {
             guard let error = error as? BudgetError else { return }
             onError?(error)
@@ -122,9 +123,39 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                 amount: amount
             )
             onSuccess?()
+            checkWarning()
         } catch {
             guard let error = error as? BudgetError else { return }
             onError?(error)
+        }
+    }
+    
+    private func checkWarning() {
+        let categories = Storage.shared.category.getCategories(from: date, format: .monthYear)
+        let transactions = Storage.shared.transaction.getTransactions(from: date, format: .monthYear)
+        var totalBudget = categories.map { category in
+            category.budgets.filter {
+                $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
+            }.first?.amount ?? 0
+        }.reduce(0, +)
+        totalBudget = totalBudget == 0 ? 1 : totalBudget
+        let totalActual = transactions.map { $0.amount }.reduce(0, +)
+        let percent = (totalActual * 100) / totalBudget
+        
+        if totalActual <= totalBudget, percent >= 70 {
+            NotificationCenter.shared.makeWarningExpenses(percent: percent, actual: totalActual, total: totalBudget)
+        } else if totalActual > totalBudget {
+            NotificationCenter.shared.makeWarningBreakExpenses()
+        } else if let category = category {
+            let budgetCategory = category.budgets.first(where: { $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear) })?.amount ?? 1
+            let actualCategory = transactions.filter { $0.categoryUUID == category.id }.map { $0.amount }.reduce(0, +)
+            let percent = (actualCategory * 100) / budgetCategory
+            
+            if actualCategory <= budgetCategory, percent >= 70 {
+                NotificationCenter.shared.makeWarningExpenses(percent: percent, category: category.name, actual: actualCategory, total: budgetCategory)
+            } else if actualCategory > budgetCategory {
+                NotificationCenter.shared.makeWarningBreakExpenses(category: category.name)
+            }
         }
     }
 }

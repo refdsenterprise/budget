@@ -13,6 +13,7 @@ import Charts
 import Domain
 
 struct BudgetWidgetLiveActivity: Widget {
+    @Environment(\.colorScheme) var colorScheme
     private var presenter: WidgetPresenter = .shared
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: BudgetWidgetAttributes.self) { context in

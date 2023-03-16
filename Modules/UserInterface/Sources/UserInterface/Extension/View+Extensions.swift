@@ -30,4 +30,12 @@ public extension View {
             ) { EmptyView() }.hidden()
         )
     }
+    
+    func share(item: Binding<ShareItem>) -> some View {
+        self.sheet(isPresented: item.isPresented) {
+            if let url = item.url.wrappedValue {
+                ShareView(itemsToShare: [url])
+            }
+        }
+    }
 }

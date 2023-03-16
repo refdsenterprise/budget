@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsCore
 import Domain
 import WidgetKit
-
+ 
 public final class TransactionStorage {
     public static let shared = TransactionStorage()
     private var transactions: [TransactionEntity] {

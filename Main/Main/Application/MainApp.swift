@@ -10,7 +10,6 @@ import RefdsUI
 import Domain
 import UserInterface
 import Presentation
-
 import Core
 
 @main
@@ -70,6 +69,7 @@ struct MainApp: App {
                     default: break
                     }
                 }
+                .onAppear { NotificationCenter.shared.makeReminderSetTransactions() }
             }
         }
     }

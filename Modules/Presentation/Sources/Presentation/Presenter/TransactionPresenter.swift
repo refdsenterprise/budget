@@ -17,6 +17,7 @@ public protocol TransactionPresenterProtocol: ObservableObject {
     var isFilterPerDate: Bool { get set }
     var isPresentedAddTransaction: Bool { get set }
     var isPresentedEditTransaction: Bool { get set }
+    var sharePDF: ShareItem { get set }
     var alert: BudgetAlert { get set }
     var transaction: TransactionEntity? { get set }
     var category: CategoryEntity? { get }
@@ -29,6 +30,8 @@ public protocol TransactionPresenterProtocol: ObservableObject {
     func string(_ string: Strings.Transaction) -> String
     func loadData()
     func remove(transaction: TransactionEntity, onError: ((BudgetError) -> Void)?)
+    @available(iOS 16.0, *)
+    func pdfFile(content: () -> any View) -> URL?
 }
 
 public final class TransactionPresenter: TransactionPresenterProtocol {
@@ -40,6 +43,7 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
     @Published public var isFilterPerDate: Bool = true { didSet { loadData() } }
     @Published public var isPresentedAddTransaction: Bool = false
     @Published public var isPresentedEditTransaction: Bool = false
+    @Published public var sharePDF: ShareItem = .init()
     @Published public var alert: BudgetAlert = .init()
     @Published public var transaction: TransactionEntity?
     public var category: CategoryEntity?
@@ -78,6 +82,22 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
         self.router = router
         self.category = category
         if let date = date { _date = Published(initialValue: date) }
+    }
+    
+    @MainActor @available(iOS 16.0, *)
+    public func pdfFile(content: () -> any View) -> URL? {
+        let renderer = ImageRenderer(content: AnyView(content()))
+        let url = URL.documentsDirectory.appending(path: "Transações - \(Date.current.asString(withDateFormat: .custom("dd, MMMM yyyy")).capitalized).pdf")
+        renderer.render { size, context in
+            var box = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+            guard let pdf = CGContext(url as CFURL, mediaBox: &box, nil) else { return }
+            pdf.beginPDFPage(nil)
+            context(pdf)
+            pdf.endPDFPage()
+            pdf.closePDF()
+        }
+        
+        return url
     }
     
     public func string(_ string: Strings.Transaction) -> String {

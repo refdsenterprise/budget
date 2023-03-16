@@ -8,6 +8,7 @@
 import Domain
 import UIKit
 import ActivityKit
+import Core
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     private let actionService = ActionService.shared

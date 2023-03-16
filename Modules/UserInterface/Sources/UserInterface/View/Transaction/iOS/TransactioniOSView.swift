@@ -48,7 +48,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .navigation(isPresented: $presenter.isPresentedEditTransaction) {
             presenter.router.configure(routes: .addTransaction(presenter.transaction))
         }
-        
+        .share(item: $presenter.sharePDF)
     }
     
     private var sectionOptions: some View {
@@ -206,6 +206,25 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         Button { presenter.isPresentedAddTransaction.toggle() } label: {
             RefdsIcon(
                 symbol: .plusRectangleFill,
+                color: .accentColor,
+                size: 20,
+                weight: .medium,
+                renderingMode: .hierarchical
+            )
+        }
+    }
+    
+    @available(iOS 16.0, *)
+    private var buttonSharePDF: some View {
+        Button {
+            presenter.sharePDF = .init(isPresented: true, url: presenter.pdfFile(content: {
+                TransactionmacOSView<Presenter>()
+                    .environmentObject(presenter)
+                    .environmentObject(appConfigurator)
+            }))
+        } label: {
+            RefdsIcon(
+                symbol: .arrowUpDocFill,
                 color: .accentColor,
                 size: 20,
                 weight: .medium,
