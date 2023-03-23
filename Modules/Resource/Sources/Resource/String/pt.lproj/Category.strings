@@ -18,7 +18,7 @@
 // MARK: - Category
 "category.navigation.title" = "Categorias";
 "category.search.placeholder" = "Busque por categoria";
-"category.section.options" = "Opções";
+"category.section.options" = "Filtros";
 "category.section.options.filterPerDate" = "Filtrar por data";
 "category.section.options.period" = "Período";
 "category.section.duplicate.notFound" = "Nenhuma categoria encontrada";

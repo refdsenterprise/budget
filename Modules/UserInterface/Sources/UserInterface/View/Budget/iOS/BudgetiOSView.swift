@@ -289,7 +289,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 sectionChartBar(chartData: chartData)
                 sectionChartLine(chartData: chartData)
             }
-            .frame(height: 350)
+            .frame(height: 400)
             .tabViewStyle(.page(indexDisplayMode: .always))
             .indexViewStyle(.page(backgroundDisplayMode: .always))
         }
@@ -308,12 +308,12 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
             }
         }
         .chartForegroundStyleScale([
-            presenter.string(.budget): Color.teal,
+            presenter.string(.budget): Color.blue,
             presenter.string(.current): Color.accentColor
         ])
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)
         .chartYAxis { AxisMarks(position: .leading) }
-        .frame(minHeight: 250)
+        .frame(minHeight: 300)
         .padding()
         .padding(.vertical)
         .padding(.vertical)
@@ -359,11 +359,11 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
         .chartForegroundStyleScale([
             presenter.string(.current): Color.accentColor,
-            presenter.string(.budget): Color.teal
+            presenter.string(.budget): Color.blue
         ])
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)
         .chartYAxis { AxisMarks(position: .leading) }
-        .frame(minHeight: 250)
+        .frame(minHeight: 300)
         .padding()
         .padding(.vertical)
         .padding(.vertical)

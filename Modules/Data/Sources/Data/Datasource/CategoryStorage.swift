@@ -15,16 +15,10 @@ public final class CategoryStorage {
     
     private var categories: [CategoryEntity] {
         get {
-            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
-            if let categoriesData = userDefaults?.data(forKey: "categories"),
-               let decoded: [CategoryEntity] = categoriesData.asModel() {
-                return decoded
-            }
-            return []
+            BudgetDatabase.shared.get(on: .categories) ?? categoriesMock
         }
         set {
-            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
-            userDefaults?.set(newValue.asData, forKey: "categories")
+            BudgetDatabase.shared.set(on: .categories, value: newValue)
             WidgetCenter.shared.reloadAllTimelines()
         }
     }

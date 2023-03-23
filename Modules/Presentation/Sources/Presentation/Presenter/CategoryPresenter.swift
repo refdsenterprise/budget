@@ -106,6 +106,7 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         let transactionWorker = Storage.shared.transaction
         categories = isFilterPerDate ? categoryWorker.getCategories(from: date) : categoryWorker.getAllCategories()
         transactions = isFilterPerDate ? transactionWorker.getTransactions(from: date) : transactionWorker.getAllTransactions()
+        print(categoryWorker.getAllCategories())
     }
     
     public func getCategoriesFiltred() -> [CategoryEntity] {
@@ -174,14 +175,20 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     }
     
     private func removeBudgetInsideCategory(_ category: CategoryEntity) {
-        try? Storage.shared.category.editCategory(
-            category,
-            name: category.name,
-            color: category.color,
-            budgets: category.budgets.filter({
-                $0.date.asString(withDateFormat: .monthYear) != date.asString(withDateFormat: .monthYear)
-            })
-        )
+        let budgets = category.budgets.filter({
+            $0.date.asString(withDateFormat: .monthYear) != date.asString(withDateFormat: .monthYear)
+        })
+        
+        if budgets.isEmpty {
+            removeAllCategory(category)
+        } else {
+            try? Storage.shared.category.editCategory(
+                category,
+                name: category.name,
+                color: category.color,
+                budgets: budgets
+            )
+        }
     }
     
     private func containsCategory(_ category: CategoryEntity) -> Bool {

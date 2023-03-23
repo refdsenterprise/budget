@@ -30,8 +30,6 @@ public protocol TransactionPresenterProtocol: ObservableObject {
     func string(_ string: Strings.Transaction) -> String
     func loadData()
     func remove(transaction: TransactionEntity, onError: ((BudgetError) -> Void)?)
-    @available(iOS 16.0, *)
-    func pdfFile(content: () -> any View) -> URL?
 }
 
 public final class TransactionPresenter: TransactionPresenterProtocol {
@@ -84,22 +82,6 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
         if let date = date { _date = Published(initialValue: date) }
     }
     
-    @MainActor @available(iOS 16.0, *)
-    public func pdfFile(content: () -> any View) -> URL? {
-        let renderer = ImageRenderer(content: AnyView(content()))
-        let url = URL.documentsDirectory.appending(path: "Transações - \(Date.current.asString(withDateFormat: .custom("dd, MMMM yyyy")).capitalized).pdf")
-        renderer.render { size, context in
-            var box = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-            guard let pdf = CGContext(url as CFURL, mediaBox: &box, nil) else { return }
-            pdf.beginPDFPage(nil)
-            context(pdf)
-            pdf.endPDFPage()
-            pdf.closePDF()
-        }
-        
-        return url
-    }
-    
     public func string(_ string: Strings.Transaction) -> String {
         string.value
     }
@@ -111,6 +93,7 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
         } else {
             transactions = isFilterPerDate ? transaction.getTransactions(from: date, format: selectedPeriod.dateFormat) : transaction.getAllTransactions()
         }
+        print(transactions)
     }
     
     public func remove(transaction: TransactionEntity, onError: ((BudgetError) -> Void)? = nil) {

@@ -10,7 +10,7 @@
 "transaction.searchForTransactions" = "Busque por transações";
 "transaction.chart" = "Gráfico";
 "transaction.totalTransactions" = "total das transações";
-"transaction.options" = "Opções";
+"transaction.options" = "Filtros";
 "transaction.filterPerDate" = "Filtrar por data";
 "transaction.period" = "Período";
 "transaction.noDescription" = "Sem descrição";

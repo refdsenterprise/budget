@@ -12,19 +12,13 @@ import WidgetKit
  
 public final class TransactionStorage {
     public static let shared = TransactionStorage()
+    
     private var transactions: [TransactionEntity] {
         get {
-            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
-            if let transactionsData = userDefaults?.data(forKey: "transactions"),
-               let decoded: [TransactionEntity] = transactionsData.asModel() {
-                return decoded
-            }
-            return []
+            BudgetDatabase.shared.get(on: .transactions) ?? transactionsMock
         }
-        
         set {
-            let userDefaults = UserDefaults(suiteName: "group.budget.3dd8df9f-624a-42d4-9a5c-088d0a0f01eb")
-            userDefaults?.set(newValue.asData, forKey: "transactions")
+            BudgetDatabase.shared.set(on: .transactions, value: newValue)
             WidgetCenter.shared.reloadAllTimelines()
         }
     }

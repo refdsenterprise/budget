@@ -13,7 +13,6 @@ import Presentation
 
 struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
-    @EnvironmentObject private var appConfigurator: AppConfiguration
     
     var body: some View {
         MacUIView(sections: [
@@ -48,11 +47,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         .navigationTitle(presenter.category == nil ? presenter.string(.navigationTitle) : presenter.category!.name.capitalized)
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
         .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
-        .onAppear {
-            presenter.loadData()
-            appConfigurator.themeColor = presenter.category?.color ?? .accentColor
-        }
-        .onDisappear { appConfigurator.themeColor = .accentColor }
+        .onAppear { presenter.loadData() }
         .navigation(isPresented: $presenter.isPresentedAddTransaction) {
             presenter.router.configure(routes: .addTransaction(nil))
         }
@@ -242,7 +237,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         }
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)
         .chartYAxis { AxisMarks(position: .leading) }
-        .frame(minHeight: 250)
+        .frame(minHeight: 300)
         .padding()
         .padding(.top)
     }

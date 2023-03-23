@@ -27,7 +27,6 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
         .onAppear { presenter.loadData() }
-        .onDisappear { appConfigurator.themeColor = .accentColor }
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
@@ -93,10 +92,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     }
     
     private func categoryOptionView(category: CategoryEntity) -> some View {
-        Button {
-            presenter.category = category
-            appConfigurator.themeColor = category.color
-        } label: {
+        Button { presenter.category = category } label: {
             HStack(spacing: 10) {
                 IndicatorPointView(color: presenter.category?.id == category.id ? category.color : .secondary)
                 RefdsText(category.name.capitalized)

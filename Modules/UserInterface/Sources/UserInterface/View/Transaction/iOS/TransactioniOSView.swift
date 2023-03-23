@@ -13,7 +13,6 @@ import Presentation
 
 struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
-    @EnvironmentObject private var appConfigurator: AppConfiguration
     
     var body: some View {
         List {
@@ -37,11 +36,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .navigationTitle(presenter.category == nil ? presenter.string(.navigationTitle) : presenter.category!.name.capitalized)
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
         .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
-        .onAppear {
-            presenter.loadData()
-            appConfigurator.themeColor = presenter.category?.color ?? .accentColor
-        }
-        .onDisappear { appConfigurator.themeColor = .accentColor }
+        .onAppear { presenter.loadData() }
         .navigation(isPresented: $presenter.isPresentedAddTransaction) {
             presenter.router.configure(routes: .addTransaction(nil))
         }
@@ -215,25 +210,6 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     }
     
     @available(iOS 16.0, *)
-    private var buttonSharePDF: some View {
-        Button {
-            presenter.sharePDF = .init(isPresented: true, url: presenter.pdfFile(content: {
-                TransactionmacOSView<Presenter>()
-                    .environmentObject(presenter)
-                    .environmentObject(appConfigurator)
-            }))
-        } label: {
-            RefdsIcon(
-                symbol: .arrowUpDocFill,
-                color: .accentColor,
-                size: 20,
-                weight: .medium,
-                renderingMode: .hierarchical
-            )
-        }
-    }
-    
-    @available(iOS 16.0, *)
     private func sectionChartTransactions(_ chartData: [(date: Date, value: Double)]) -> some View {
         Chart {
             ForEach(chartData, id: \.date) {
@@ -242,7 +218,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         }
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)
         .chartYAxis { AxisMarks(position: .leading) }
-        .frame(minHeight: 150)
+        .frame(minHeight: 280)
         .padding()
         .padding(.top)
     }

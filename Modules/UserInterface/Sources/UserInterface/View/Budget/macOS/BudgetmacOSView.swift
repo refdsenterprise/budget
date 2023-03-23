@@ -332,7 +332,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
             }
         }
         .chartForegroundStyleScale([
-            presenter.string(.budget): Color.teal,
+            presenter.string(.budget): Color.blue,
             presenter.string(.current): Color.accentColor
         ])
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)
@@ -383,7 +383,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
         }
         .chartForegroundStyleScale([
             presenter.string(.current): Color.accentColor,
-            presenter.string(.budget): Color.teal
+            presenter.string(.budget): Color.blue
         ])
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)
         .chartYAxis { AxisMarks(position: .leading) }

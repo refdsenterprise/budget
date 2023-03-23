@@ -11,7 +11,6 @@ import Presentation
 
 struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
-    @EnvironmentObject private var appConfigurator: AppConfiguration
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -22,7 +21,6 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
         .onAppear { presenter.loadData() }
-        .onDisappear { appConfigurator.themeColor = .accentColor }
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
     }
@@ -52,27 +50,17 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
     
     private var rowCategory: some View {
         Group {
-            if let name = presenter.category?.name,
-               let color = presenter.category?.color {
-                CollapsedView { rowCategoryHeader(name: name, color: color) } content: { rowCategoryOptions }
+            if let name = presenter.category?.name {
+                CollapsedView(title: presenter.string(.category), description: name.capitalized) {
+                    rowCategoryOptions
+                }
             } else { buttonAddCategory }
-        }
-    }
-    
-    private func rowCategoryHeader(name: String, color: Color) -> some View {
-        HStack(spacing: 15) {
-            RefdsText(presenter.string(.category))
-            Spacer()
-            RefdsTag(name, size: .extraSmall, color: color)
         }
     }
         
     private var rowCategoryOptions: some View {
         ForEach(presenter.getCategories(), id: \.id) { category in
-            Button {
-                presenter.category = category
-                appConfigurator.themeColor = category.color
-            } label: {
+            Button { presenter.category = category } label: {
                 HStack(spacing: 10) {
                     IndicatorPointView(color: presenter.category?.id == category.id ? category.color : .secondary)
                     RefdsText(category.name.capitalized)

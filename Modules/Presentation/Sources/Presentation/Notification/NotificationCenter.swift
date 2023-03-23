@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import Data
 import UserNotifications
+import Domain
 
 public final class NotificationCenter {
     public static let shared = NotificationCenter()
@@ -39,6 +41,8 @@ public final class NotificationCenter {
     }
     
     public func makeReminderSetTransactions() {
+        var notification: NotificationEntity = BudgetDatabase.shared.get(on: .notification) ?? .init()
+        guard !notification.warningInput else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .atHour(20),
@@ -46,6 +50,8 @@ public final class NotificationCenter {
                 title: "Atualização dos gastos.",
                 body: "Já informou as dispesas de hoje? Vai que é rápido"
             )
+            notification.warningInput = true
+            BudgetDatabase.shared.set(on: .notification, value: notification)
         })
     }
     
@@ -53,7 +59,7 @@ public final class NotificationCenter {
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .now,
-                id: .warningExpenses,
+                id: category == nil ? .warningExpenses : .warningExpensesCategory,
                 title: "⚠️ \(category == nil ? "Dispesas atingiram" : "\(category!.capitalized) atingiu") \(String(format: "%02d", Int(percent)))%.",
                 body: "Restando apenas \((total - actual).currency) de \(total.currency) calculados."
             )
@@ -64,7 +70,7 @@ public final class NotificationCenter {
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .now,
-                id: .warningBreak,
+                id: category == nil ? .warningBreak : .warningBreakCategory,
                 title: "‼️ Limite de gasto excedido.",
                 body: "Os valores previstos para \(category == nil ? "dispesas" : category!.lowercased()) foram ultrapassados."
             )
@@ -93,6 +99,8 @@ public extension NotificationCenter {
     enum Identifier: String {
         case reminder = "budget.add.remeider"
         case warningExpenses = "budget.warning.expenses"
+        case warningExpensesCategory = "budget.warning.expenses.category"
         case warningBreak = "budget.warning.break"
+        case warningBreakCategory = "budget.warning.break.category"
     }
 }

@@ -1,5 +1,5 @@
 "navigationTitle" = "Budget %@";
-"options" = "Opções";
+"options" = "Filtros";
 "amountTransactionsMoment" = "Quantidade de transações realizadas até o momento";
 "transactionsForCategory" = "Trasações por categoria";
 "budgetVsActual" = "Budget x Atual";

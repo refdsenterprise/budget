@@ -17,6 +17,7 @@ public enum BudgetError: Error {
     case cantDeleteCategory
     case cantDeleteBudget
     case existingBudget
+    case cantSaveOnDatabase
     
     var alertTitle: String {
         switch self {
@@ -28,6 +29,7 @@ public enum BudgetError: Error {
         case .cantDeleteCategory: return "Categoria não pode ser removida"
         case .cantDeleteBudget: return "Budget não pode ser removido"
         case .existingBudget: return "Budget existente"
+        case .cantSaveOnDatabase: return "Erro ao salvar"
         }
     }
     
@@ -41,6 +43,7 @@ public enum BudgetError: Error {
         case .cantDeleteCategory: return "A categoria que deseja remover está sendo utilizada em alguma transação"
         case .cantDeleteBudget: return "O budget que deseja remover está sendo utilizado em alguma transação"
         case .existingBudget: return "Já existe o budget para o mês informado"
+        case .cantSaveOnDatabase: return "Não foi possível persistir a informação no dispositivo"
         }
     }
     
@@ -54,6 +57,7 @@ public enum BudgetError: Error {
         case .cantDeleteCategory: return .exclamationmarkOctagonFill
         case .cantDeleteBudget: return .exclamationmarkOctagonFill
         case .existingBudget: return .exclamationmarkTriangleFill
+        case .cantSaveOnDatabase: return .externaldriveFillBadgeExclamationmark
         }
     }
 }

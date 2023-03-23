@@ -94,9 +94,11 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     }
     
     public func getActualColor(actual: Double, budget: Double) -> Color {
-        let accent = budget - actual > 0
-        let secondary = budget - actual == 0
-        return accent ? .accentColor : secondary ? .yellow : .pink
+        let budget = budget == 0 ? 1 : budget
+        let percent = (actual * 100) / budget
+        let breaking = percent >= 90
+        let warning = percent >= 70
+        return breaking ? .red : warning ? .yellow : .accentColor
     }
     
     public func transactions(for weekday: String) -> [TransactionEntity] {
@@ -181,9 +183,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     
     public func getChartDataTransactions() -> [(date: Date, value: Double)]{
         isFilterPerDate ? Storage.shared.transaction.getChartDataTransactions(from: date, period: selectedPeriod) : Storage.shared.transaction.getChartDataTransactions()
-    }
-    
-    
+    }  
 }
 
 // MARK: - Attributes

@@ -121,7 +121,7 @@ public final class WidgetPresenter {
             let transactions = transactionsWorker.getTransactions(on: category, from: .current, format: .monthYear)
             let actual = transactions.map({ $0.amount }).reduce(0, +)
             let percent = (actual * 100) / budget
-            let percentColor = percent >= 70 ? Color.yellow : percent >= 90 ? Color.red : .green
+            let percentColor = percent >= 90 ? Color.red : percent >= 70 ? Color.yellow : .green
             categories.append((color: category.color, name: category.name, percent: (percent, transactions.first?.date ?? .current), percentColor: percentColor))
         }
         categories.sort(by: { $0.percent.1 > $1.percent.1 })
