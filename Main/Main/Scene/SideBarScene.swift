@@ -28,6 +28,7 @@ struct SideBarScene: View {
                                 case .category: NavigationStack { router.configure(routes: .category) }
                                 case .budget: NavigationStack { router.configure(routes: .budget) }
                                 case .transaction: NavigationStack { router.configure(routes: .transactions) }
+                                case .settings: NavigationStack { router.configure(routes: .settings) }
                                 }
                             } label: {
                                 Label {

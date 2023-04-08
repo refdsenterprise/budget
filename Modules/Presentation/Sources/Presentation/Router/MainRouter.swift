@@ -14,6 +14,7 @@ public enum MainRoutes {
     case transactions
     case addTransaction
     case addCategory
+    case settings
 }
 
 public struct MainRouter {
@@ -31,6 +32,7 @@ public struct MainRouter {
         case .transactions: AnyView(factory.makeTransactionScreen(category: nil, date: nil))
         case .addTransaction: AnyView(factory.makeAddTransactionScreen(transaction: nil))
         case .addCategory: AnyView(factory.makeAddCategoryScreen(category: nil))
+        case .settings: AnyView(factory.makeSettingsScreen())
         }
     }
 }

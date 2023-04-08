@@ -11,7 +11,7 @@ import Domain
 import WidgetKit
 
 public final class CategoryStorage {
-    public static let shared =  CategoryStorage()
+    public static let shared = CategoryStorage()
     
     private var categories: [CategoryEntity] {
         get {

@@ -48,4 +48,25 @@ public final class Factory: FactoryProtocol {
         let presenter = BudgetPresenter(router: router)
         return BudgetScreen(presenter: presenter)
     }
+    
+    public func makeSettingsScreen() -> any View {
+        let router = SettingsRouter(factory: self)
+        let presenter = SettingsPresenter(router: router)
+        return SettingsScreen(presenter: presenter)
+    }
+    
+    public func makeProScreen() -> any View {
+        let presenter = ProPresenter()
+        return ProScreen(presenter: presenter)
+    }
+    
+    public func makeAboutScreen() -> any View {
+        let presenter = AboutPresenter()
+        return AboutScreen(presenter: presenter)
+    }
+    
+    public func makeNotificationScreen() -> any View {
+        let presenter = NotificationManagerPresenter()
+        return NotificationScreen(presenter: presenter)
+    }
 }

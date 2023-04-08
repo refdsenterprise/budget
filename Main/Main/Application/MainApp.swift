@@ -40,24 +40,31 @@ struct MainApp: App {
                 TabView(selection: $tabItemSelection) {
                     NavigationView { router.configure(routes: .category) }
                         .tabItem {
-                            Image(systemName: "square.stack.3d.forward.dottedline.fill")
+                            TabItem.category.image
                             RefdsText(TabItem.category.title, size: .normal)
                         }
                         .tag(TabItem.category)
                     
                     NavigationView { router.configure(routes: .budget) }
                         .tabItem {
-                            Image(systemName: "dollarsign.square.fill")
+                            TabItem.budget.image
                             RefdsText(TabItem.budget.title, size: .normal)
                         }
                         .tag(TabItem.budget)
                     
                     NavigationView { router.configure(routes: .transactions) }
                         .tabItem {
-                            Image(systemName: "list.triangle")
+                            TabItem.transaction.image
                             RefdsText(TabItem.transaction.title, size: .normal)
                         }
                         .tag(TabItem.transaction)
+                    
+                    NavigationView { router.configure(routes: .settings) }
+                        .tabItem {
+                            TabItem.settings.image
+                            RefdsText(TabItem.settings.title)
+                        }
+                        .tag(TabItem.settings)
                 }
                 .accentColor(appConfiguration.themeColor)
                 .environment(\.appTheme, appConfiguration.themeColor)
@@ -87,12 +94,14 @@ enum TabItem: Int, CaseIterable {
     case category = 1
     case budget = 2
     case transaction = 3
+    case settings = 4
     
     var title: String {
         switch self {
         case .category: return "Categorias"
         case .budget: return "Budget"
         case .transaction: return "Transações"
+        case .settings: return "Ajustes"
         }
     }
     
@@ -101,6 +110,7 @@ enum TabItem: Int, CaseIterable {
         case .category: return Image(systemName: "square.stack.3d.forward.dottedline.fill")
         case .budget: return Image(systemName: "dollarsign.square.fill")
         case .transaction: return Image(systemName: "list.triangle")
+        case .settings: return Image(systemName: RefdsIconSymbol.gear.rawValue)
         }
     }
 }

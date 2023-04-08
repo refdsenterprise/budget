@@ -12,15 +12,38 @@ import Domain
 
 public final class NotificationCenter {
     public static let shared = NotificationCenter()
+    private let notificationCenter = UNUserNotificationCenter.current()
+    
+    private var manager: NotificationManagerEntity {
+        BudgetDatabase.shared.get(on: .notificationManager) ?? .init()
+    }
+    
+    private var notification: NotificationEntity = BudgetDatabase.shared.get(on: .notification) ?? .init() {
+        didSet { BudgetDatabase.shared.set(on: .notification, value: self.notification) }
+    }
     
     public func requestNotificationAuthorization(
         onSuccess: (() -> Void)? = nil,
         onError: ((Error) -> Void)? = nil
     ) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+        notificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
             if success { onSuccess?() }
             else if let error = error { onError?(error) }
         }
+    }
+    
+    public func notificationSettings(authorizationStatus: ((Bool) -> Void)? = nil) {
+        notificationCenter.getNotificationSettings { notificationSettings in
+            switch notificationSettings.authorizationStatus {
+            case .authorized: authorizationStatus?(true)
+            default: authorizationStatus?(false)
+            }
+        }
+    }
+    
+    public func updateNotificationSettings() {
+        let needStop = !manager.remiderIsOn
+        makeReminderSetTransactions(needStop: needStop)
     }
     
     public func makeNotificationRequest(_ trigger: Trigger, id: Identifier, title: String? = nil, subtitle: String? = nil, body: String? = nil, onError: ((Error) -> Void)? = nil) {
@@ -35,27 +58,26 @@ public final class NotificationCenter {
             content: content,
             trigger: trigger.value
         )
-        UNUserNotificationCenter.current().add(request) { error in
+        notificationCenter.add(request) { error in
             if let error = error { onError?(error) }
         }
     }
     
-    public func makeReminderSetTransactions() {
-        var notification: NotificationEntity = BudgetDatabase.shared.get(on: .notification) ?? .init()
-        guard !notification.warningInput else { return }
+    public func makeReminderSetTransactions(needStop: Bool = false) {
+        guard !notification.warningInput || !needStop else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
-                .atHour(20),
+                .atHour(20, needStop),
                 id: .reminder,
                 title: "Atualização dos gastos.",
                 body: "Já informou as dispesas de hoje? Vai que é rápido"
             )
-            notification.warningInput = true
-            BudgetDatabase.shared.set(on: .notification, value: notification)
+            self.notification.warningInput = true
         })
     }
     
     public func makeWarningExpenses(percent: Double, category: String? = nil, actual: Double, total: Double) {
+        guard manager.warningIsOn else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .now,
@@ -67,6 +89,7 @@ public final class NotificationCenter {
     }
     
     public func makeWarningBreakExpenses(category: String? = nil) {
+        guard manager.breakingIsOn else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .now,
@@ -81,17 +104,18 @@ public final class NotificationCenter {
 public extension NotificationCenter {
     enum Trigger {
         case now
-        case atHour(Int)
+        case atHour(Int, Bool)
         
         public var value: UNNotificationTrigger {
             switch self {
             case .now:
                 return UNTimeIntervalNotificationTrigger(timeInterval: 60 * 10, repeats: false)
-            case .atHour(let hour):
+            case .atHour(let hour, let needStop):
                 var dateComponents = DateComponents()
                 dateComponents.calendar = Calendar.current
-                dateComponents.hour = hour
-                return UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+                if needStop { dateComponents.second = 2 }
+                else { dateComponents.hour = hour }
+                return UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: !needStop)
             }
         }
     }

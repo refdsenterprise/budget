@@ -34,7 +34,25 @@ public extension View {
     func share(item: Binding<ShareItem>) -> some View {
         self.sheet(isPresented: item.isPresented) {
             if let url = item.url.wrappedValue {
-                ShareView(itemsToShare: [url])
+                if #available(iOS 16.0, *) {
+                    ShareView(itemsToShare: [url])
+                        .presentationDetents([.medium, .large])
+                } else {
+                    ShareView(itemsToShare: [url])
+                }
+            }
+        }
+    }
+    
+    func browser(item: Binding<ShareItem>) -> some View {
+        self.sheet(isPresented: item.isPresented) {
+            if let url = item.url.wrappedValue {
+                if #available(iOS 16.0, *) {
+                    SafariView(url: url)
+                        .presentationDetents([.large])
+                } else {
+                    SafariView(url: url)
+                }
             }
         }
     }

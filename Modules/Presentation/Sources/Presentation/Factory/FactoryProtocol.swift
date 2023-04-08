@@ -15,4 +15,8 @@ public protocol FactoryProtocol {
     func makeAddBudgetScreen(newBudget: ((BudgetEntity) -> Void)?) -> any View
     func makeBudgetScreen() -> any View
     func makeAddTransactionScreen(transaction: TransactionEntity?) -> any View
+    func makeSettingsScreen() -> any View
+    func makeProScreen() -> any View
+    func makeAboutScreen() -> any View
+    func makeNotificationScreen() -> any View
 }

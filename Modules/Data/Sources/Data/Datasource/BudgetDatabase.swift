@@ -32,12 +32,16 @@ public extension BudgetDatabase {
         case categories
         case transactions
         case notification
+        case appIcon
+        case notificationManager
         
         public var value: String {
             switch self {
             case .categories: return "categories"
             case .transactions: return "transactions"
             case .notification: return "notification"
+            case .appIcon: return "appIcon"
+            case .notificationManager: return "notificationManager"
             }
         }
     }

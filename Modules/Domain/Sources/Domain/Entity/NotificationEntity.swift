@@ -29,3 +29,36 @@ public struct NotificationEntity: DomainModel {
         self.breakingExpensesCategoriesDate = breakingExpensesCategoriesDate
     }
 }
+
+public enum NotificationType: DomainModel {
+    case remider
+    case warning
+    case breaking
+}
+
+public struct NotificationManagerEntity: DomainModel {
+    public var notificationsIsOn: Bool {
+        didSet {
+            if !notificationsIsOn {
+                remiderIsOn = notificationsIsOn
+                warningIsOn = notificationsIsOn
+                breakingIsOn = notificationsIsOn
+            }
+        }
+    }
+    public var remiderIsOn: Bool
+    public var warningIsOn: Bool
+    public var breakingIsOn: Bool
+    
+    public init(
+        notificationsIsOn: Bool = true,
+        remiderIsOn: Bool = true,
+        warningIsOn: Bool = true,
+        breakingIsOn: Bool = true
+    ) {
+        self.notificationsIsOn = notificationsIsOn
+        self.remiderIsOn = remiderIsOn
+        self.warningIsOn = warningIsOn
+        self.breakingIsOn = breakingIsOn
+    }
+}

@@ -18,6 +18,7 @@ public enum BudgetError: Error {
     case cantDeleteBudget
     case existingBudget
     case cantSaveOnDatabase
+    case dontAcceptedTerms
     
     var alertTitle: String {
         switch self {
@@ -30,6 +31,7 @@ public enum BudgetError: Error {
         case .cantDeleteBudget: return "Budget não pode ser removido"
         case .existingBudget: return "Budget existente"
         case .cantSaveOnDatabase: return "Erro ao salvar"
+        case .dontAcceptedTerms: return "Aceite os termos"
         }
     }
     
@@ -44,6 +46,7 @@ public enum BudgetError: Error {
         case .cantDeleteBudget: return "O budget que deseja remover está sendo utilizado em alguma transação"
         case .existingBudget: return "Já existe o budget para o mês informado"
         case .cantSaveOnDatabase: return "Não foi possível persistir a informação no dispositivo"
+        case .dontAcceptedTerms: return "Só é possível realizar a assinatura após o aceite dos termos."
         }
     }
     
@@ -58,6 +61,7 @@ public enum BudgetError: Error {
         case .cantDeleteBudget: return .exclamationmarkOctagonFill
         case .existingBudget: return .exclamationmarkTriangleFill
         case .cantSaveOnDatabase: return .externaldriveFillBadgeExclamationmark
+        case .dontAcceptedTerms: return .exclamationmarkTriangleFill
         }
     }
 }
