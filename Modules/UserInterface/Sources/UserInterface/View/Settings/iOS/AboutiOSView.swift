@@ -18,7 +18,6 @@ struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
             sectionDescription
             sectionLinks
         }
-        .navigationTitle(presenter.string(.navigationTitle))
         .navigationBarTitleDisplayMode(.inline)
         .browser(item: $presenter.urlShareItem)
         .share(item: $presenter.appShareItem)

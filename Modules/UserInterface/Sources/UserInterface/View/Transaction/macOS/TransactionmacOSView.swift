@@ -54,7 +54,6 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         .navigation(isPresented: $presenter.isPresentedEditTransaction) {
             presenter.router.configure(routes: .addTransaction(presenter.transaction))
         }
-        
     }
     
     private var sectionOptions: some View {

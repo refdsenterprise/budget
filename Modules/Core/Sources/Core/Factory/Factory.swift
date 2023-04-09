@@ -69,4 +69,9 @@ public final class Factory: FactoryProtocol {
         let presenter = NotificationManagerPresenter()
         return NotificationScreen(presenter: presenter)
     }
+    
+    public func makeCustomizationScreen() -> any View {
+        let presenter = CustomizationPresenter()
+        return CustomizationScree(presenter: presenter)
+    }
 }

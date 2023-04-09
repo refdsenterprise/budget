@@ -32,10 +32,12 @@ struct SettingsiOSView<Presenter: SettingsPresenterProtocol>: View {
                 }
             }
             
-            HStack {
-                RefdsIcon(symbol: .heartSquareFill, renderingMode: .multicolor)
-                RefdsText(presenter.string(.manageCustomization))
-            }
+            NavigationLink(destination: { presenter.router.configure(routes: .customization) }, label: {
+                HStack {
+                    RefdsIcon(symbol: .heartSquareFill, renderingMode: .multicolor)
+                    RefdsText(presenter.string(.manageCustomization))
+                }
+            })
             
             NavigationLink(destination: { presenter.router.configure(routes: .about) }) {
                 HStack {

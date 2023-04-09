@@ -34,6 +34,7 @@ public extension BudgetDatabase {
         case notification
         case appIcon
         case notificationManager
+        case customization
         
         public var value: String {
             switch self {
@@ -42,6 +43,7 @@ public extension BudgetDatabase {
             case .notification: return "notification"
             case .appIcon: return "appIcon"
             case .notificationManager: return "notificationManager"
+            case .customization: return "customization"
             }
         }
     }

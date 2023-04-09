@@ -19,4 +19,5 @@ public protocol FactoryProtocol {
     func makeProScreen() -> any View
     func makeAboutScreen() -> any View
     func makeNotificationScreen() -> any View
+    func makeCustomizationScreen() -> any View
 }

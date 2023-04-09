@@ -15,4 +15,9 @@ public final class SettingsStorage {
         get { BudgetDatabase.shared.get(on: .appIcon) }
         set { BudgetDatabase.shared.set(on: .appIcon, value: newValue) }
     }
+    
+    public var customization: CustomizationEntity {
+        get { BudgetDatabase.shared.get(on: .customization) ?? .init(themeColor: .accentColor, appearence: .automatic) }
+        set { BudgetDatabase.shared.set(on: .customization, value: newValue) }
+    }
 }

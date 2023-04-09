@@ -46,35 +46,29 @@ public final class NotificationManagerPresenter: NotificationManagerPresenterPro
         
         var viewData: [NotificationManagerViewData] = []
         
-        if notificationManager.remiderIsOn {
-            viewData.append(.init(
-                isOn: notificationManager.remiderIsOn,
-                title: string(.remiderTitle),
-                icon: RefdsIconSymbol.calendarBadgeClock.rawValue,
-                description: string(.remiderDescription),
-                type: .remider
-            ))
-        }
+        viewData.append(.init(
+            isOn: notificationManager.remiderIsOn,
+            title: string(.remiderTitle),
+            icon: RefdsIconSymbol.calendarBadgeClock.rawValue,
+            description: string(.remiderDescription),
+            type: .remider
+        ))
         
-        if notificationManager.warningIsOn {
-            viewData.append(.init(
-                isOn: notificationManager.warningIsOn,
-                title: string(.warningTitle),
-                icon: RefdsIconSymbol.exclamationmarkTriangleFill.rawValue,
-                description: string(.warningDescription),
-                type: .warning
-            ))
-        }
+        viewData.append(.init(
+            isOn: notificationManager.warningIsOn,
+            title: string(.warningTitle),
+            icon: RefdsIconSymbol.exclamationmarkTriangleFill.rawValue,
+            description: string(.warningDescription),
+            type: .warning
+        ))
         
-        if notificationManager.breakingIsOn {
-            viewData.append(.init(
-                isOn: notificationManager.breakingIsOn,
-                title: string(.breakingTitle),
-                icon: RefdsIconSymbol.exclamationmarkOctagonFill.rawValue,
-                description: string(.breakingDescription),
-                type: .breaking
-            ))
-        }
+        viewData.append(.init(
+            isOn: notificationManager.breakingIsOn,
+            title: string(.breakingTitle),
+            icon: RefdsIconSymbol.exclamationmarkOctagonFill.rawValue,
+            description: string(.breakingDescription),
+            type: .breaking
+        ))
         
         return viewData
     }

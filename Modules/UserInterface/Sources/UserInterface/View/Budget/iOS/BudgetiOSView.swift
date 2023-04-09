@@ -45,6 +45,10 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
             }, !presenter.maxDay.isEmpty {
                 sectionMaxTrasactionsWeekday(daysOfWeek: maxTransactionsWeekday, totalActual: actual)
             }
+            
+            if !presenter.bubbleWords.isEmpty {
+                sectionBubbleWords
+            }
         }
         .navigationTitle(presenter.string(.navigationTitle(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: .custom("MMMM")).capitalized : "")))
         .onAppear { presenter.loadData() }
@@ -103,7 +107,6 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 RefdsText(
                     totalDifference.currency,
                     size: .custom(40),
-                    color: totalDifference <= 0 ? .pink : .primary,
                     weight: .bold,
                     family: .moderatMono,
                     alignment: .center,
@@ -181,6 +184,39 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
     }
     
+    private var sectionBubbleWords: some View {
+        Section {
+            let totalActual = presenter.totalBudget
+            CollapsedView(title: "Valores das concentrações") {
+                ForEach(presenter.bubbleWords.indices, id: \.self) { index in
+                    let item = presenter.bubbleWords[index]
+                    VStack(spacing: 5) {
+                        HStack(spacing: 10) {
+                            IndicatorPointView(color: item.color)
+                            RefdsText(item.title.capitalized)
+                            Spacer()
+                            RefdsText(item.realValue.currency, color: .secondary, family: .moderatMono)
+                        }
+                        HStack(spacing: 10) {
+                            RefdsText(presenter.getPercent(budget: totalActual, actual: item.realValue, hasPlaces: true), color: .secondary)
+                            let newActual = item.realValue > totalActual ? totalActual : item.realValue
+                            ProgressView(value: newActual, total: totalActual, label: {  })
+                                .tint(presenter.getActualColor(actual: item.realValue, budget: totalActual))
+                        }
+                    }
+                }
+            }
+        } header: {
+            RefdsText("concentração das dispesas", size: .extraSmall, color: .secondary)
+        } footer: {
+            BubbleView(viewData: $presenter.bubbleWords)
+                .frame(height: 300)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 20)
+                .padding(.bottom, -20)
+        }
+    }
+    
     private func rowAnalysisTransactionsWeekday(
         daysOfWeek: [String],
         transactionsWeekday: [TransactionEntity],
@@ -238,7 +274,6 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
             RefdsText(
                 actual.currency,
                 size: .custom(40),
-                color: budget - actual < 0 ? .pink : .primary,
                 weight: .bold,
                 family: .moderatMono,
                 alignment: .center,
@@ -309,7 +344,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
         .chartForegroundStyleScale([
             presenter.string(.budget): Color.blue,
-            presenter.string(.current): Color.accentColor
+            presenter.string(.current): Color.green
         ])
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)
         .chartYAxis { AxisMarks(position: .leading) }
@@ -358,7 +393,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
             }
         }
         .chartForegroundStyleScale([
-            presenter.string(.current): Color.accentColor,
+            presenter.string(.current): Color.green,
             presenter.string(.budget): Color.blue
         ])
         .chartLegend(position: .overlay, alignment: .top, spacing: -20)

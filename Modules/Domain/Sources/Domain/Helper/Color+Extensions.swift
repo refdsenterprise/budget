@@ -22,6 +22,10 @@ public extension Color {
     #else
     typealias SystemColor = UIColor
     #endif
+    static var random: Color {
+        let colors: [Color] = [.red, .orange, .yellow, .blue, .green, .pink, .indigo, .cyan, .teal, .purple]
+        return colors.randomElement() ?? .accentColor
+    }
     
     var colorComponents: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)? {
         var r: CGFloat = 0

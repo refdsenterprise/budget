@@ -70,6 +70,7 @@ struct MainApp: App {
                 .environment(\.appTheme, appConfiguration.themeColor)
                 .environmentObject(appConfiguration)
                 .environmentObject(actionService)
+                .preferredColorScheme(appConfiguration.colorScheme)
                 .onChange(of: scenePhase) { newValue in
                     switch newValue {
                     case .active: performActionIfNeeded()

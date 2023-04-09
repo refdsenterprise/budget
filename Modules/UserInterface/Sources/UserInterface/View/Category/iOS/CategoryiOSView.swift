@@ -79,7 +79,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
                 NavigationLink(destination: {
                     presenter.router.configure(routes: .transactions(category, presenter.date))
-                        .tint(category.color)
                 }, label: {
                     rowCategory(category)
                 })

@@ -17,18 +17,17 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     var body: some View {
         List {
             sectionOptions
-            sectionTotal(presenter.totalAmount)
+            sectionTotal
             
             if #available(iOS 16.0, *),
-               let chartData = presenter.chartData,
-               !chartData.compactMap({ $0.value }).isEmpty {
+               !presenter.chartData.compactMap({ $0.value }).isEmpty {
                 CollapsedView(title: presenter.string(.chart)) {
-                    sectionChartTransactions(chartData)
+                    sectionChartTransactions
                 }
             }
             
-            if let transactions = presenter.transactionsFiltred, !transactions.isEmpty {
-                sectionTransactions(transactions)
+            if !presenter.transactionsFiltred.isEmpty {
+                sectionTransactions
             }
         }
         .listStyle(.insetGrouped)
@@ -43,7 +42,6 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .navigation(isPresented: $presenter.isPresentedEditTransaction) {
             presenter.router.configure(routes: .addTransaction(presenter.transaction))
         }
-        .share(item: $presenter.sharePDF)
     }
     
     private var sectionOptions: some View {
@@ -68,15 +66,13 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                         }
                     }
                     
-                    PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy")) { _ in
-                        presenter.loadData()
-                    }
+                    PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy"))
                 }
             }
         }
     }
     
-    private func sectionTotal(_ total: Double) -> some View {
+    private var sectionTotal: some View {
         Section {} header: {
             VStack(spacing: 10) {
                 RefdsText(
@@ -85,7 +81,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                     color: .secondary
                 )
                 RefdsText(
-                    total.currency,
+                    presenter.totalAmount.currency,
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
@@ -98,8 +94,8 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .frame(maxWidth: .infinity)
     }
     
-    private func sectionTransactions(_ transactions: [TransactionEntity]) -> some View {
-        ForEach(transactions, id: \.id) { transaction in
+    private var sectionTransactions: some View {
+        ForEach(presenter.transactionsFiltred, id: \.id) { transaction in
             Section {
                 VStack {
                     rowTransactionTop(transaction)
@@ -210,9 +206,9 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     }
     
     @available(iOS 16.0, *)
-    private func sectionChartTransactions(_ chartData: [(date: Date, value: Double)]) -> some View {
+    private var sectionChartTransactions: some View {
         Chart {
-            ForEach(chartData, id: \.date) {
+            ForEach(presenter.chartData, id: \.date) {
                 buildAreaMarkTransactions($0)
             }
         }

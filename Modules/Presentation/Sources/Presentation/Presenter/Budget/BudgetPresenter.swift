@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RefdsUI
 import Domain
 import Data
 import Resource
@@ -19,6 +20,7 @@ public protocol BudgetPresenterProtocol: ObservableObject {
     var selectedPeriod: PeriodEntity { get set }
     var isSelectedVersus: Bool { get set }
     var maxDay: String { get set }
+    var bubbleWords: [BubbleDataItem] { get set }
     
     var totalActual: Double { get }
     var totalBudget: Double { get }
@@ -26,6 +28,7 @@ public protocol BudgetPresenterProtocol: ObservableObject {
     var transactions: [TransactionEntity] { get }
     var maxTrasaction: TransactionEntity? { get }
     var totalDifference: Double { get }
+    
     
     func string(_ string: Strings.Budget) -> String
     func loadData()
@@ -48,6 +51,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     @Published public var selectedPeriod: PeriodEntity = .month
     @Published public var isSelectedVersus: Bool = false
     @Published public var maxDay: String = ""
+    @Published public var bubbleWords: [BubbleDataItem] = []
     
     public init(router: BudgetRouter) {
         self.router = router
@@ -62,6 +66,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
         let transaction = Storage.shared.transaction
         categories = isFilterPerDate ? category.getCategories(from: date) : category.getAllCategories()
         _transactions = isFilterPerDate ? transaction.getTransactions(from: date) : transaction.getAllTransactions()
+        Task { await updateBubbleWords() }
     }
     
     public func getMaxWeekday(completion: (String) -> Void) -> [String] {
@@ -98,7 +103,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
         let percent = (actual * 100) / budget
         let breaking = percent >= 90
         let warning = percent >= 70
-        return breaking ? .red : warning ? .yellow : .accentColor
+        return breaking ? .red : warning ? .yellow : .green
     }
     
     public func transactions(for weekday: String) -> [TransactionEntity] {
@@ -221,5 +226,22 @@ extension BudgetPresenter {
             let actual = getAmountTransactions(by: $0)
             return budget - actual
         }).reduce(0, +)
+    }
+    
+    @MainActor private func updateBubbleWords() async {
+        let words = ["lisany", "sodexo", "jorge", "cafe", "rio de janeiro", "sushi", "uber", "aeroporto", "luciana", "pao e tal"]
+        var dataItem = words.map { word in
+            let value = transactions.filter({ $0.description.lowercased().stripingDiacritics.contains(word) }).map({ $0.amount }).reduce(0, +)
+            return BubbleDataItem(title: word, value: CGFloat(value), color: .random, realValue: value)
+        }.sorted(by: { $0.value > $1.value })
+        if let maxBubbleItem = dataItem.max(by: { $0.value < $1.value }) {
+            dataItem = dataItem.map({ item in
+                let scale = item.value * 300 / (maxBubbleItem.value == 0 ? 1 : maxBubbleItem.value)
+                return .init(title: item.title, value: scale, color: item.color, realValue: item.realValue)
+            })
+        }
+        
+        if dataItem.allSatisfy({ $0.value == 0 }) { bubbleWords = [] }
+        else { bubbleWords = dataItem }
     }
 }

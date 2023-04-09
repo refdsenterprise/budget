@@ -14,6 +14,7 @@ public enum SettingsRoutes {
     case pro
     case about
     case notification
+    case customization
 }
 
 public struct SettingsRouter {
@@ -31,6 +32,7 @@ public struct SettingsRouter {
         case .pro: AnyView(factory.makeProScreen())
         case .about: AnyView(factory.makeAboutScreen())
         case .notification: AnyView(factory.makeNotificationScreen())
+        case .customization: AnyView(factory.makeCustomizationScreen())
         }
     }
 }

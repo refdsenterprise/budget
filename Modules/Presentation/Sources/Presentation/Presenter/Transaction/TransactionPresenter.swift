@@ -17,15 +17,14 @@ public protocol TransactionPresenterProtocol: ObservableObject {
     var isFilterPerDate: Bool { get set }
     var isPresentedAddTransaction: Bool { get set }
     var isPresentedEditTransaction: Bool { get set }
-    var sharePDF: ShareItem { get set }
     var alert: BudgetAlert { get set }
     var transaction: TransactionEntity? { get set }
     var category: CategoryEntity? { get }
-    var selectedPeriodString: String { get set }
     var selectedPeriod: PeriodTransaction { get set }
-    var totalAmount: Double { get }
-    var chartData: [(date: Date, value: Double)] { get }
-    var transactionsFiltred: [TransactionEntity] { get }
+    
+    var totalAmount: Double { get set }
+    var chartData: [(date: Date, value: Double)] { get set }
+    var transactionsFiltred: [TransactionEntity] { get set }
     
     func string(_ string: Strings.Transaction) -> String
     func loadData()
@@ -34,47 +33,21 @@ public protocol TransactionPresenterProtocol: ObservableObject {
 
 public final class TransactionPresenter: TransactionPresenterProtocol {
     public var router: TransactionRouter
+    @Published private var transactions: [TransactionEntity] = []
     
-    @Published public var date: Date = Date()
-    @Published public var transactions: [TransactionEntity] = []
-    @Published public var query: String = ""
+    @Published public var date: Date = Date() { didSet { loadData() } }
+    @Published public var query: String = "" { didSet { loadSearchResults() } }
     @Published public var isFilterPerDate: Bool = true { didSet { loadData() } }
+    @Published public var selectedPeriod: PeriodTransaction = .monthly { didSet { loadData() } }
     @Published public var isPresentedAddTransaction: Bool = false
     @Published public var isPresentedEditTransaction: Bool = false
-    @Published public var sharePDF: ShareItem = .init()
     @Published public var alert: BudgetAlert = .init()
     @Published public var transaction: TransactionEntity?
     public var category: CategoryEntity?
     
-    @Published public var selectedPeriodString: String = PeriodTransaction.monthly.value {
-        didSet {
-            for period in PeriodTransaction.allCases {
-                if period.value == selectedPeriodString {
-                    selectedPeriod = period
-                }
-            }
-        }
-    }
-    
-    @Published public var selectedPeriod: PeriodTransaction = .monthly {
-        didSet { loadData() }
-    }
-    
-    public var totalAmount: Double {
-        transactions.filter({
-            containsTransaction($0)
-        }).map({ $0.amount }).reduce(0, +)
-    }
-    
-    public var chartData: [(date: Date, value: Double)] {
-        transactionsFiltred.map({
-            (date: $0.date, value: $0.amount)
-        })
-    }
-    
-    public var transactionsFiltred: [TransactionEntity] {
-        transactions.filter({ containsTransaction($0) })
-    }
+    @Published public var totalAmount: Double = 0
+    @Published public var chartData: [(date: Date, value: Double)] = []
+    @Published public var transactionsFiltred: [TransactionEntity] = []
     
     public init(router: TransactionRouter, category: CategoryEntity? = nil, date: Date? = nil) {
         self.router = router
@@ -84,16 +57,6 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
     
     public func string(_ string: Strings.Transaction) -> String {
         string.value
-    }
-    
-    public func loadData() {
-        let transaction = Storage.shared.transaction
-        if let category = category {
-            transactions = isFilterPerDate ? transaction.getTransactions(on: category, from: date, format: selectedPeriod.dateFormat) : transaction.getTransactions(on: category)
-        } else {
-            transactions = isFilterPerDate ? transaction.getTransactions(from: date, format: selectedPeriod.dateFormat) : transaction.getAllTransactions()
-        }
-        print(transactions)
     }
     
     public func remove(transaction: TransactionEntity, onError: ((BudgetError) -> Void)? = nil) {
@@ -114,6 +77,57 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
         let amount = "\(transaction.amount)".lowercased().contains(query)
         let date = transaction.date.asString(withDateFormat: selectedPeriod.dateFormat).lowercased().contains(query)
         return description || category || amount || date
+    }
+    
+    public func loadData() {
+        Task {
+            await updateTransactions()
+            await updateTransactionsFiltered()
+            Task { await updateTotalAmount() }
+            Task { await updateChartData() }
+        }
+    }
+    
+    public func loadSearchResults() {
+        Task {
+            await updateTransactionsFiltered()
+            Task { await updateTotalAmount() }
+            Task { await updateChartData() }
+        }
+    }
+    
+    @MainActor private func updateTransactions() async {
+        let worker = Storage.shared.transaction
+        if let category = category {
+            transactions = isFilterPerDate ? worker.getTransactions(
+                on: category,
+                from: date,
+                format: selectedPeriod.dateFormat
+            ) : worker.getTransactions(on: category)
+        } else {
+            transactions = isFilterPerDate ? worker.getTransactions(
+                from: date,
+                format: selectedPeriod.dateFormat
+            ) : worker.getAllTransactions()
+        }
+    }
+    
+    @MainActor private func updateTotalAmount() async {
+        totalAmount = transactionsFiltred.map({
+            $0.amount
+        }).reduce(0, +)
+    }
+    
+    @MainActor private func updateChartData() async {
+        chartData = transactionsFiltred.map({
+            (date: $0.date, value: $0.amount)
+        })
+    }
+    
+    @MainActor private func updateTransactionsFiltered() async {
+        transactionsFiltred = transactions.filter({
+            containsTransaction($0)
+        })
     }
 }
 

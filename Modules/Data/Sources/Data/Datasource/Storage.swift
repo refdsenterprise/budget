@@ -11,4 +11,5 @@ public final class Storage {
     public static let shared = Storage()
     public let category: CategoryStorage = .shared
     public let transaction: TransactionStorage = .shared
+    public let settings: SettingsStorage = .shared
 }
