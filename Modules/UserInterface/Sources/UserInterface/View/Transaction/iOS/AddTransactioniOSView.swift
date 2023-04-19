@@ -41,7 +41,7 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
             Spacer()
             RefdsTextField(
                 presenter.string(.inputDescription),
-                text: $presenter.description,
+                text: $presenter.viewData.message,
                 alignment: .trailing,
                 textInputAutocapitalization: .sentences
             )
@@ -50,28 +50,26 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
     
     private var rowCategory: some View {
         Group {
-            if let name = presenter.category?.name {
+            if let name = presenter.viewData.category?.name, let categories = presenter.viewData.categories {
                 CollapsedView(title: presenter.string(.category), description: name.capitalized) {
-                    rowCategoryOptions
+                    rowCategoryOptions(categories: categories)
                 }
             } else { buttonAddCategory }
         }
     }
         
-    private var rowCategoryOptions: some View {
-        ForEach(presenter.getCategories(), id: \.id) { category in
-            Button { presenter.category = category } label: {
+    private func rowCategoryOptions(categories: [AddTransactionViewData.Category]) -> some View {
+        ForEach(categories, id: \.id) { category in
+            Button { presenter.viewData.category = category } label: {
                 HStack(spacing: 10) {
-                    IndicatorPointView(color: presenter.category?.id == category.id ? category.color : .secondary)
+                    IndicatorPointView(color: presenter.viewData.category?.id == category.id ? category.color : .secondary)
                     RefdsText(category.name.capitalized)
                     Spacer()
-                    if let budget = presenter.getBudget(on: category) {
-                        RefdsText(
-                            budget.amount.currency,
-                            color: .secondary,
-                            family: .moderatMono
-                        )
-                    }
+                    RefdsText(
+                        category.remaning.currency,
+                        color: .secondary,
+                        family: .moderatMono
+                    )
                 }
             }
         }
@@ -94,11 +92,7 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
                 title: presenter.string(.dateAndTime),
                 description: presenter.date.asString(withDateFormat: .custom("EEE dd, MMM yyyy")).capitalized
             ) {
-                DatePicker(.empty, selection: Binding(get: { presenter.date }, set: {
-                    presenter.loadData(newDate: $0)
-                    presenter.date = $0
-                }), displayedComponents: [.date, .hourAndMinute])
-                .font(.refds(size: 16, scaledSize: 1.2 * 16))
+                DatePicker(.empty, selection: $presenter.date, displayedComponents: [.date, .hourAndMinute])
                 .datePickerStyle(.graphical)
             }
         }
@@ -107,9 +101,7 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
     private var buttonSave: some View {
         Button {
             Application.shared.endEditing()
-            presenter.save {
-                dismiss()
-            } onError: {
+            presenter.save { dismiss() } onError: {
                 presenter.alert = .init(error: $0)
             }
         } label: {

@@ -4,10 +4,11 @@
 "disableNotificationTitle" = "As notificações do Budget estão desabilitadas no seu dispositivo!";
 "disableNotificationDescription" = "Altere as permissões de notificação para poder receber os avisos sobre suas despesas, limites atingidos e lembretes para preencher novas transações.";
 "remiderTitle" = "Novas dispesas";
-"remiderDescription" = "Seja avisado para preencher as transações do dia.";
+"remiderDescription" = "Seja avisado para preencher as transações.";
 "warningTitle" = "Cuidado";
 "warningDescription" = "Saiba quando está se aproximando do limite.";
 "breakingTitle" = "Limite ultrapassado";
 "breakingDescription" = "Saiba quando está se aproximando do limite.";
 "options" = "Opções";
 "changeNotificationPermission" = "Alterar permissões do dispositivo";
+"activeNotifications" = "Ativar notificações";

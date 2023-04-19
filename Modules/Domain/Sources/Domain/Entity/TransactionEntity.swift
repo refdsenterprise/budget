@@ -1,30 +1,23 @@
 //
-//  TransactionEntity.swift
-//  Budget
+//  TransactionEntity+CoreDataClass.swift
+//  
 //
-//  Created by Rafael Santos on 30/12/22.
+//  Created by Rafael Santos on 14/04/23.
+//
 //
 
 import Foundation
+import CoreData
 
-public struct TransactionEntity: Codable, Identifiable, Hashable {
-    public let id: UUID
-    public var date: Date
-    public var description: String
-    public var categoryUUID: UUID
-    public var amount: Double
-    
-    public init(
-        id: UUID = UUID(),
-        date: Date = Date(),
-        description: String,
-        categoryUUID: UUID,
-        amount: Double
-    ) {
-        self.id = id
-        self.date = date
-        self.description = description
-        self.categoryUUID = categoryUUID
-        self.amount = amount
+@objc(TransactionEntity)
+public class TransactionEntity: NSManagedObject {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<TransactionEntity> {
+        return NSFetchRequest<TransactionEntity>(entityName: "TransactionEntity")
     }
+
+    @NSManaged public var amount: Double
+    @NSManaged public var category: UUID
+    @NSManaged public var date: TimeInterval
+    @NSManaged public var id: UUID
+    @NSManaged public var message: String
 }

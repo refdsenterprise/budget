@@ -17,7 +17,8 @@ public struct NotificationScreen<Presenter: NotificationManagerPresenterProtocol
     
     public var body: some View {
         if Device.current == .macOS {
-            HStack {}
+            NotificationmacOSView<Presenter>()
+                .environmentObject(presenter)
         } else {
             NotificationiOSView<Presenter>()
                 .environmentObject(presenter)

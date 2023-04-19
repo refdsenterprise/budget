@@ -9,7 +9,7 @@ import SwiftUI
 import Domain
 
 public enum AddCategoryRoutes {
-    case addBudget(((BudgetEntity) -> Void)?)
+    case addBudget(((AddBudgetViewData) -> Void)?, id: UUID)
 }
 
 public struct AddCategoryRouter {
@@ -22,7 +22,7 @@ public struct AddCategoryRouter {
     @ViewBuilder
     public func configure(routes: AddCategoryRoutes) -> some View {
         switch routes {
-        case .addBudget(let newBudget): AnyView(factory.makeAddBudgetScreen(newBudget: newBudget))
+        case .addBudget(let newBudget, let id): AnyView(factory.makeAddBudgetScreen(newBudget: newBudget, id: id))
         }
     }
 }

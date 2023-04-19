@@ -16,37 +16,28 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     
     var body: some View {
         List {
-            let actual = presenter.totalActual
-            let budget = presenter.totalBudget
-            
-            sectionValue(budget: budget, actual: actual)
+            sectionValue
             sectionOptions
             
-            if !presenter.categories.isEmpty {
+            if !presenter.viewData.remainingCategory.isEmpty {
                 sectionDifference
-                sectionValueDifference(budget: budget, actual: actual)
+                sectionValueDifference
                 
-                if let chartData = presenter.chartData,
-                   !chartData.flatMap({ $0.data }).isEmpty,
-                   let transctions = presenter.transactions {
-                    sectionTransactions(chartData: chartData, transactions: transctions)
+                if !presenter.viewData.chart.isEmpty {
+                    sectionTransactions
                 }
             }
             
-            if let maxTransaction = presenter.maxTrasaction {
+            if let maxTransaction = presenter.viewData.biggerBuy {
                 sectionMaxTransaction(transaction: maxTransaction)
             }
             
-            sectionFirstMaxTrasactionsWeekday
-            if let maxTransactionsWeekday = presenter.getMaxWeekday { maxDay in
-                DispatchQueue.main.async {
-                    if presenter.maxDay.isEmpty { presenter.maxDay = maxDay }
-                }
-            }, !presenter.maxDay.isEmpty {
-                sectionMaxTrasactionsWeekday(daysOfWeek: maxTransactionsWeekday, totalActual: actual)
+            if !presenter.viewData.weekdays.isEmpty, !presenter.maxDay.isEmpty, !presenter.viewData.weekdayTransactions.isEmpty {
+                sectionFirstMaxTrasactionsWeekday
+                sectionMaxTrasactionsWeekday
             }
             
-            if !presenter.bubbleWords.isEmpty {
+            if !presenter.viewData.bubbleWords.isEmpty {
                 sectionBubbleWords
             }
         }
@@ -54,9 +45,9 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         .onAppear { presenter.loadData() }
     }
     
-    private func sectionValue(budget: Double, actual: Double) -> some View {
+    private var sectionValue: some View {
         Section {} footer: {
-            valueView(actual: actual, budget: budget)
+            valueView(actual: presenter.viewData.value.totalActual, budget: presenter.viewData.value.totalBudget)
                 .frame(maxWidth: .infinity)
                 .padding(.top)
         }
@@ -83,15 +74,11 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     
     private var sectionDifference: some View {
         Section {
-            ForEach(presenter.categories) { category in
+            ForEach(presenter.viewData.remainingCategory, id: \.id) { category in
                 NavigationLink(destination: {
-                    presenter.router.configure(routes: .transactions(category, presenter.date))
-                    
+                    presenter.router.configure(routes: .transactions(category.id, presenter.date))
                 }, label: {
-                    if let budget = presenter.getBudgetAmount(by: category),
-                       let actual = presenter.getAmountTransactions(by: category) {
-                        rowDifference(category: category, budget: budget, actual: actual)
-                    }
+                    rowDifference(category: category)
                 })
             }
         } header: {
@@ -99,13 +86,12 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
     }
     
-    private func sectionValueDifference(budget: Double, actual: Double) -> some View {
+    private var sectionValueDifference: some View {
         Section { } footer: {
             VStack(alignment: .center, spacing: 10) {
-                let totalDifference = presenter.totalDifference
                 RefdsText(presenter.string(.totalDiff).uppercased(), size: .custom(12), color: .secondary)
                 RefdsText(
-                    totalDifference.currency,
+                    presenter.viewData.remainingCategoryValue.amount.currency,
                     size: .custom(40),
                     weight: .bold,
                     family: .moderatMono,
@@ -113,9 +99,9 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                     lineLimit: 1
                 )
                 RefdsText(
-                    presenter.getDifferencePercent(budget: budget, actual: actual, hasPlaces: true),
+                    presenter.viewData.remainingCategoryValue.percentString,
                     size: .custom(20),
-                    color: budget > actual ? .accentColor : budget < actual ? .pink : .blue,
+                    color: presenter.viewData.remainingCategoryValue.color,
                     weight: .bold,
                     family: .moderatMono
                 )
@@ -124,29 +110,29 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
     }
     
-    private func sectionTransactions(chartData: [(label: String, data: [(category: String, value: Double)])], transactions: [TransactionEntity]) -> some View {
+    private var sectionTransactions: some View {
         Section {
-            rowTransactions(amount: transactions.count)
+            rowTransactions
             if #available(iOS 16.0, *) {
-                rowTransactionChart(chartData: chartData)
+                rowTransactionChart
             }
         } header: {
             RefdsText(presenter.string(.transactions), size: .extraSmall, color: .secondary)
         }
     }
     
-    private func sectionMaxTransaction(transaction: TransactionEntity) -> some View {
+    private func sectionMaxTransaction(transaction: TransactionViewData.Transaction) -> some View {
         Section {
             VStack {
                 HStack {
                     RefdsTag(transaction.date.asString(withDateFormat: .custom("EEE HH:mm")), color: .secondary)
                     RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy")))
                     Spacer()
-                    RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
+                    RefdsTag(transaction.categoryName, color: transaction.categoryColor)
                 }
                 Divider()
                 HStack {
-                    RefdsText(transaction.description.isEmpty ? presenter.string(.noDescription) : transaction.description, color: .secondary)
+                    RefdsText(transaction.description, color: .secondary)
                     Spacer()
                     RefdsText(transaction.amount.currency, family: .moderatMono, alignment: .trailing, lineLimit: 1)
                 }
@@ -165,51 +151,57 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
     }
     
-    private func sectionMaxTrasactionsWeekday(daysOfWeek: [String], totalActual: Double) -> some View {
+    private var sectionMaxTrasactionsWeekday: some View {
         Section {
-            let transactionsWeekday = presenter.transactions(for: presenter.maxDay)
-            let amount = transactionsWeekday.map({ $0.amount }).reduce(0, +)
-            rowAnalysisTransactionsWeekday(
-                daysOfWeek: daysOfWeek,
-                transactionsWeekday: transactionsWeekday,
-                amount: amount,
-                totalActual: totalActual
-            )
-            rowShowTransactions(transactionsWeekday: transactionsWeekday)
+            rowShowTransactions
         } header: {
-            SelectionTabView(values: daysOfWeek, selected: $presenter.maxDay)
+            SelectionTabView(values: presenter.viewData.weekdays, selected: $presenter.maxDay)
                 .padding(.horizontal, -30)
                 .padding(.bottom, 8)
                 .padding(.top, -20)
+        } footer: {
+            rowAnalysisTransactions
+                .padding(.top)
         }
+    }
+    
+    private var rowAnalysisTransactions: some View {
+        VStack(alignment: .center, spacing: 5) {
+            RefdsText(
+                presenter.string(.maxTransactionRanking(presenter.viewData.weekdaysDetail?.amountTransactions ?? 0)).uppercased(),
+                size: .custom(15),
+                color: .secondary
+            )
+            RefdsText(
+                (presenter.viewData.weekdaysDetail?.amount ?? 0).currency,
+                size: .custom(40),
+                weight: .bold,
+                family: .moderatMono,
+                alignment: .center,
+                lineLimit: 1
+            )
+            RefdsText(
+                presenter.viewData.weekdaysDetail?.percentString ?? "",
+                size: .custom(20),
+                color: .accentColor,
+                weight: .bold,
+                family: .moderatMono
+            )
+        }
+        .frame(maxWidth: .infinity)
     }
     
     private var sectionBubbleWords: some View {
         Section {
-            let totalActual = presenter.totalBudget
-            CollapsedView(title: "Valores das concentrações") {
-                ForEach(presenter.bubbleWords.indices, id: \.self) { index in
-                    let item = presenter.bubbleWords[index]
-                    VStack(spacing: 5) {
-                        HStack(spacing: 10) {
-                            IndicatorPointView(color: item.color)
-                            RefdsText(item.title.capitalized)
-                            Spacer()
-                            RefdsText(item.realValue.currency, color: .secondary, family: .moderatMono)
-                        }
-                        HStack(spacing: 10) {
-                            RefdsText(presenter.getPercent(budget: totalActual, actual: item.realValue, hasPlaces: true), color: .secondary)
-                            let newActual = item.realValue > totalActual ? totalActual : item.realValue
-                            ProgressView(value: newActual, total: totalActual, label: {  })
-                                .tint(presenter.getActualColor(actual: item.realValue, budget: totalActual))
-                        }
-                    }
+            CollapsedView(title: presenter.string(.concentrationValue)) {
+                ForEach(presenter.viewData.bubbleWords.indices, id: \.self) { index in
+                    rowBubble(index: index)
                 }
             }
         } header: {
-            RefdsText("concentração das dispesas", size: .extraSmall, color: .secondary)
+            RefdsText(presenter.string(.expansesConcentration), size: .extraSmall, color: .secondary)
         } footer: {
-            BubbleView(viewData: $presenter.bubbleWords)
+            BubbleView(viewData: $presenter.viewData.bubbleWords)
                 .frame(height: 300)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 20)
@@ -217,47 +209,30 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
     }
     
-    private func rowAnalysisTransactionsWeekday(
-        daysOfWeek: [String],
-        transactionsWeekday: [TransactionEntity],
-        amount: Double,
-        totalActual: Double
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if let index = daysOfWeek.firstIndex(of: presenter.maxDay) {
-                RefdsText(presenter.string(.maxTransactionRanking(index + 1)))
-                HStack {
-                    Spacer()
-                    RefdsText(amount.currency, size: .custom(30), color: .secondary, family: .moderatMono, alignment: .center, lineLimit: 1)
-                        .padding(.vertical, 8)
-                    Spacer()
-                }
-                RefdsText(presenter.string(.maxTransactionRankingRepresentaion(
-                    presenter.getPercent(budget: totalActual, actual: amount, hasPlaces: true),
-                    transactionsWeekday.count)
-                ))
+    private func rowBubble(index: Int) -> some View {
+        VStack(spacing: 5) {
+            let item = presenter.viewData.bubbleWords[index]
+            HStack(spacing: 10) {
+                IndicatorPointView(color: item.color)
+                RefdsText(item.title.capitalized)
+                Spacer()
+                RefdsText(item.realValue.currency, color: .secondary, family: .moderatMono)
             }
         }
     }
     
-    private func rowShowTransactions(transactionsWeekday: [TransactionEntity]) -> some View {
+    private var rowShowTransactions: some View {
         CollapsedView(title: presenter.string(.showTransactoins)) {
-            VStack(alignment: .leading, spacing: 15) {
-                ForEach(transactionsWeekday.indices, id: \.self) { index in
-                    let transaction = transactionsWeekday[index]
-                    HStack(spacing: 10) {
-                        IndicatorPointView(color: transaction.category?.color ?? .secondary)
-                        VStack(alignment: .leading, spacing: 5) {
-                            RefdsText(transaction.description)
-                            HStack {
-                                RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy - HH:mm")), color: .secondary)
-                                Spacer()
-                                RefdsText(transaction.amount.currency, color: .secondary)
-                            }
+            ForEach(presenter.viewData.weekdayTransactions, id: \.id) { transaction in
+                HStack(spacing: 10) {
+                    IndicatorPointView(color: transaction.categoryColor)
+                    VStack(alignment: .leading, spacing: 5) {
+                        RefdsText(transaction.description)
+                        HStack {
+                            RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy - HH:mm")), color: .secondary)
+                            Spacer()
+                            RefdsText(transaction.amount.currency, color: .secondary)
                         }
-                    }
-                    if index != transactionsWeekday.count - 1 {
-                        Divider().padding(.leading, 25)
                     }
                 }
             }
@@ -283,34 +258,33 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         }
     }
     
-    private func rowDifference(category: CategoryEntity, budget: Double, actual: Double) -> some View {
+    private func rowDifference(category: BudgetViewData.RemainingCategory) -> some View {
         VStack(spacing: 5) {
             HStack {
                 RefdsText(category.name.capitalized, weight: .bold)
                 Spacer()
-                RefdsText((budget - actual).currency, family: .moderatMono)
+                RefdsText(category.value.currency, family: .moderatMono)
             }
             HStack(spacing: 10) {
-                RefdsText(presenter.getDifferencePercent(budget: budget, actual: actual, hasPlaces: true), color: .secondary)
-                let newActual = actual > budget ? budget : actual
-                ProgressView(value: newActual, total: budget, label: {  })
-                    .tint(presenter.getActualColor(actual: actual, budget: budget))
+                RefdsText(category.percentString, color: .secondary)
+                ProgressView(value: category.percent, total: 100, label: {  })
+                    .tint(category.percentColor)
             }
         }
     }
     
-    private func rowTransactions(amount: Int) -> some View {
+    private var rowTransactions: some View {
         HStack {
             RefdsText(presenter.string(.amountTransactionsMoment))
             Spacer()
             GroupBox {
-                RefdsText("\(amount)", weight: .bold, family: .moderatMono)
+                RefdsText("\(presenter.viewData.amountTransactions)", weight: .bold, family: .moderatMono)
             }
         }
     }
     
     @available(iOS 16.0, *)
-    private func rowTransactionChart(chartData: [(label: String, data: [(category: String, value: Double)])]) -> some View {
+    private var rowTransactionChart: some View {
         VStack(spacing: 0) {
             HStack {
                 Spacer()
@@ -321,8 +295,8 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 Spacer()
             }
             TabView {
-                sectionChartBar(chartData: chartData)
-                sectionChartLine(chartData: chartData)
+                sectionChartBar
+                sectionChartLine
             }
             .frame(height: 400)
             .tabViewStyle(.page(indexDisplayMode: .always))
@@ -331,8 +305,8 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     }
     
     @available(iOS 16.0, *)
-    private func sectionChartBar(chartData: [(label: String, data: [(category: String, value: Double)])]) -> some View {
-        Chart(chartData, id: \.label) { chartData in
+    private var sectionChartBar: some View {
+        Chart(presenter.viewData.chart, id: \.label) { chartData in
             ForEach(chartData.data, id: \.category) {
                 BarMark(
                     x: .value(presenter.string(.category), String($0.category.prefix(3))),
@@ -355,41 +329,41 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     }
     
     @available(iOS 16.0, *)
-    private func sectionChartLine(chartData: [(label: String, data: [(category: String, value: Double)])]) -> some View {
+    private var sectionChartLine: some View {
         Chart {
-            ForEach(chartData[1].data, id: \.category) {
+            ForEach(presenter.viewData.chart[1].data, id: \.category) {
                 LineMark(
                     x: .value(presenter.string(.category), String($0.category.prefix(3))),
                     y: .value(presenter.string(.value), $0.value)
                 )
                 .interpolationMethod(.catmullRom)
-                .symbol(by: .value(presenter.string(.category), chartData[1].label))
+                .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
                 .symbolSize(30)
-                .foregroundStyle(by: .value(presenter.string(.category), chartData[1].label))
-                .position(by: .value(presenter.string(.category), chartData[1].label))
+                .foregroundStyle(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
                 
                 AreaMark(
                     x: .value(presenter.string(.category), String($0.category.prefix(3))),
                     y: .value(presenter.string(.value), $0.value)
                 )
                 .interpolationMethod(.catmullRom)
-                .symbol(by: .value(presenter.string(.category), chartData[1].label))
+                .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
                 .symbolSize(30)
                 .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
-                .position(by: .value(presenter.string(.category), chartData[1].label))
+                .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
             }
             
-            ForEach(chartData[0].data, id: \.category) {
+            ForEach(presenter.viewData.chart[0].data, id: \.category) {
                 LineMark(
                     x: .value(presenter.string(.category), String($0.category.prefix(3))),
                     y: .value(presenter.string(.value), $0.value)
                 )
                 .interpolationMethod(.catmullRom)
                 .lineStyle(StrokeStyle(dash: [5, 10]))
-                .symbol(by: .value(presenter.string(.category), chartData[0].label))
+                .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[0].label))
                 .symbolSize(30)
-                .foregroundStyle(by: .value(presenter.string(.category), chartData[0].label))
-                .position(by: .value(presenter.string(.category), chartData[1].label))
+                .foregroundStyle(by: .value(presenter.string(.category), presenter.viewData.chart[0].label))
+                .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
             }
         }
         .chartForegroundStyleScale([

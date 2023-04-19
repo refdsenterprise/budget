@@ -12,67 +12,116 @@ import Resource
 
 public protocol AddTransactionPresenterProtocol: ObservableObject {
     var router: AddTransactionRouter { get }
-    
+    var viewData: AddTransactionViewData { get set }
     var date: Date { get set }
-    var description: String { get set }
     var amount: Double { get set }
-    var category: CategoryEntity? { get set }
-    var transaction: TransactionEntity? { get }
-    var alert: BudgetAlert { get set }
+    var alert: AlertItem { get set }
     var buttonForegroundColor: Color { get }
     
     func loadData()
-    func loadData(newDate: Date)
     func string(_ string: Strings.AddTransaction) -> String
-    func getBudget(on category: CategoryEntity) -> BudgetEntity?
-    func getCategories() -> [CategoryEntity]
     func save(onSuccess: (() -> Void)?, onError: ((BudgetError) -> Void)?)
 }
 
 public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
     public var router: AddTransactionRouter
-    
-    @Published public var date: Date
-    @Published public var description: String
-    @Published public var amount: Double
-    @Published public var category: CategoryEntity?
-    @Published public var transaction: TransactionEntity?
-    @Published public var alert: BudgetAlert = .init()
+    @Published public var viewData: AddTransactionViewData = .init()
+    @Published public var date: Date = .current { didSet { loadData() } }
+    @Published public var amount: Double = 0 { didSet { loadData() } }
+    @Published public var alert: AlertItem = .init()
     
     private var canAddNewTransaction: Bool {
-        return amount > 0 && category != nil && !description.isEmpty
+        return viewData.amount > 0 && viewData.category != nil && !viewData.message.isEmpty
     }
     
     public var buttonForegroundColor: Color {
         return canAddNewTransaction ? .accentColor : .secondary
     }
     
-    public init(router: AddTransactionRouter, transaction: TransactionEntity? = nil) {
+    public init(router: AddTransactionRouter, transaction: UUID? = nil) {
         self.router = router
-        self.transaction = transaction
-        self.date = transaction?.date ?? Date()
-        self.description = transaction?.description ?? ""
-        self.amount = transaction?.amount ?? 0
-        if let category = transaction?.category {
-            self.category = category
+        Task { await start(transaction: transaction) }
+    }
+    
+    @MainActor private func start(transaction: UUID?) async {
+        if let id = transaction,
+            let transaction = Worker.shared.transaction.get(in: id),
+            let category = Worker.shared.category.getCategory(by: transaction.category) {
+            let totalActual = Worker.shared.transaction.get(from: transaction.date.date, format: .monthYear).map({ $0.amount }).reduce(0, +)
+            let totalBudget = category.budgetsValue.first(where: {
+                $0.date.asString(withDateFormat: .monthYear) == transaction.date.asString(withDateFormat: .monthYear)
+            })?.amount ?? 0
+            viewData = .init(
+                id: transaction.id,
+                amount: transaction.amount,
+                message: transaction.message,
+                category: .init(
+                    id: category.id,
+                    color: Color(hex: category.color),
+                    name: category.name,
+                    remaning: totalBudget - totalActual
+                ),
+                date: transaction.date.date
+            )
+            let categories = Worker.shared.category.getCategories(from: transaction.date.date).map({
+                let totalActual = Worker.shared.transaction.get(from: transaction.date.date, format: .monthYear).map({ $0.amount }).reduce(0, +)
+                let totalBudget = $0.budgetsValue.first(where: {
+                    $0.date.asString(withDateFormat: .monthYear) == transaction.date.asString(withDateFormat: .monthYear)
+                })?.amount ?? 0
+                return AddTransactionViewData.Category(
+                    id: $0.id,
+                    color: Color(hex: $0.color),
+                    name: $0.name,
+                    remaning: totalBudget - totalActual
+                )
+            })
+            viewData.categories = categories
         } else {
-            self.category = Storage.shared.category.getCategories(from: .current).first
+            let categories = Worker.shared.category.getCategories(from: viewData.date).map({
+                let totalActual = Worker.shared.transaction.get(from: viewData.date, format: .monthYear).map({ $0.amount }).reduce(0, +)
+                let totalBudget = $0.budgetsValue.first(where: {
+                    $0.date.date.asString(withDateFormat: .monthYear) == viewData.date.asString(withDateFormat: .monthYear)
+                })?.amount ?? 0
+                return AddTransactionViewData.Category(
+                    id: $0.id,
+                    color: Color(hex: $0.color),
+                    name: $0.name,
+                    remaning: totalBudget - totalActual
+                )
+            })
+            viewData.categories = categories
+            viewData.category = categories.first
         }
     }
     
     public func loadData() {
-        if category == nil {
-            category = Storage.shared.category.getCategories(from: date).first
+        Task {
+            await updateCategories()
+            await updateCategory()
         }
     }
     
-    public func loadData(newDate: Date) {
-        let categories = Storage.shared.category.getCategories(from: newDate)
-        
-        if category == nil {
-            self.category = categories.first
-        } else if let category = category, !categories.map({ $0.id }).contains(category.id) {
-            self.category = categories.first
+    @MainActor private func updateCategories() async {
+        viewData.date = date
+        viewData.amount = amount
+        viewData.categories = Worker.shared.category.getCategories(from: viewData.date).map({
+            let totalActual = Worker.shared.transaction.get(on: $0.id, from: self.viewData.date, format: .monthYear).map({ $0.amount }).reduce(0, +) + self.viewData.amount
+            let totalBudget = Worker.shared.category.getBudget(on: $0.id, from: self.viewData.date)?.amount ?? 0
+            return AddTransactionViewData.Category(
+                id: $0.id,
+                color: Color(hex: $0.color),
+                name: $0.name,
+                remaning: totalBudget - totalActual
+            )
+        })
+    }
+    
+    @MainActor private func updateCategory() async {
+        if viewData.category == nil {
+            viewData.category = viewData.categories?.first
+        } else if let category = viewData.category,
+                  !(viewData.categories?.map({ $0.id }).contains(category.id) ?? false) {
+            viewData.category = viewData.categories?.first
         }
     }
     
@@ -80,93 +129,69 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
         string.value
     }
     
-    public func getBudget(on category: CategoryEntity) -> BudgetEntity? {
-        category.budgets.first { budget in
-            budget.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
-        }
-    }
-    
-    public func getCategories() -> [CategoryEntity] {
-        Storage.shared.category.getCategories(from: date)
-    }
-    
     public func save(onSuccess: (() -> Void)? = nil, onError: ((BudgetError) -> Void)? = nil) {
         if canAddNewTransaction {
-            if transaction != nil { editTransaction(onSuccess: onSuccess, onError: onError) }
-            else { addTransaction(onSuccess: onSuccess, onError: onError) }
-        }
-    }
-    
-    private func addTransaction(onSuccess: (() -> Void)? = nil, onError: ((BudgetError) -> Void)? = nil) {
-        guard let category = category else { onError?(.notFoundCategory); return }
-        do {
-            try Storage.shared.transaction.addTransaction(
-                date: date,
-                description: description,
-                category: category,
-                amount: amount
-            )
-            onSuccess?()
-            checkWarning()
-        } catch {
-            guard let error = error as? BudgetError else { return }
-            onError?(error)
-        }
-    }
-    
-    private func editTransaction(onSuccess: (() -> Void)? = nil, onError: ((BudgetError) -> Void)? = nil) {
-        guard let category = category, let transaction = transaction else { onError?(.notFoundTransaction); return }
-        do {
-            try Storage.shared.transaction.editTransaction(
-                transaction,
-                date: date,
-                description: description,
-                category: category,
-                amount: amount
-            )
-            onSuccess?()
-            checkWarning()
-        } catch {
-            guard let error = error as? BudgetError else { return }
-            onError?(error)
+            guard let category = viewData.category else {
+                onError?(.notFoundCategory)
+                return
+            }
+            
+            do {
+                try Worker.shared.transaction.add(
+                    id: viewData.id,
+                    date: viewData.date,
+                    message: viewData.message,
+                    category: category.id,
+                    amount: viewData.amount
+                )
+                onSuccess?()
+                checkWarning()
+                #if targetEnvironment(macCatalyst)
+                #else
+                if #available(iOS 16.1, *) {
+                    LiveActivityPresenter.shared.updateLiveActivity()
+                }
+                #endif
+            } catch {
+                guard let error = error as? BudgetError else { return }
+                onError?(error)
+            }
         }
     }
     
     private func checkWarning() {
-        let database = BudgetDatabase.shared
-        var notification: NotificationEntity = database.get(on: .notification) ?? .init()
-        let categories = Storage.shared.category.getCategories(from: date, format: .monthYear)
-        let transactions = Storage.shared.transaction.getTransactions(from: date, format: .monthYear)
-        let date = date.asString(withDateFormat: .monthYear)
-        var totalBudget = categories.map { category in
-            category.budgets.filter {
-                $0.date.asString(withDateFormat: .monthYear) == date
-            }.first?.amount ?? 0
-        }.reduce(0, +)
-        totalBudget = totalBudget == 0 ? 1 : totalBudget
-        let totalActual = transactions.map { $0.amount }.reduce(0, +)
-        let percent = (totalActual * 100) / totalBudget
-        
-        if totalActual <= totalBudget, percent >= 70, notification.warningExpensesDate?.asString(withDateFormat: .monthYear) != date {
-            notification.warningExpensesDate = .current
-            NotificationCenter.shared.makeWarningExpenses(percent: percent, actual: totalActual, total: totalBudget)
-        } else if totalActual > totalBudget, notification.breakingExpensesDate?.asString(withDateFormat: .monthYear) != date {
-            notification.breakingExpensesDate = .current
-            NotificationCenter.shared.makeWarningBreakExpenses()
-        } else if let category = category {
-            let budgetCategory = category.budgets.first(where: { $0.date.asString(withDateFormat: .monthYear) == date })?.amount ?? 1
-            let actualCategory = transactions.filter { $0.categoryUUID == category.id }.map { $0.amount }.reduce(0, +)
-            let percent = (actualCategory * 100) / budgetCategory
-            
-            if actualCategory <= budgetCategory, percent >= 70, notification.warningExpensesCategoriesDate[category.id]?.asString(withDateFormat: .monthYear) != date {
-                notification.warningExpensesCategoriesDate[category.id] = .current
-                NotificationCenter.shared.makeWarningExpenses(percent: percent, category: category.name, actual: actualCategory, total: budgetCategory)
-            } else if actualCategory > budgetCategory, notification.breakingExpensesCategoriesDate[category.id]?.asString(withDateFormat: .monthYear) != date {
-                notification.breakingExpensesCategoriesDate[category.id] = .current
-                NotificationCenter.shared.makeWarningBreakExpenses(category: category.name)
-            }
-        }
-        
-        database.set(on: .notification, value: notification)
+//        let database = Database.shared
+//        var notification: NotificationEntity = database.get(on: .notification) ?? .init()
+//        let categories = Worker.shared.category.getCategories(from: date, format: .monthYear)
+//        let transactions = Worker.shared.transaction.getTransactions(from: date, format: .monthYear)
+//        let date = date.asString(withDateFormat: .monthYear)
+//        var totalBudget = categories.map { category in
+//            category.budgetsValue.filter {
+//                $0.date.asString(withDateFormat: .monthYear) == date
+//            }.first?.amount ?? 0
+//        }.reduce(0, +)
+//        totalBudget = totalBudget == 0 ? 1 : totalBudget
+//        let totalActual = transactions.map { $0.amount }.reduce(0, +)
+//        let percent = (totalActual * 100) / totalBudget
+//
+//        if totalActual <= totalBudget, percent >= 70, notification.warningExpensesDate?.asString(withDateFormat: .monthYear) != date {
+//            notification.warningExpensesDate = .current
+//            NotificationCenter.shared.makeWarningExpenses(percent: percent, actual: totalActual, total: totalBudget)
+//        } else if totalActual > totalBudget, notification.breakingExpensesDate?.asString(withDateFormat: .monthYear) != date {
+//            notification.breakingExpensesDate = .current
+//            NotificationCenter.shared.makeWarningBreakExpenses()
+//        } else if let category = category {
+//            let budgetCategory = category.budgetsValue.first(where: { $0.date.asString(withDateFormat: .monthYear) == date })?.amount ?? 1
+//            let actualCategory = transactions.filter { $0.categoryUUID == category.id }.map { $0.amount }.reduce(0, +)
+//            let percent = (actualCategory * 100) / budgetCategory
+//
+//            if actualCategory <= budgetCategory, percent >= 70, notification.warningExpensesCategoriesDate[category.id]?.asString(withDateFormat: .monthYear) != date {
+//                notification.warningExpensesCategoriesDate[category.id] = .current
+//                NotificationCenter.shared.makeWarningExpenses(percent: percent, category: category.name, actual: actualCategory, total: budgetCategory)
+//            } else if actualCategory > budgetCategory, notification.breakingExpensesCategoriesDate[category.id]?.asString(withDateFormat: .monthYear) != date {
+//                notification.breakingExpensesCategoriesDate[category.id] = .current
+//                NotificationCenter.shared.makeWarningBreakExpenses(category: category.name)
+//            }
+//        }
     }
 }

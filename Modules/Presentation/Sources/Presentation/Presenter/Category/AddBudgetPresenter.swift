@@ -7,57 +7,89 @@
 
 import SwiftUI
 import Domain
+import Data
 import Resource
 
-public enum AddBudgetPresenterString {
-    case navigationTitle
-    case placeholderDescription
-    case description
-}
-
 public protocol AddBudgetPresenterProtocol: ObservableObject {
-    var amount: Double { get set }
-    var date: Date { get set }
-    var description: String { get set }
-    
+    var router: AddBudgetRouter { get set }
+    var viewData: AddBudgetViewData { get set }
     var buttonForegroundColor: Color { get }
     
-    func string(_ string: AddBudgetPresenterString) -> String
-    func add(budget: (BudgetEntity) -> Void)
+    func string(_ string: Strings.AddBudget) -> String
+    func add(budget: (AddBudgetViewData) -> Void)
 }
 
 public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
-    public static var instance: Self { Self() }
+    @Published public var router: AddBudgetRouter
+    @Published public var viewData: AddBudgetViewData = .init()
+    private let id: UUID?
     
-    @Published public var amount: Double = 0
-    @Published public var date: Date = Date()
-    @Published public var description: String = ""
+    public init(router: AddBudgetRouter, category: UUID? = nil) {
+        self.router = router
+        self.id = category
+        Task { await start(id: category) }
+    }
     
     private var canAddNewBudget: Bool {
-        return amount > 0
+        return viewData.amount > 0
     }
     
     public var buttonForegroundColor: Color {
         return canAddNewBudget ? .accentColor : .secondary
     }
     
-    public func string(_ string: AddBudgetPresenterString) -> String {
-        switch string {
-        case .navigationTitle: return Strings.AddBudget.navigationTitle.value
-        case .placeholderDescription: return Strings.AddBudget.placeholderDescription.value
-        case .description: return Strings.AddBudget.description.value
-        }
+    public func string(_ string: Strings.AddBudget) -> String {
+        string.value
     }
     
-    public func add(budget: (BudgetEntity) -> Void) {
-        if canAddNewBudget {
-            budget(
-                BudgetEntity(
-                    date: date,
-                    amount: amount,
-                    description: description
-                )
+    public func add(budget: (AddBudgetViewData) -> Void) {
+        if canAddNewBudget { budget(viewData) }
+    }
+    
+    @MainActor private func start(id: UUID?) async {
+        var category: AddBudgetViewData.Category?
+        var categories: [AddBudgetViewData.Category]?
+        let date: Date = .current
+        if let id = id, let categoryFiltered = Worker.shared.category.getCategory(by: id) {
+            category = AddBudgetViewData.Category(
+                id: categoryFiltered.id,
+                color: Color(hex: categoryFiltered.color),
+                name: categoryFiltered.name
             )
+        } else {
+            let allCategories = Worker.shared.category.getAllCategories().filter({ category in
+                return !category.budgetsValue.contains(where: {
+                    $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
+                })
+            })
+            categories = allCategories.map({ .init(id: $0.id, color: Color(hex: $0.color), name: $0.name) })
+            category = categories?.first
+        }
+        let bind: () -> Void = {
+            guard self.id == nil else { return }
+            Task { await self.reloadViewData() }
+        }
+        viewData = AddBudgetViewData(
+            id: .init(),
+            amount: 0,
+            date: date,
+            message: "",
+            category: category,
+            categories: categories,
+            bind: bind
+        )
+    }
+    
+    @MainActor private func reloadViewData() async {
+        
+        let allCategories = Worker.shared.category.getAllCategories().filter({ category in
+            return !category.budgetsValue.contains(where: {
+                $0.date.asString(withDateFormat: .monthYear) == viewData.date.asString(withDateFormat: .monthYear)
+            })
+        })
+        viewData.categories = allCategories.map({ .init(id: $0.id, color: Color(hex: $0.color), name: $0.name) })
+        if !(viewData.categories?.contains(where: { $0.id == viewData.category?.id }) ?? false) {
+            viewData.category = viewData.categories?.first
         }
     }
 }

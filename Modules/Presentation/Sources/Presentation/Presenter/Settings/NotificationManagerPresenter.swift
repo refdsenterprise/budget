@@ -18,7 +18,7 @@ public protocol NotificationManagerPresenterProtocol: ObservableObject {
     
     func string(_ string: Strings.NotificationManager) -> String
     func actionNotificationSettings()
-    func checkNotificationPermission()
+    func checkNotificationPermission() async
 }
 
 public final class NotificationManagerPresenter: NotificationManagerPresenterProtocol {
@@ -31,31 +31,19 @@ public final class NotificationManagerPresenter: NotificationManagerPresenterPro
         didSet { isAllowNotificationHandler() }
     }
     
-    private var notificationManager: NotificationManagerEntity {
-        didSet { notificationManager.save() }
-    }
-    
     public init() {
-        self.notificationManager = BudgetDatabase.shared.get(on: .notificationManager) ?? .init()
-        self.viewData = getViewData(notificationManager: notificationManager)
+        Task { await setViewData() }
     }
     
-    private func getViewData(notificationManager: NotificationManagerEntity) -> [NotificationManagerViewData] {
-        isAllowNotification = notificationManager.notificationsIsOn
-        checkNotificationPermission()
+    @MainActor private func setViewData() async {
+        let settings = Worker.shared.settings.get()
+        await checkNotificationPermission()
+        isAllowNotification = settings.notifications
         
         var viewData: [NotificationManagerViewData] = []
         
         viewData.append(.init(
-            isOn: notificationManager.remiderIsOn,
-            title: string(.remiderTitle),
-            icon: RefdsIconSymbol.calendarBadgeClock.rawValue,
-            description: string(.remiderDescription),
-            type: .remider
-        ))
-        
-        viewData.append(.init(
-            isOn: notificationManager.warningIsOn,
+            isOn: settings.warningNotification,
             title: string(.warningTitle),
             icon: RefdsIconSymbol.exclamationmarkTriangleFill.rawValue,
             description: string(.warningDescription),
@@ -63,27 +51,40 @@ public final class NotificationManagerPresenter: NotificationManagerPresenterPro
         ))
         
         viewData.append(.init(
-            isOn: notificationManager.breakingIsOn,
+            isOn: settings.breakingNotification,
             title: string(.breakingTitle),
             icon: RefdsIconSymbol.exclamationmarkOctagonFill.rawValue,
             description: string(.breakingDescription),
             type: .breaking
         ))
         
-        return viewData
+        viewData.append(.init(
+            isOn: settings.reminderNotification,
+            title: string(.remiderTitle),
+            icon: RefdsIconSymbol.calendarBadgeClock.rawValue,
+            description: string(.remiderDescription),
+            type: .remider
+        ))
+        
+        self.viewData = viewData
     }
     
     private func isAllowNotificationHandler() {
         viewState = isAllowNotification ? .showOptions : .hideOptions
-        notificationManager.notificationsIsOn = isAllowNotification
+        try? Worker.shared.settings.add(
+            notifications: isAllowNotification,
+            reminderNotification: isAllowNotification,
+            warningNotification: isAllowNotification,
+            breakingNotification: isAllowNotification
+        )
     }
     
     private func viewDataHandler() {
         viewData.forEach { viewData in
             switch viewData.type {
-            case .remider: notificationManager.remiderIsOn = viewData.isOn
-            case .warning: notificationManager.warningIsOn = viewData.isOn
-            case .breaking: notificationManager.breakingIsOn = viewData.isOn
+            case .remider: try? Worker.shared.settings.add(reminderNotification: viewData.isOn)
+            case .warning: try? Worker.shared.settings.add(warningNotification: viewData.isOn)
+            case .breaking: try? Worker.shared.settings.add(breakingNotification: viewData.isOn)
             }
         }
     }
@@ -98,9 +99,14 @@ public final class NotificationManagerPresenter: NotificationManagerPresenterPro
         }
     }
     
-    public func checkNotificationPermission() {
-        NotificationCenter.shared.notificationSettings {
-            self.viewState = !$0 ? .unallowed : self.isAllowNotification ? .showOptions : .hideOptions
-        }
+    @MainActor public func checkNotificationPermission() async {
+        await withCheckedContinuation({ continuation in
+            NotificationCenter.shared.notificationSettings { allowed in
+                DispatchQueue.main.async {
+                    self.viewState = !allowed ? .unallowed : self.isAllowNotification ? .showOptions : .hideOptions
+                    continuation.resume()
+                }
+            }
+        })
     }
 }

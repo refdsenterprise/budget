@@ -16,7 +16,6 @@ struct SettingsiOSView<Presenter: SettingsPresenterProtocol>: View {
         List {
             sectionConfiguration
             sectionPro
-            sectionShortcuts
         }
         .listStyle(.insetGrouped)
         .navigationTitle(presenter.string(.navigationTitle))
@@ -58,37 +57,6 @@ struct SettingsiOSView<Presenter: SettingsPresenterProtocol>: View {
                     RefdsText(presenter.string(.optionPro))
                 }
             }
-        }
-    }
-    
-    private var sectionShortcuts: some View {
-        Section {
-            NavigationLink(destination: { presenter.router.configure(routes: .addTransactions) }) {
-                HStack {
-                    RefdsIcon(symbol: .listTriangle, color: .green, size: 20, renderingMode: .hierarchical)
-                    RefdsText(presenter.string(.addTransaction))
-                    Spacer()
-                    RefdsText("\(presenter.amountTransactions)", color: .secondary)
-                }
-            }
-            
-            HStack {
-                RefdsIcon(symbol: .dollarsignSquareFill, color: .orange, renderingMode: .multicolor)
-                RefdsText(presenter.string(.addBudget))
-                Spacer()
-                RefdsText("\(presenter.amountBudgets)", color: .secondary)
-            }
-            
-            NavigationLink(destination: { presenter.router.configure(routes: .addCategory) }) {
-                HStack {
-                    RefdsIcon(symbol: .squareStack3DForwardDottedlineFill, color: .blue, size: 20, renderingMode: .hierarchical)
-                    RefdsText(presenter.string(.addCategory))
-                    Spacer()
-                    RefdsText("\(presenter.amountCategories)", color: .secondary)
-                }
-            }
-        } header: {
-            RefdsText(presenter.string(.headerShortcut), size: .extraSmall, color: .secondary)
         }
     }
 }

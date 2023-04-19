@@ -17,7 +17,8 @@ public struct ProScreen<Presenter: ProPresenterProtocol>: View {
     
     public var body: some View {
         if Device.current == .macOS {
-            HStack {}
+            PromacOSView<Presenter>()
+                    .environmentObject(presenter)
         } else {
             ProiOSView<Presenter>()
                 .environmentObject(presenter)

@@ -13,14 +13,7 @@ import Domain
 public final class NotificationCenter {
     public static let shared = NotificationCenter()
     private let notificationCenter = UNUserNotificationCenter.current()
-    
-    private var manager: NotificationManagerEntity {
-        BudgetDatabase.shared.get(on: .notificationManager) ?? .init()
-    }
-    
-    private var notification: NotificationEntity = BudgetDatabase.shared.get(on: .notification) ?? .init() {
-        didSet { BudgetDatabase.shared.set(on: .notification, value: self.notification) }
-    }
+    private var settings: SettingsEntity { Worker.shared.settings.get() }
     
     public func requestNotificationAuthorization(
         onSuccess: (() -> Void)? = nil,
@@ -42,7 +35,7 @@ public final class NotificationCenter {
     }
     
     public func updateNotificationSettings() {
-        let needStop = !manager.remiderIsOn
+        let needStop = !settings.reminderNotification
         makeReminderSetTransactions(needStop: needStop)
     }
     
@@ -64,7 +57,7 @@ public final class NotificationCenter {
     }
     
     public func makeReminderSetTransactions(needStop: Bool = false) {
-        guard !notification.warningInput || !needStop else { return }
+        guard !settings.reminderNotification || !needStop else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .atHour(20, needStop),
@@ -72,12 +65,11 @@ public final class NotificationCenter {
                 title: "Atualização dos gastos.",
                 body: "Já informou as dispesas de hoje? Vai que é rápido"
             )
-            self.notification.warningInput = true
         })
     }
     
     public func makeWarningExpenses(percent: Double, category: String? = nil, actual: Double, total: Double) {
-        guard manager.warningIsOn else { return }
+        guard settings.warningNotification else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .now,
@@ -89,7 +81,7 @@ public final class NotificationCenter {
     }
     
     public func makeWarningBreakExpenses(category: String? = nil) {
-        guard manager.breakingIsOn else { return }
+        guard settings.breakingNotification else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
                 .now,

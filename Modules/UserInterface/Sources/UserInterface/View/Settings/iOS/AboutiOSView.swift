@@ -8,6 +8,7 @@
 import SwiftUI
 import RefdsUI
 import Presentation
+import Data
 
 struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
@@ -19,7 +20,6 @@ struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
             sectionLinks
         }
         .navigationBarTitleDisplayMode(.inline)
-        .browser(item: $presenter.urlShareItem)
         .share(item: $presenter.appShareItem)
     }
     

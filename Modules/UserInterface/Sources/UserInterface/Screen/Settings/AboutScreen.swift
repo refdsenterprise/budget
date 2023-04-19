@@ -19,7 +19,8 @@ public struct AboutScreen<Presenter: AboutPresenterProtocol>: View {
     
     public var body: some View {
         if Device.current == .macOS {
-            HStack {}
+            AboutmacOSView<Presenter>()
+                .environmentObject(presenter)
         } else {
             AboutiOSView<Presenter>()
                 .environmentObject(presenter)

@@ -29,8 +29,9 @@ public extension Strings {
         case maxTransactionDescription
         case maxTransactionHeader
         case maxTransactionRanking(Int)
-        case maxTransactionRankingRepresentaion(String, Int)
         case showTransactoins
+        case concentrationValue
+        case expansesConcentration
         
         private var key: String {
             switch self {
@@ -54,8 +55,9 @@ public extension Strings {
             case .maxTransactionDescription: return "maxTransactionDescription"
             case .maxTransactionHeader: return "maxTransactionHeader"
             case .maxTransactionRanking: return "maxTransactionRanking"
-            case .maxTransactionRankingRepresentaion: return "maxTransactionRankingRepresentaion"
             case .showTransactoins: return "showTransactoins"
+            case .concentrationValue: return "concentrationValue"
+            case .expansesConcentration: return "expansesConcentration"
             }
         }
         
@@ -63,8 +65,7 @@ public extension Strings {
             switch self {
             case .navigationTitle(let value): return String(format: NSLocalizedString(key, tableName: "Budget", bundle: .module, comment: ""), value)
             case .currentValue(let value): return String(format: NSLocalizedString(key, tableName: "Budget", bundle: .module, comment: ""), value)
-            case .maxTransactionRanking(let value): return String(format: NSLocalizedString(key, tableName: "Budget", bundle: .module, comment: ""), value)
-            case .maxTransactionRankingRepresentaion(let value1, let value2): return String(format: NSLocalizedString(key, tableName: "Budget", bundle: .module, comment: ""), value1, value2)
+            case .maxTransactionRanking(let amount): return String(format: NSLocalizedString(key, tableName: "Budget", bundle: .module, comment: ""), amount)
             default: return NSLocalizedString(key, tableName: "Budget", bundle: .module, comment: "")
             }
         }

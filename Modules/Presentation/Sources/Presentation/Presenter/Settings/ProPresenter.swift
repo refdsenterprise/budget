@@ -11,7 +11,7 @@ import Resource
 
 public protocol ProPresenterProtocol: ObservableObject {
     var isAcceptedTerms: Bool { get set }
-    var acceptedAlert: BudgetAlert { get set }
+    var acceptedAlert: AlertItem { get set }
     
     func string(_ string: Strings.Pro) -> String
     func buyPro(onSuccess: (() -> Void)?, onError: ((BudgetError) -> Void)?)
@@ -19,7 +19,7 @@ public protocol ProPresenterProtocol: ObservableObject {
 
 public final class ProPresenter: ProPresenterProtocol {
     @Published public var isAcceptedTerms: Bool = false
-    @Published public var acceptedAlert: BudgetAlert = .init()
+    @Published public var acceptedAlert: AlertItem = .init()
     
     public init() {}
     

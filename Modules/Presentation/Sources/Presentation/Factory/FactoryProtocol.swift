@@ -9,12 +9,13 @@ import Domain
 import SwiftUI
 
 public protocol FactoryProtocol {
+    func makeSceneScreen() -> any View
     func makeCategoryScreen() -> any View
-    func makeTransactionScreen(category: CategoryEntity?, date: Date?) -> any View
-    func makeAddCategoryScreen(category: CategoryEntity?) -> any View
-    func makeAddBudgetScreen(newBudget: ((BudgetEntity) -> Void)?) -> any View
+    func makeTransactionScreen(category: UUID?, date: Date?) -> any View
+    func makeAddCategoryScreen(category: UUID?) -> any View
+    func makeAddBudgetScreen(newBudget: ((AddBudgetViewData) -> Void)?, id: UUID?) -> any View
     func makeBudgetScreen() -> any View
-    func makeAddTransactionScreen(transaction: TransactionEntity?) -> any View
+    func makeAddTransactionScreen(transaction: UUID?) -> any View
     func makeSettingsScreen() -> any View
     func makeProScreen() -> any View
     func makeAboutScreen() -> any View

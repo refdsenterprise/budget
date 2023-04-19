@@ -9,8 +9,8 @@ import SwiftUI
 import Domain
 
 public enum CategoryRoutes {
-    case addCategory(CategoryEntity?)
-    case transactions(CategoryEntity, Date)
+    case addCategory(UUID?)
+    case transactions(UUID, Date)
 }
 
 public struct CategoryRouter {

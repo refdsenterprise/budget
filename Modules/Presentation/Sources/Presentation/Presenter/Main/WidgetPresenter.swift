@@ -10,6 +10,10 @@ import SwiftUI
 import Domain
 import Data
 import Resource
+#if targetEnvironment(macCatalyst)
+#else
+import ActivityKit
+#endif
 
 public enum WidgetString {
     case currentValue(Date)
@@ -19,24 +23,90 @@ public enum WidgetString {
     case budget
     case current
 }
+#if targetEnvironment(macCatalyst)
+#else
+@available(iOS 16.1, *)
+public final class LiveActivityPresenter {
+    public static let shared = LiveActivityPresenter()
+    public let presenter = WidgetPresenter.shared
+    private var activity: Activity<BudgetWidgetAttributes>?
+    
+    public func activeLiveActivity() {
+        let contentState = BudgetWidgetAttributes.ContentState(
+            diff: presenter.diff,
+            totalBudget: presenter.totalBudget,
+            diffColor: presenter.diffColor,
+            totalActual: presenter.totalActual,
+            chartData: presenter.chartData,
+            isEmpty: presenter.isEmpty,
+            isActive: presenter.isActive
+        )
+        
+        if ActivityAuthorizationInfo().areActivitiesEnabled {
+            do {
+                if activity?.activityState != .active {
+                    activity = try Activity.request(
+                        attributes: BudgetWidgetAttributes(name: ""),
+                        contentState: contentState
+                    )
+                }
+            } catch {
+                print("\(error.localizedDescription).")
+            }
+        }
+    }
+    
+    public func updateLiveActivity() {
+        let contentState = BudgetWidgetAttributes.ContentState(
+            diff: presenter.diff,
+            totalBudget: presenter.totalBudget,
+            diffColor: presenter.diffColor,
+            totalActual: presenter.totalActual,
+            chartData: presenter.chartData,
+            isEmpty: presenter.isEmpty,
+            isActive: presenter.isActive
+        )
+        if ActivityAuthorizationInfo().areActivitiesEnabled, let activity = activity {
+            Task {
+                await activity.update(using: contentState)
+            }
+        }
+    }
+    
+    public func stopLiveActivity() {
+        let contentState = BudgetWidgetAttributes.ContentState(
+            diff: presenter.diff,
+            totalBudget: presenter.totalBudget,
+            diffColor: presenter.diffColor,
+            totalActual: presenter.totalActual,
+            chartData: presenter.chartData,
+            isEmpty: presenter.isEmpty,
+            isActive: presenter.isActive
+        )
+        Task {
+            await activity?.end(using: contentState, dismissalPolicy: .default)
+        }
+    }
+}
+#endif
 
 public final class WidgetPresenter {
     public static let shared = WidgetPresenter()
-    private let categoryWorker = CategoryStorage.shared
-    private let transactionsWorker = TransactionStorage.shared
+    private let categoryWorker = CategoryWorker.shared
+    private let transactionsWorker = TransactionWorker.shared
     
     private var categoriesFiltred: [CategoryEntity] {
-        categoryWorker.getCategories(from: .current, format: .monthYear)
+        categoryWorker.getCategories(from: .current)
     }
     
     private func getBudget(by category: CategoryEntity) -> BudgetEntity? {
-        category.budgets.first(where: {
+        category.budgetsValue.first(where: {
             $0.date.asString(withDateFormat: .monthYear) == Date.current.asString(withDateFormat: .monthYear)
         })
     }
     
-    private func getActualTransaction(by category: CategoryEntity) -> Double {
-        transactionsWorker.getTransactions(
+    private func getActualTransaction(by category: UUID) -> Double {
+        transactionsWorker.get(
             on: category,
             from: .current,
             format: .monthYear
@@ -54,7 +124,7 @@ public final class WidgetPresenter {
     
     public var totalActual: Double {
         categoriesFiltred.map({
-            getActualTransaction(by: $0)
+            getActualTransaction(by: $0.id)
         }).reduce(0, +)
     }
     
@@ -62,33 +132,43 @@ public final class WidgetPresenter {
         totalBudget - totalActual
     }
     
-    public var chartData: [(label: String, data: [(category: String, value: Double)])] {
+    public var chartData: [ChartDataItem] {
         [
-            (label: string(.budget), data: budgetData),
-            (label: string(.current), data: actualData)
+            .init(label: string(.budget), data: budgetData),
+            .init(label: string(.current), data: actualData)
         ]
     }
     
-    private var budgetData: [(category: String, value: Double)] {
+    private var budgetData: [ChartDataItem.DataItem] {
         categoriesFiltred.map({
-            (category: $0.name.capitalized, value: getBudgetAmountByPeriod(by: $0))
+            .init(category: $0.name.capitalized, value: getBudgetAmountByPeriod(by: $0))
         })
     }
     
-    private var actualData: [(category: String, value: Double)] {
+    private var actualData: [ChartDataItem.DataItem] {
         categoriesFiltred.map({
-            (category: $0.name.capitalized, value: getAmountTransactions(by: $0))
+            .init(category: $0.name.capitalized, value: getAmountTransactions(by: $0.id))
         })
+    }
+    
+    public var isEmpty: Bool {
+        categoriesFiltred.map({
+            getAmountTransactions(by: $0.id)
+        }).reduce(0, +) <= 0
+    }
+    
+    public var isActive: Bool {
+        true
     }
     
     private func getBudgetAmountByPeriod(by category: CategoryEntity) -> Double {
-        (category.budgets.first(where: {
+        (category.budgetsValue.first(where: {
             $0.date.asString(withDateFormat: .monthYear) == Date.current.asString(withDateFormat: .monthYear)
         })?.amount ?? 0)
     }
     
-    public func getAmountTransactions(by category: CategoryEntity) -> Double {
-        transactionsWorker.getTransactions(
+    public func getAmountTransactions(by category: UUID) -> Double {
+        transactionsWorker.get(
             on: category,
             from: .current,
             format: .monthYear
@@ -118,11 +198,11 @@ public final class WidgetPresenter {
         for category in categoriesFiltred {
             var budget = getBudgetAmountByPeriod(by: category)
             budget = budget == 0 ? 1 : budget
-            let transactions = transactionsWorker.getTransactions(on: category, from: .current, format: .monthYear)
+            let transactions = transactionsWorker.get(on: category.id, from: .current, format: .monthYear)
             let actual = transactions.map({ $0.amount }).reduce(0, +)
             let percent = (actual * 100) / budget
             let percentColor = percent >= 90 ? Color.red : percent >= 70 ? Color.yellow : .green
-            categories.append((color: category.color, name: category.name, percent: (percent, transactions.first?.date ?? .current), percentColor: percentColor))
+            categories.append((color: Color(hex: category.color), name: category.name, percent: (percent, transactions.first?.date.date ?? .current), percentColor: percentColor))
         }
         categories.sort(by: { $0.percent.1 > $1.percent.1 })
         if categories.count > 6 {

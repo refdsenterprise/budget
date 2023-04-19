@@ -24,7 +24,12 @@ struct CustomizationiOSView<Presenter: CustomizationPresenterProtocol>: View {
     
     private var sectionApplicationTheme: some View {
         Section {
-            ColorPicker(selection: $appConfigurator.themeColor, supportsOpacity: true) {
+            ColorPicker(selection: Binding(get: {
+                presenter.themeColor
+            }, set: {
+                presenter.themeColor = $0
+                appConfigurator.themeColor = $0
+            }), supportsOpacity: true) {
                 RefdsText(presenter.string(.color))
             }
             CollapsedView(title: presenter.string(.appearence), description: presenter.appearenceSelected.description) {

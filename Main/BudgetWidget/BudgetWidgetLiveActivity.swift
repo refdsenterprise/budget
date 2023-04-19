@@ -5,6 +5,8 @@
 //  Created by Rafael Santos on 13/03/23.
 //
 
+#if targetEnvironment(macCatalyst)
+#else
 import ActivityKit
 import WidgetKit
 import SwiftUI
@@ -22,7 +24,9 @@ struct BudgetWidgetLiveActivity: Widget {
             let diffColor = presenter.diffColor
             let totalActual = presenter.totalActual
             let chartData = presenter.chartData
-            systemMedium(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData)
+            let isEmpty = presenter.isEmpty
+            let isActive = presenter.isActive
+            systemMedium(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData, isEmpty: isEmpty || !isActive)
         } dynamicIsland: { context in
             DynamicIsland {
                 // Expanded UI goes here.  Compose the expanded UI through
@@ -98,53 +102,95 @@ struct BudgetWidgetLiveActivity: Widget {
         .frame(height: 23)
     }
     
-    private func systemMedium(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color, chartData: [(label: String, data: [(category: String, value: Double)])]) -> some View {
+    private var systemMediumEmpty: some View {
         ViewThatFits {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     HStack {
                         Image(systemName: "dollarsign.square.fill")
                             .symbolRenderingMode(.hierarchical)
-                            .foregroundColor(diffColor)
+                            .foregroundColor(.green)
                             .scaleEffect(1.5)
-                        VStack(alignment: .leading) {
-                            (
-                                Text("Budget ") +
-                                Text(Date.current.asString(withDateFormat: .custom("MMM")).capitalized)
-                                    .foregroundColor(.secondary)
-                            )
+                        Text("Budget")
                             .font(.system(size: 17, weight: .bold))
-                            Text(totalBudget.currency)
-                                .font(.system(size: 12, design: .monospaced))
-                                .foregroundColor(.secondary)
-                        }
                     }
-                    ProgressView(value: totalActual, total: totalBudget) {
-                        HStack(spacing: 5) {
-                            Text(totalActual.currency)
-                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
-                                .lineLimit(1)
-                            
-                            Spacer()
-                            Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
-                                .font(.system(size: 8.5))
-                            
+                    
+                    Spacer()
+                    
+                    Button(action: {}) {
+                        Button(action: {}) {
+                            Text((presenter.isActive ? "planejar" : "seja pro").uppercased())
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
                         }
+                        .frame(maxWidth: 100)
+                        .padding(.all, 8)
+                        .background(Color.green)
+                        .cornerRadius(6)
                     }
-                    .scaleEffect(1.5)
-                    .progressViewStyle(.linear)
-                    .tint(diffColor)
-                    .padding()
-                    .padding(.horizontal, 15)
-                    .padding(.leading, 3)
                 }
-                sectionChartBar(chartData: chartData, diffColor: diffColor, isLarge: true)
+                Spacer()
+                Text(presenter.isActive ? "Até o momento, nenhum orçamento para o mês de \(Date.current.asString(withDateFormat: .custom("MMMM"))) foi realizado. Clique aqui e comece seu mês planejando sua vida financeira." : "Para utilizar os widget é necessário ser PRO. Com isso, você terá acesso a todos os relatórios e diversos recursos especiais.")
+                    .frame(height: 60)
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+                Spacer()
             }
             .padding()
         }
     }
     
-    private func sectionChartBar(chartData: [(label: String, data: [(category: String, value: Double)])], diffColor: Color, isLarge: Bool) -> some View {
+    private func systemMedium(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color, chartData: [ChartDataItem], isEmpty: Bool) -> some View {
+        ViewThatFits {
+            if isEmpty {
+                systemMediumEmpty
+            } else {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack {
+                        HStack {
+                            Image(systemName: "dollarsign.square.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundColor(diffColor)
+                                .scaleEffect(1.5)
+                            VStack(alignment: .leading) {
+                                (
+                                    Text("Budget ") +
+                                    Text(Date.current.asString(withDateFormat: .custom("MMM")).capitalized)
+                                        .foregroundColor(.secondary)
+                                )
+                                .font(.system(size: 17, weight: .bold))
+                                Text(totalBudget.currency)
+                                    .font(.system(size: 12, design: .monospaced))
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        ProgressView(value: totalActual, total: totalBudget) {
+                            HStack(spacing: 5) {
+                                Text(totalActual.currency)
+                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .lineLimit(1)
+                                
+                                Spacer()
+                                Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
+                                    .font(.system(size: 8.5))
+                                
+                            }
+                        }
+                        .scaleEffect(1.5)
+                        .progressViewStyle(.linear)
+                        .tint(diffColor)
+                        .padding()
+                        .padding(.horizontal, 15)
+                        .padding(.leading, 3)
+                    }
+                    sectionChartBar(chartData: chartData, diffColor: diffColor, isLarge: true)
+                }
+                .padding()
+            }
+        }
+    }
+    
+    private func sectionChartBar(chartData: [ChartDataItem], diffColor: Color, isLarge: Bool) -> some View {
         Chart(chartData, id: \.label) { chartData in
             ForEach(chartData.data, id: \.category) {
                 BarMark(
@@ -170,7 +216,16 @@ struct BudgetWidgetLiveActivity: Widget {
 
 struct BudgetWidgetLiveActivity_Previews: PreviewProvider {
     static let attributes = BudgetWidgetAttributes(name: "Me")
-    static let contentState = BudgetWidgetAttributes.ContentState(value: 3)
+    static let presenter = WidgetPresenter.shared
+    static let contentState = BudgetWidgetAttributes.ContentState(
+        diff: presenter.diff,
+        totalBudget: presenter.totalBudget,
+        diffColor: presenter.diffColor,
+        totalActual: presenter.totalActual,
+        chartData: presenter.chartData,
+        isEmpty: presenter.isEmpty,
+        isActive: presenter.isActive
+    )
 
     static var previews: some View {
         attributes
@@ -187,3 +242,4 @@ struct BudgetWidgetLiveActivity_Previews: PreviewProvider {
             .previewDisplayName("Notification")
     }
 }
+#endif

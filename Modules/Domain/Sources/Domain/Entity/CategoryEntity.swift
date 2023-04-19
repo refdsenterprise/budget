@@ -1,28 +1,22 @@
 //
-//  CategoryEntity.swift
-//  Budget
+//  CategoryEntity+CoreDataClass.swift
+//  
 //
-//  Created by Rafael Santos on 30/12/22.
+//  Created by Rafael Santos on 14/04/23.
+//
 //
 
 import Foundation
-import SwiftUI
+import CoreData
 
-public struct CategoryEntity: Codable, Identifiable, Hashable {
-    public let id: UUID
-    public var name: String
-    public var color: Color
-    public var budgets: [BudgetEntity]
-    
-    public init(
-        id: UUID = UUID(),
-        name: String,
-        color: Color,
-        budgets: [BudgetEntity]
-    ) {
-        self.id = id
-        self.name = name
-        self.color = color
-        self.budgets = budgets
+@objc(CategoryEntity)
+public class CategoryEntity: NSManagedObject {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<CategoryEntity> {
+        return NSFetchRequest<CategoryEntity>(entityName: "CategoryEntity")
     }
+
+    @NSManaged public var budgets: [UUID]
+    @NSManaged public var color: String
+    @NSManaged public var id: UUID
+    @NSManaged public var name: String
 }

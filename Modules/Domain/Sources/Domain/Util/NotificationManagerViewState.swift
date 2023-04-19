@@ -12,3 +12,9 @@ public enum NotificationManagerViewState {
     case hideOptions
     case unallowed
 }
+
+public enum NotificationType {
+    case remider
+    case warning
+    case breaking
+}

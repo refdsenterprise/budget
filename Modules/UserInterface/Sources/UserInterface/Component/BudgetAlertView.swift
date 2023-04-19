@@ -11,9 +11,9 @@ import Domain
 import Resource
 
 public struct BudgetAlertView: View {
-    @Binding private var alert: BudgetAlert
+    @Binding private var alert: AlertItem
     
-    public init(alert: Binding<BudgetAlert>) {
+    public init(alert: Binding<AlertItem>) {
         self._alert = alert
     }
     

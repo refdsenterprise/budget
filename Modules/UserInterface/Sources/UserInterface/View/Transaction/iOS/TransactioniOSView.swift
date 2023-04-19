@@ -10,7 +10,7 @@ import RefdsUI
 import Charts
 import Domain
 import Presentation
-
+#if os(iOS)
 struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
@@ -20,19 +20,19 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
             sectionTotal
             
             if #available(iOS 16.0, *),
-               !presenter.chartData.compactMap({ $0.value }).isEmpty {
+               !presenter.viewData.chart.isEmpty {
                 CollapsedView(title: presenter.string(.chart)) {
                     sectionChartTransactions
                 }
             }
             
-            if !presenter.transactionsFiltred.isEmpty {
+            if !presenter.viewData.transactions.isEmpty {
                 sectionTransactions
             }
         }
         .listStyle(.insetGrouped)
         .budgetAlert($presenter.alert)
-        .navigationTitle(presenter.category == nil ? presenter.string(.navigationTitle) : presenter.category!.name.capitalized)
+        .navigationTitle(presenter.string(.navigationTitle))
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
         .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
         .onAppear { presenter.loadData() }
@@ -53,14 +53,12 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                 .toggleStyle(CheckBoxStyle())
                 
                 if presenter.isFilterPerDate {
-                    CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.value.capitalized) {
-                        ForEach(PeriodTransaction.allCases, id: \.self) { period in
-                            Button {
-                                presenter.selectedPeriod = period
-                            } label: {
+                    CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
+                        ForEach(PeriodItem.allCases, id: \.self) { period in
+                            Button { presenter.selectedPeriod = period  } label: {
                                 HStack(spacing: 15) {
                                     IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                    RefdsText(period.value.capitalized, color: .secondary)
+                                    RefdsText(period.label.capitalized, color: .secondary)
                                 }
                             }
                         }
@@ -81,7 +79,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                     color: .secondary
                 )
                 RefdsText(
-                    presenter.totalAmount.currency,
+                    presenter.viewData.value.value.currency,
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
@@ -95,7 +93,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     }
     
     private var sectionTransactions: some View {
-        ForEach(presenter.transactionsFiltred, id: \.id) { transaction in
+        ForEach(presenter.viewData.transactions, id: \.id) { transaction in
             Section {
                 VStack {
                     rowTransactionTop(transaction)
@@ -114,16 +112,16 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
-    private func rowTransactionTop(_ transaction: TransactionEntity) -> some View {
+    private func rowTransactionTop(_ transaction: TransactionViewData.Transaction) -> some View {
         HStack {
             RefdsTag(transaction.date.asString(withDateFormat: .custom("EEE HH:mm")), color: .secondary)
             RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy")))
             Spacer()
-            RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
+            RefdsTag(transaction.categoryName, color: transaction.categoryColor)
         }
     }
     
-    private func rowTransactionBottom(_ transaction: TransactionEntity) -> some View {
+    private func rowTransactionBottom(_ transaction: TransactionViewData.Transaction) -> some View {
         HStack {
             RefdsText(transaction.description.isEmpty ? presenter.string(.noDescription) : transaction.description, color: .secondary)
             Spacer()
@@ -131,10 +129,10 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
-    private func swipeRemove(transaction: TransactionEntity) -> some View {
+    private func swipeRemove(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.remove(transaction: transaction) {
+                presenter.remove(transaction: transaction.id) {
                     presenter.alert = .init(error: $0)
                 }
             }
@@ -149,10 +147,10 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .tint(.red)
     }
     
-    private func swipeEdit(transaction: TransactionEntity) -> some View {
+    private func swipeEdit(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.transaction = transaction
+                presenter.transaction = transaction.id
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     presenter.isPresentedEditTransaction.toggle()
                 }
@@ -168,10 +166,10 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .tint(.orange)
     }
     
-    private func contextMenuEdit(transaction: TransactionEntity) -> some View {
+    private func contextMenuEdit(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.transaction = transaction
+                presenter.transaction = transaction.id
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     presenter.isPresentedEditTransaction.toggle()
                 }
@@ -181,10 +179,10 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
-    private func contextMenuRemove(transaction: TransactionEntity) -> some View {
+    private func contextMenuRemove(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.remove(transaction: transaction) {
+                presenter.remove(transaction: transaction.id) {
                     presenter.alert = .init(error: $0)
                 }
             }
@@ -208,7 +206,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     @available(iOS 16.0, *)
     private var sectionChartTransactions: some View {
         Chart {
-            ForEach(presenter.chartData, id: \.date) {
+            ForEach(presenter.viewData.chart, id: \.date) {
                 buildAreaMarkTransactions($0)
             }
         }
@@ -220,7 +218,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     }
     
     @available(iOS 16.0, *)
-    func buildAreaMarkTransactions(_ data: (date: Date, value: Double)) -> some ChartContent {
+    func buildAreaMarkTransactions(_ data: TransactionViewData.Chart) -> some ChartContent {
         AreaMark(
             x: .value(presenter.string(.chartDate), data.date),
             y: .value(presenter.string(.chartValue), data.value)
@@ -229,4 +227,4 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .position(by: .value(presenter.string(.chartDate), data.date))
     }
 }
-
+#endif

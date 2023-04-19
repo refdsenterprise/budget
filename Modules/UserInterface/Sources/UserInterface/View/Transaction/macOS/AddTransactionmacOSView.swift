@@ -55,7 +55,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
             Spacer()
             RefdsTextField(
                 presenter.string(.inputDescription),
-                text: $presenter.description,
+                text: $presenter.viewData.message,
                 alignment: .trailing,
                 textInputAutocapitalization: .sentences
             )
@@ -64,9 +64,12 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     
     private var rowCategory: some View {
         Group {
-            if let name = presenter.category?.name,
-               let color = presenter.category?.color {
-                CollapsedView { rowCategoryHeader(name: name, color: color) } content: { rowCategoryOptions }
+            if let name = presenter.viewData.category?.name,
+               let color = presenter.viewData.category?.color,
+               let categories = presenter.viewData.categories {
+                CollapsedView { rowCategoryHeader(name: name, color: color) } content: {
+                    rowCategoryOptions(categories: categories)
+                }
             } else { buttonAddCategory }
         }
     }
@@ -78,32 +81,28 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
             RefdsTag(name, size: .extraSmall, color: color)
         }
     }
-        
-    private var rowCategoryOptions: some View {
+    
+    private func rowCategoryOptions(categories: [AddTransactionViewData.Category]) -> some View {
         VStack {
-            if let categories = presenter.getCategories() {
-                ForEach(categories.indices, id: \.self) { index in
-                    let category = categories[index]
-                    categoryOptionView(category: category)
-                    if index < categories.count - 1 { Divider() }
-                }
+            ForEach(categories.indices, id: \.self) { index in
+                let category = categories[index]
+                categoryOptionView(category: category)
+                if index < categories.count - 1 { Divider() }
             }
         }
     }
     
-    private func categoryOptionView(category: CategoryEntity) -> some View {
-        Button { presenter.category = category } label: {
+    private func categoryOptionView(category: AddTransactionViewData.Category) -> some View {
+        Button { presenter.viewData.category = category } label: {
             HStack(spacing: 10) {
-                IndicatorPointView(color: presenter.category?.id == category.id ? category.color : .secondary)
+                IndicatorPointView(color: presenter.viewData.category?.id == category.id ? category.color : .secondary)
                 RefdsText(category.name.capitalized)
                 Spacer()
-                if let budget = presenter.getBudget(on: category) {
-                    RefdsText(
-                        budget.amount.currency,
-                        color: .secondary,
-                        family: .moderatMono
-                    )
-                }
+                RefdsText(
+                    category.remaning.currency,
+                    color: .secondary,
+                    family: .moderatMono
+                )
             }
             .padding(.vertical, 4)
         }
@@ -127,12 +126,9 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
                     title: presenter.string(.dateAndTime),
                     description: presenter.date.asString(withDateFormat: .custom("EEE dd, MMM yyyy")).capitalized
                 ) {
-                    DatePicker(.empty, selection: Binding(get: { presenter.date }, set: {
-                        presenter.loadData(newDate: $0)
-                        presenter.date = $0
-                    }), displayedComponents: [.date, .hourAndMinute])
-                    .font(.refds(size: 16, scaledSize: 1.2 * 16))
-                    .datePickerStyle(.graphical)
+                    DatePicker(.empty, selection: $presenter.date, displayedComponents: [.date, .hourAndMinute])
+                        .font(.refds(size: 16, scaledSize: 1.2 * 16))
+                        .datePickerStyle(.graphical)
                 }
             }
             Spacer()
@@ -142,9 +138,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     private var buttonSave: some View {
         Button {
             Application.shared.endEditing()
-            presenter.save {
-                dismiss()
-            } onError: {
+            presenter.save { dismiss() } onError: {
                 presenter.alert = .init(error: $0)
             }
         } label: {

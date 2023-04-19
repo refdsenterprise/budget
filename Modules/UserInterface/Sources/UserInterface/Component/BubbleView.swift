@@ -7,15 +7,15 @@
 
 import SwiftUI
 import RefdsUI
-import Domain
+import Presentation
 
 public struct BubbleView: View {
-    @Binding private var data: [BubbleDataItem]
+    @Binding private var data: [BudgetViewData.Bubble]
     private var spacing: CGFloat = 5
     private var startAngle: Int = 180
     private var clockwise: Bool = Bool.random()
     
-    public init(viewData: Binding<[BubbleDataItem]>) {
+    public init(viewData: Binding<[BudgetViewData.Bubble]>) {
         _data = viewData
     }
     
@@ -57,7 +57,6 @@ public struct BubbleView: View {
             }
             .offset(x: xOffset() * scale, y: yOffset() * scale)
         }
-        .frame(maxWidth: .infinity)
         .onChange(of: data, perform: { _ in
             setOffets()
             mySize = absoluteSize()
@@ -69,12 +68,14 @@ public struct BubbleView: View {
     }
     
     func xOffset() -> CGFloat {
+        guard data.indices.contains(0) else { return 0 }
         let size = data[0].value
         let xOffset = mySize.xMin + size / 2
         return -xOffset
     }
     
     func yOffset() -> CGFloat {
+        guard data.indices.contains(0) else { return 0 }
         let size = data[0].value
         let yOffset = mySize.yMin + size / 2
         return -yOffset
@@ -107,6 +108,7 @@ public struct BubbleView: View {
     }
     
     func absoluteSize() -> ViewSize {
+        guard data.indices.contains(0) else { return .init() }
         let radius = data[0].value / 2
         let initialSize = ViewSize(xMin: -radius, xMax: radius, yMin: -radius, yMax: radius)
         

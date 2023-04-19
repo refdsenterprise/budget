@@ -14,13 +14,17 @@ public extension Strings {
         case infoMonth
         case placeholderDescription
         case description
+        case category
+        case addNewCategory
         
         private var key: String {
             switch self {
             case .navigationTitle: return "addBudget.navigation.title"
             case .infoMonth: return "addBudget.infoMonth"
             case .placeholderDescription: return "addBudget.placeholder.description"
+            case .category: return "addBudget.category"
             case .description: return "addBudget.description"
+            case .addNewCategory: return "addBudget.addNewCategory"
             }
         }
         
@@ -75,9 +79,12 @@ public extension Strings {
         case sectionDuplicateSuggestion
         case sectionDuplicateButton
         case mediumBudget
-        case rowSpending
-        case rowTransactionsAmount
+        case rowSpending(String)
+        case rowTransactionsAmount(Int)
         case rowMedium
+        case currentValue
+        case edit
+        case remove
         
         private var key: String {
             switch self {
@@ -93,11 +100,18 @@ public extension Strings {
             case .rowSpending: return "category.row.spending"
             case .rowTransactionsAmount: return "category.row.transactionsAmount"
             case .rowMedium: return "category.row.medium"
+            case .currentValue: return "currentValue"
+            case .edit: return "edit"
+            case .remove: return "remove"
             }
         }
         
         public var value: String {
-            NSLocalizedString(key, tableName: "Category", bundle: .module, comment: "")
+            switch self {
+            case .rowSpending(let percent): return String(format: NSLocalizedString(key, tableName: "Category", bundle: .module, comment: ""), percent)
+            case .rowTransactionsAmount(let count): return String(format: NSLocalizedString(key, tableName: "Category", bundle: .module, comment: ""), count)
+            default: return NSLocalizedString(key, tableName: "Category", bundle: .module, comment: "")
+            }
         }
     }
 }

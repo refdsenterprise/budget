@@ -9,7 +9,7 @@ import SwiftUI
 import Domain
 
 public enum BudgetRoutes {
-    case transactions(CategoryEntity, Date)
+    case transactions(UUID?, Date)
 }
 
 public struct BudgetRouter {

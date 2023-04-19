@@ -18,17 +18,16 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         MacUIView(sections: [
             .init(maxAmount: 2, content: {
                 Group {
-                    sectionTotal(presenter.totalAmount)
+                    sectionTotal
                     sectionOptions
                 }
             }),
             .init(maxAmount: 1, content: {
                 Group {
                     if #available(iOS 16.0, *),
-                       let chartData = presenter.chartData,
-                       !chartData.compactMap({ $0.value }).isEmpty {
+                       !presenter.viewData.chart.isEmpty {
                         CollapsedView(title: presenter.string(.chart)) {
-                            sectionChartTransactions(chartData)
+                            sectionChartTransactions
                         }
                         .padding(.horizontal)
                     }
@@ -36,16 +35,17 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
             }),
             .init(maxAmount: nil, content: {
                 Group {
-                    if let transactions = presenter.transactionsFiltred, !transactions.isEmpty {
-                        sectionTransactions(transactions)
+                    if !presenter.viewData.transactions.isEmpty {
+                        sectionTransactions
                     }
                 }
             })
         ])
-        .listStyle(.insetGrouped)
         .budgetAlert($presenter.alert)
-        .navigationTitle(presenter.category == nil ? presenter.string(.navigationTitle) : presenter.category!.name.capitalized)
+        .navigationTitle(presenter.string(.navigationTitle))
+        #if os(iOS)
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
+        #endif
         .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
         .onAppear { presenter.loadData() }
         .navigation(isPresented: $presenter.isPresentedAddTransaction) {
@@ -66,34 +66,32 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                     .toggleStyle(CheckBoxStyle())
                     
                     if presenter.isFilterPerDate {
-                        CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.value.capitalized) {
+                        CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
                             VStack(alignment: .leading) {
-                                ForEach(PeriodTransaction.allCases.indices, id: \.self) { index in
-                                    let period = PeriodTransaction.allCases[index]
+                                ForEach(PeriodItem.allCases.indices, id: \.self) { index in
+                                    let period = PeriodItem.allCases[index]
                                     Button {
                                         presenter.selectedPeriod = period
                                     } label: {
                                         HStack(spacing: 15) {
                                             IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                            RefdsText(period.value.capitalized, color: .secondary)
+                                            RefdsText(period.label.capitalized, color: .secondary)
                                         }
                                     }
                                     .padding(.vertical, 4)
-                                    if index < PeriodTransaction.allCases.count - 1 { Divider() }
+                                    if index < PeriodItem.allCases.count - 1 { Divider() }
                                 }
                             }
                         }
                         
-                        PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy")) { _ in
-                            presenter.loadData()
-                        }
+                        PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy"))
                     }
                 }
             }
         }
     }
     
-    private func sectionTotal(_ total: Double) -> some View {
+    private var sectionTotal: some View {
         VStack(spacing: 10) {
             RefdsText(
                 presenter.string(.totalTransactions).uppercased(),
@@ -101,7 +99,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                 color: .secondary
             )
             RefdsText(
-                total.currency,
+                presenter.viewData.value.value.currency,
                 size: .custom(40),
                 color: .primary,
                 weight: .bold,
@@ -113,15 +111,17 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         .frame(maxWidth: .infinity)
     }
     
-    private func sectionTransactions(_ transactions: [TransactionEntity]) -> some View {
-        ForEach(transactions, id: \.id) { transaction in
+    private var sectionTransactions: some View {
+        ForEach(presenter.viewData.transactions, id: \.id) { transaction in
             Button {} label: {
-                VStack {
-                    rowTransactionTop(transaction)
-                    Divider()
-                    rowTransactionBottom(transaction)
-                    Spacer()
-                }
+                GroupBox {
+                    VStack {
+                        rowTransactionTop(transaction)
+                        Divider()
+                        rowTransactionBottom(transaction)
+                        Spacer()
+                    }
+                }.listGroupBoxStyle()
             }
             .frame(minHeight: 90, maxHeight: 90)
             .padding()
@@ -136,16 +136,16 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
-    private func rowTransactionTop(_ transaction: TransactionEntity) -> some View {
+    private func rowTransactionTop(_ transaction: TransactionViewData.Transaction) -> some View {
         HStack {
             RefdsTag(transaction.date.asString(withDateFormat: .custom("EEE HH:mm")), color: .secondary)
             RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy")))
             Spacer()
-            RefdsTag(transaction.category?.name ?? "", color: transaction.category?.color ?? .accentColor)
+            RefdsTag(transaction.categoryName, color: transaction.categoryColor)
         }
     }
     
-    private func rowTransactionBottom(_ transaction: TransactionEntity) -> some View {
+    private func rowTransactionBottom(_ transaction: TransactionViewData.Transaction) -> some View {
         HStack {
             RefdsText(transaction.description.isEmpty ? presenter.string(.noDescription) : transaction.description, color: .secondary)
             Spacer()
@@ -153,10 +153,10 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
-    private func swipeRemove(transaction: TransactionEntity) -> some View {
+    private func swipeRemove(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.remove(transaction: transaction) {
+                presenter.remove(transaction: transaction.id) {
                     presenter.alert = .init(error: $0)
                 }
             }
@@ -171,10 +171,10 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         .tint(.red)
     }
     
-    private func swipeEdit(transaction: TransactionEntity) -> some View {
+    private func swipeEdit(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.transaction = transaction
+                presenter.transaction = transaction.id
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     presenter.isPresentedEditTransaction.toggle()
                 }
@@ -190,10 +190,10 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         .tint(.orange)
     }
     
-    private func contextMenuEdit(transaction: TransactionEntity) -> some View {
+    private func contextMenuEdit(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.transaction = transaction
+                presenter.transaction = transaction.id
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     presenter.isPresentedEditTransaction.toggle()
                 }
@@ -203,10 +203,10 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
-    private func contextMenuRemove(transaction: TransactionEntity) -> some View {
+    private func contextMenuRemove(transaction: TransactionViewData.Transaction) -> some View {
         Button {
             withAnimation {
-                presenter.remove(transaction: transaction) {
+                presenter.remove(transaction: transaction.id) {
                     presenter.alert = .init(error: $0)
                 }
             }
@@ -227,10 +227,11 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
+    @available(macOS 13.0, *)
     @available(iOS 16.0, *)
-    private func sectionChartTransactions(_ chartData: [(date: Date, value: Double)]) -> some View {
+    private var sectionChartTransactions: some View {
         Chart {
-            ForEach(chartData, id: \.date) {
+            ForEach(presenter.viewData.chart, id: \.date) {
                 buildAreaMarkTransactions($0)
             }
         }
@@ -241,8 +242,9 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         .padding(.top)
     }
     
+    @available(macOS 13.0, *)
     @available(iOS 16.0, *)
-    func buildAreaMarkTransactions(_ data: (date: Date, value: Double)) -> some ChartContent {
+    func buildAreaMarkTransactions(_ data: TransactionViewData.Chart) -> some ChartContent {
         AreaMark(
             x: .value(presenter.string(.chartDate), data.date),
             y: .value(presenter.string(.chartValue), data.value)

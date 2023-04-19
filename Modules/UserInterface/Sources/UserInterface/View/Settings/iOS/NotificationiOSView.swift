@@ -16,13 +16,13 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
         Group {
             switch presenter.viewState {
             case .unallowed: sectionUnallowedNotification
-            case .hideOptions: List { sectionNotificationHideOptions }
+            case .hideOptions: sectionNotificationHideOptions
             case .showOptions: List { sectionNotificationShowOptions }
             }
         }
         .navigationTitle(presenter.string(.navigationTitle))
         .onReceive(SwiftUI.NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            presenter.checkNotificationPermission()
+            Task { await presenter.checkNotificationPermission() }
         }
     }
     
@@ -56,14 +56,22 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
     }
     
     private var sectionNotificationHideOptions: some View {
-        Group {
-            sectionAllowNotification
-            VStack(alignment: .center, spacing: 30) {
-                RefdsIcon(symbol: .bellAndWavesLeftAndRightFill, color: .red, size: 70, renderingMode: .hierarchical)
+        VStack(alignment: .center, spacing: 30) {
+            RefdsIcon(symbol: .bellAndWavesLeftAndRightFill, color: .accentColor, size: 70, renderingMode: .hierarchical)
+            VStack(alignment: .center, spacing: 10) {
                 RefdsText(presenter.string(.allowNotificationDescription), color: .secondary, alignment: .center)
             }
-            .padding()
+            Button {
+                presenter.isAllowNotification.toggle()
+            } label: {
+                RefdsText(presenter.string(.activeNotifications).uppercased(), size: .small, color: .white, weight: .bold)
+                    .padding()
+                    .background(Color.accentColor)
+                    .cornerRadius(8)
+            }
+
         }
+        .padding()
     }
     
     private var sectionNotificationShowOptions: some View {

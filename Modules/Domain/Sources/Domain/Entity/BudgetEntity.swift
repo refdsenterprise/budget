@@ -1,22 +1,23 @@
 //
-//  BudgetEntity.swift
-//  Budget
+//  BudgetEntity+CoreDataClass.swift
+//  
 //
-//  Created by Rafael Santos on 30/12/22.
+//  Created by Rafael Santos on 14/04/23.
+//
 //
 
 import Foundation
+import CoreData
 
-public struct BudgetEntity: Codable, Identifiable, Hashable {
-    public let id: UUID
-    public let date: Date
-    public var amount: Double
-    public var description: String?
-    
-    public init(id: UUID = UUID(), date: Date = Date(), amount: Double, description: String? = nil) {
-        self.id = id
-        self.date = date
-        self.amount = amount
-        self.description = description
+@objc(BudgetEntity)
+public class BudgetEntity: NSManagedObject {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<BudgetEntity> {
+        return NSFetchRequest<BudgetEntity>(entityName: "BudgetEntity")
     }
+
+    @NSManaged public var amount: Double
+    @NSManaged public var category: UUID
+    @NSManaged public var date: TimeInterval
+    @NSManaged public var id: UUID
+    @NSManaged public var message: String?
 }

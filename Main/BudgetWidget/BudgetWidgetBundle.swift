@@ -12,6 +12,9 @@ import SwiftUI
 struct BudgetWidgetBundle: WidgetBundle {
     var body: some Widget {
         BudgetWidget()
+#if targetEnvironment(macCatalyst)
+#else
         BudgetWidgetLiveActivity()
+        #endif
     }
 }

@@ -10,9 +10,14 @@ import Domain
 import UserInterface
 import Presentation
 
-
 public final class Factory: FactoryProtocol {
     public static let shared = Factory()
+    
+    public func makeSceneScreen() -> any View {
+        let router = SceneRouter(factory: self)
+        let presenter = ScenePresenter(router: router)
+        return SceneScreen(presenter: presenter)
+    }
     
     public func makeCategoryScreen() -> any View {
         let router = CategoryRouter(factory: self)
@@ -20,24 +25,25 @@ public final class Factory: FactoryProtocol {
         return CategoryScreen(presenter: presenter)
     }
     
-    public func makeTransactionScreen(category: CategoryEntity? = nil, date: Date? = nil) -> any View {
+    public func makeTransactionScreen(category: UUID? = nil, date: Date? = nil) -> any View {
         let router = TransactionRouter(factory: self)
         let presenter = TransactionPresenter(router: router, category: category, date: date)
         return TransactionScreen(presenter: presenter)
     }
     
-    public func makeAddCategoryScreen(category: CategoryEntity? = nil) -> any View {
+    public func makeAddCategoryScreen(category: UUID? = nil) -> any View {
         let router = AddCategoryRouter(factory: self)
         let presenter = AddCategoryPresenter(router: router, category: category)
         return AddCategoryScreen(presenter: presenter)
     }
     
-    public func makeAddBudgetScreen(newBudget: ((BudgetEntity) -> Void)? = nil) -> any View {
-        let presenter = AddBudgetPresenter.instance
+    public func makeAddBudgetScreen(newBudget: ((AddBudgetViewData) -> Void)? = nil, id: UUID? = nil) -> any View {
+        let router = AddBudgetRouter(factory: self)
+        let presenter = AddBudgetPresenter(router: router, category: id)
         return AddBudgetScreen(presenter: presenter, newBudget: newBudget)
     }
     
-    public func makeAddTransactionScreen(transaction: TransactionEntity? = nil) -> any View {
+    public func makeAddTransactionScreen(transaction: UUID? = nil) -> any View {
         let router = AddTransactionRouter(factory: self)
         let presenter = AddTransactionPresenter(router: router, transaction: transaction)
         return AddTransactionScreen(presenter: presenter)

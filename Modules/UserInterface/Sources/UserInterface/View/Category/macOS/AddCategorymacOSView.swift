@@ -29,7 +29,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     
     private var sectionName: some View {
         VStack {
-            SectionGroup(headerTitle: presenter.string(.sectionName)) {
+            SectionGroup(headerTitle: presenter.string(.headerCategory)) {
                 VStack {
                     rowName
                     Divider()
@@ -42,10 +42,10 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     
     private var rowName: some View {
         HStack {
-            RefdsText(presenter.string(.rowName))
+            RefdsText(presenter.string(.labelName))
             RefdsTextField(
-                presenter.string(.placehoderRowName),
-                text: $presenter.name,
+                presenter.string(.labelPlaceholderName),
+                text: $presenter.viewData.name,
                 alignment: .trailing,
                 textInputAutocapitalization: .characters
             )
@@ -54,15 +54,18 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     
     private var rowColor: some View {
         HStack {
-            RefdsText(presenter.string(.rowColor))
+            RefdsText(presenter.string(.labelColor))
             Spacer()
-            ColorPicker(selection: $presenter.color, supportsOpacity: false) {}
+            ColorPicker(
+                selection: $presenter.viewData.color,
+                supportsOpacity: false
+            ) {}
         }
     }
     
     private var sectionBudget: some View {
         VStack {
-            SectionGroup(headerTitle: presenter.string(.sectionBudget)) {
+            SectionGroup(headerTitle: presenter.string(.headerBudgets)) {
                 rowBudget
             }
             buttonAddBudget
@@ -72,24 +75,25 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     
     private var rowBudget: some View {
         VStack {
-            if !presenter.budgets.isEmpty {
-                ForEach(presenter.budgets.indices, id: \.self) { index in
-                    let budget = presenter.budgets[index]
+            if !presenter.viewData.budgets.isEmpty {
+                ForEach(presenter.viewData.budgets.indices, id: \.self) { index in
+                    let budget = presenter.viewData.budgets[index]
                     rowBudget(budget)
                         .contextMenu {
-                            if let category = presenter.category {
-                                contextMenuRemoveBudget(category: category, budget: budget)
-                            }
+                            contextMenuRemoveBudget(
+                                category: presenter.viewData,
+                                budget: budget
+                            )
                         }
-                    if index < presenter.budgets.count - 1 { Divider() }
+                    if index < presenter.viewData.budgets.count - 1 { Divider() }
                 }
             } else {
-                RefdsText(presenter.string(.noBudgetAdd))
+                RefdsText(presenter.string(.noBudgetAdded))
             }
         }
     }
     
-    private func rowBudget(_ budget: BudgetEntity) -> some View {
+    private func rowBudget(_ budget: AddBudgetViewData) -> some View {
         Button {} label: {
             HStack(spacing: 15) {
                 RefdsText(budget.date.asString(withDateFormat: .custom("MMMM yyyy")).capitalized)
@@ -106,14 +110,12 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
         .padding(.vertical, 4)
     }
     
-    private func contextMenuRemoveBudget(category: CategoryEntity, budget: BudgetEntity) -> some View {
+    private func contextMenuRemoveBudget(category: AddCategoryViewData, budget: AddBudgetViewData) -> some View {
         Button {
-            presenter.remove(budget: budget, on: category, onSuccess: nil, onError: {
-                presenter.alert = .init(error: $0)
-            })
+            Task { await presenter.remove(budget: budget, on: category) }
         } label: {
             Label(
-                presenter.string(.removeBudget),
+                presenter.string(.buttonRemoveBudget),
                 systemImage: RefdsIconSymbol.trashFill.rawValue
             )
         }
@@ -122,11 +124,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     private var buttonSave: some View {
         Button {
             Application.shared.endEditing()
-            presenter.save {
-                dismiss()
-            } onError: {
-                presenter.alert = .init(error: $0)
-            }
+            presenter.save { dismiss() }
         } label: {
             RefdsIcon(
                 symbol: .checkmarkRectangleFill,
@@ -139,14 +137,12 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     }
     
     private var buttonAddBudget: some View {
-        NavigationLink(destination: presenter.router.configure(routes: .addBudget {
-            presenter.add(budget: $0) {
-                presenter.alert = .init(error: $0)
-            }
-        })) {
+        NavigationLink(destination: presenter.router.configure(routes: .addBudget({ budget in
+            Task { await presenter.add(budget: budget) }
+        }, id: presenter.viewData.id))) {
             SectionGroup {
                 RefdsText(
-                    presenter.string(.addBudget).uppercased(),
+                    presenter.string(.buttonAddBudget).uppercased(),
                     size: .small,
                     color: .accentColor,
                     weight: .bold

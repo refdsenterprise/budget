@@ -12,10 +12,9 @@ import Presentation
 
 public struct AddBudgetScreen<Presenter: AddBudgetPresenterProtocol>: View {
     @StateObject private var presenter: Presenter
-    private let newBudget: ((BudgetEntity) -> Void)?
-    @Environment(\.dismiss) var dismiss
+    private let newBudget: ((AddBudgetViewData) -> Void)?
     
-    public init(presenter: Presenter, newBudget: ((BudgetEntity) -> Void)? = nil) {
+    public init(presenter: Presenter, newBudget: ((AddBudgetViewData) -> Void)? = nil) {
         self._presenter = StateObject(wrappedValue: presenter)
         self.newBudget = newBudget
     }
@@ -27,6 +26,7 @@ public struct AddBudgetScreen<Presenter: AddBudgetPresenterProtocol>: View {
         } else {
             AddBudgetiOSView<Presenter>(newBudget: newBudget)
                 .environmentObject(presenter)
+            
         }
     }
 }

@@ -6,7 +6,7 @@
       "location" : "https://github.com/refdsenterprise/refds-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "76e330b6f83df8f82cf45e65fa880b52a3a5e221"
+        "revision" : "ab87abf1fbc3ccfff56a9adf4cba394d16354630"
       }
     },
     {
@@ -15,16 +15,7 @@
       "location" : "https://github.com/refdsenterprise/refds-design-system.git",
       "state" : {
         "branch" : "develop",
-        "revision" : "2bb958722352f071840d02a03996650059a2f9b0"
-      }
-    },
-    {
-      "identity" : "windowscenereader",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/divadretlaw/WindowSceneReader",
-      "state" : {
-        "revision" : "8700ee5260654666a63d8a21581a63a2972baf32",
-        "version" : "1.1.0"
+        "revision" : "25479c9633e1d757a83ea63d9b6300626d40da9d"
       }
     }
   ],

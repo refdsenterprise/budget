@@ -1,0 +1,2529 @@
+[
+  {
+    "amount" : 22.25,
+    "id" : "3B95CC13-9DF4-494F-B258-41E72FAF35E6",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Uber para minha casa depois para casa do jorge",
+    "date" : 702008580
+  },
+  {
+    "amount" : 72,
+    "id" : "3974988B-FDD2-4118-808E-90E6EE72FCD5",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Lanche no lupland com o jorge",
+    "date" : 702005640
+  },
+  {
+    "amount" : 3.5,
+    "id" : "BBDFFAC5-2163-4678-B173-817D91F6D684",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Taxa de cancelamento ",
+    "date" : 702004860
+  },
+  {
+    "amount" : 14.06,
+    "id" : "EFDDD324-6759-4F48-AD44-E7E14447DCB1",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da pao e tal para casa da lisany",
+    "date" : 701999220
+  },
+  {
+    "amount" : 14.9,
+    "id" : "674E2B50-857D-4ECC-94D6-A220328B35BF",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca e pão na chapa com a lisany e jorge na pao e tal pago com sodexo",
+    "date" : 701998800
+  },
+  {
+    "amount" : 7.25,
+    "id" : "76AAEE4D-6B45-443E-9DE8-019DB12C1401",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da doces momentos para pão e tal com a lisany",
+    "date" : 701991960
+  },
+  {
+    "amount" : 65.620000000000005,
+    "id" : "6CA60379-6C32-4851-B3B8-DF70B70B30E9",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Lanche da tarde com a lisany na doces Momentos pago com sodexo",
+    "date" : 701991600
+  },
+  {
+    "amount" : 7.0599999999999996,
+    "id" : "55F6BB36-4E9C-48F7-B385-ACBDEA11DE8B",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para doces Momentos ",
+    "date" : 701979840
+  },
+  {
+    "amount" : 35.75,
+    "id" : "19179682-3809-4D22-B3CB-6289D8C3B20F",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Comida para casa",
+    "date" : 701971980
+  },
+  {
+    "amount" : 10,
+    "id" : "DB528C7B-A267-41F6-A990-B31FD27B2A3F",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Pão de queijo em Congonhas em São Paulo ",
+    "date" : 701913600
+  },
+  {
+    "amount" : 16.899999999999999,
+    "id" : "05BFF6B4-4C05-4673-9E91-061603CB6366",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Café e chocolate na kopenhagen de congonhas em São Paulo ",
+    "date" : 701913000
+  },
+  {
+    "amount" : 132,
+    "id" : "1230CE93-FCD9-4E88-A5B2-3B478C83BF32",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Copo da lisany e um cafe na Starbucks de congonhas em São Paulo ",
+    "date" : 701908920
+  },
+  {
+    "amount" : 239.90000000000001,
+    "id" : "44E04405-863B-4FF4-8252-AF7F0F4C1138",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Mickey de pelúcia para tiago do aeroporto santos dumont rio de janeiro",
+    "date" : 701899020
+  },
+  {
+    "amount" : 85,
+    "id" : "233104D2-C450-451B-9C66-15F10D1B4A63",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Lembrancinhas do rio de janeiro no aeroporto santos dumont",
+    "date" : 701898720
+  },
+  {
+    "amount" : 24,
+    "id" : "43D10C70-CD92-4D7B-9BAD-714294DC43AC",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Café na Starbucks no barra Shopping Rio de Janeiro pago com sodexo",
+    "date" : 701888940
+  },
+  {
+    "amount" : 28.899999999999999,
+    "id" : "BBAD048F-C2BC-44D7-A122-0EFA78E2089D",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Almoço no KFC no BarraShopping rio de janeiro pago com sodexo ",
+    "date" : 701886240
+  },
+  {
+    "amount" : 12.9,
+    "id" : "95BECAFF-3F8C-4927-9FA8-A565A86DA916",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Uber do hotel para shopping ",
+    "date" : 701880180
+  },
+  {
+    "amount" : 124,
+    "id" : "A0242FFF-D379-4406-959E-8592C4B56079",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Dois jantares no hotel radisson rio de janeiro",
+    "date" : 701879100
+  },
+  {
+    "amount" : 35.200000000000003,
+    "id" : "4FF136B8-6E36-4929-80D4-1DD191D1DD40",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Açaí e cerveja na praia rio de janeiro",
+    "date" : 701825220
+  },
+  {
+    "amount" : 11.210000000000001,
+    "id" : "F31F23AF-9D9D-40F9-8870-81AFF584C237",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Uber do hotel para churrasco ",
+    "date" : 701801400
+  },
+  {
+    "amount" : 10,
+    "id" : "532F5C50-55B9-4B01-B20F-1B3D5BE86830",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Água de côco na praia rio de janeiro",
+    "date" : 701777940
+  },
+  {
+    "amount" : 150,
+    "id" : "BCF3157D-823B-4102-89EB-A9399E970E1D",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Cervejas e caipirinha no k8",
+    "date" : 701736000
+  },
+  {
+    "amount" : 25.100000000000001,
+    "id" : "89BC41BA-C243-4238-BFD2-CB841A4073A4",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Uber do hotel para o K8 rio de janeiro",
+    "date" : 701728020
+  },
+  {
+    "amount" : 49,
+    "id" : "151EDA31-1190-4F72-9030-55ECA83495C7",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Mensalidade cartão black Nubank ",
+    "date" : 701718180
+  },
+  {
+    "amount" : 8.9000000000000004,
+    "id" : "19003707-C251-44A8-963D-06EA4C3F14A7",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Café na kopenhagen rio de janeiro",
+    "date" : 701714280
+  },
+  {
+    "amount" : 86.900000000000006,
+    "id" : "8925FF21-C75C-4F20-9AB6-A85A423DF882",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Almoço com pessoal da globo no restaurante vamo rio de janeiro",
+    "date" : 701713140
+  },
+  {
+    "amount" : 104.92,
+    "id" : "026F6A6A-2C59-4C4C-9F38-247CB6BB7EC8",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Uber black do aeroporto santos dumont para hotel radisson rio de janeiro",
+    "date" : 701629260
+  },
+  {
+    "amount" : 122.87,
+    "id" : "EBB8E9D5-8DF8-4C5D-B55B-F9C44947AFE8",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Almoço no madero no aeroporto santos dumont no rio de janeiro",
+    "date" : 701628960
+  },
+  {
+    "amount" : 10,
+    "id" : "310CA195-AF6F-4B69-B97B-46E13B104576",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Café da kopenhagen no aeroporto de Congonhas ",
+    "date" : 701615700
+  },
+  {
+    "amount" : 7,
+    "id" : "F656B24D-0E01-4240-8988-AFEA1A00037F",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Pão de queijo no aeroporto ",
+    "date" : 701596020
+  },
+  {
+    "amount" : 20.940000000000001,
+    "id" : "5537B5D5-D17B-4DC9-BEBC-F8175454F237",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Uber de casa para aeroporto",
+    "date" : 701594100
+  },
+  {
+    "amount" : 26.629999999999999,
+    "id" : "FB99EBA9-D8F5-4AFA-8305-03218726A3B0",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do shopping para minha casa e depois para casada lisny",
+    "date" : 701561940
+  },
+  {
+    "amount" : 10.789999999999999,
+    "id" : "4524B955-A272-4D1C-A67E-C6FB8CD46745",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minhacasa para o shopping ",
+    "date" : 701551200
+  },
+  {
+    "amount" : 10.24,
+    "id" : "D0E1B996-2B94-400C-B96C-AF0EFFD69A61",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Plataforma para fazer meu curriculo e o do jorge",
+    "date" : 701548260
+  },
+  {
+    "amount" : 7.25,
+    "id" : "C45B64D6-0580-461B-9AA6-BF94BCC8C774",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da doces momentos para minha casa com a lisany",
+    "date" : 701473920
+  },
+  {
+    "amount" : 4.9199999999999999,
+    "id" : "AF9A144A-62A0-49AF-AE0D-7008AD0750A5",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da pão e tal para doces Momentos e depois para casa do jorge",
+    "date" : 701467320
+  },
+  {
+    "amount" : 14.06,
+    "id" : "D0EA37BF-5419-4F36-8CD0-F19860A43D9C",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do eden para academia e depois para casa com a luciana e tiago",
+    "date" : 701459700
+  },
+  {
+    "amount" : 74.450000000000003,
+    "id" : "3E73A423-5F68-4BC0-935F-D836FC0001C0",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Almoço com a luciana e tiago",
+    "date" : 701459460
+  },
+  {
+    "amount" : 6.3300000000000001,
+    "id" : "C50A6C47-8379-4011-89E4-A0FA6BD0B381",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para eden lounge almoçar com a luciana e tiago",
+    "date" : 701454000
+  },
+  {
+    "amount" : 23.699999999999999,
+    "id" : "96DFA214-8978-46FC-99D6-BAA68D6E6218",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Lanche no mac donalds com o roberto no shopping pago com sodexo",
+    "date" : 701395620
+  },
+  {
+    "amount" : 26,
+    "id" : "3399F4DC-22C1-4A43-84A6-22A33FEE53D3",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Máscara para usar no aeroporto ",
+    "date" : 701394420
+  },
+  {
+    "amount" : 6.9900000000000002,
+    "id" : "E99B6DD3-51D9-44C2-B6F8-B5D797E290BD",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Cerveja para luciana na conveniência ",
+    "date" : 701387820
+  },
+  {
+    "amount" : 7.0899999999999999,
+    "id" : "149D58A3-D9E9-4A84-BEF2-B894A5889C4D",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa do jorge e depois para pão e tal",
+    "date" : 701377440
+  },
+  {
+    "amount" : 121.22,
+    "id" : "F107D4F8-CBC4-4533-B7FE-E8B883401433",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Protetor solar e chiclete na Drogasil ",
+    "date" : 701312700
+  },
+  {
+    "amount" : 15,
+    "id" : "6DF320B7-1A70-40A6-859C-162F175A6C38",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete na sesamo com o jorge",
+    "date" : 701310358.77222502
+  },
+  {
+    "amount" : 1,
+    "id" : "B9A2762A-1950-48CE-BC34-A7F9D0814390",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Chiclete na conveniência com o jorge",
+    "date" : 701303820
+  },
+  {
+    "amount" : 19,
+    "id" : "911BF8B1-6786-4249-8016-812A29D3F5E1",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Marmitex com a luciana",
+    "date" : 701279640
+  },
+  {
+    "amount" : 31.5,
+    "id" : "C5EB88EC-10B9-424A-BFE7-F27AF1821367",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Açaí na pao e tal com o jorge pago com sodexo",
+    "date" : 701216100
+  },
+  {
+    "amount" : 24.969999999999999,
+    "id" : "DF978BF7-6FDA-4401-8A67-16C869084786",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da fornelo para pao e tal e depois para casa da lisany",
+    "date" : 701216040
+  },
+  {
+    "amount" : 17,
+    "id" : "BD0AAF99-C39E-493A-BCAE-99AEAC8F8EAE",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café da tarde com a lisany na fornelo",
+    "date" : 701214000
+  },
+  {
+    "amount" : 233.84,
+    "id" : "2E03C05A-FE7D-4796-B7A6-300AF020AFFB",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta de luz",
+    "date" : 701199138.86460805
+  },
+  {
+    "amount" : 117.89,
+    "id" : "23B58715-3CEE-4188-86F8-97C6895A3243",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta vivo fibra 30Mb",
+    "date" : 701198762.54821396
+  },
+  {
+    "amount" : 7.3799999999999999,
+    "id" : "212481B6-DDFF-4FDE-B97D-F882CC81F8E9",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para minha casa e depois para casa do jorge",
+    "date" : 701144400
+  },
+  {
+    "amount" : 25.5,
+    "id" : "83F5453E-066B-440E-AC76-04F569F7170A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiarias e sorvete na sesamo com jorge",
+    "date" : 701139780
+  },
+  {
+    "amount" : 17.600000000000001,
+    "id" : "25F5CEDD-48F8-4C2C-9267-ACEFD128DCF1",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca e pao com manteiga na pão e tal com o jorge pago com sodexo",
+    "date" : 701130600
+  },
+  {
+    "amount" : 7.4199999999999999,
+    "id" : "B2682482-78D8-41D5-BDA0-B2D6B1523E8F",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber pra pao e tal",
+    "date" : 701126700
+  },
+  {
+    "amount" : 5.8899999999999997,
+    "id" : "87D3D852-AE5C-45EB-A1C0-5EB8A105BEC1",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Gatorade no açougue com o jorge",
+    "date" : 701047620
+  },
+  {
+    "amount" : 28,
+    "id" : "4B51A7AB-B769-4A6D-B156-9D3A6C84F656",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi no massa com o jorge",
+    "date" : 701046960
+  },
+  {
+    "amount" : 5.5,
+    "id" : "0DE6DA0E-429F-4E28-BD59-4CA9020B4C73",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na doce momentos com jorge pago com sodexo",
+    "date" : 701044080
+  },
+  {
+    "amount" : 55,
+    "id" : "F4D57EF1-3A5A-46A1-A7B6-1911B4595D05",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Corte de cabela na banca",
+    "date" : 701036820
+  },
+  {
+    "amount" : 22,
+    "id" : "54520A0C-722C-4E68-90DF-CCCB58677B03",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pizza com o jorge",
+    "date" : 700970064.34132302
+  },
+  {
+    "amount" : 4.9000000000000004,
+    "id" : "9DD5D848-5757-4B02-8DA7-005F5682EB7A",
+    "categoryUUID" : "963B961D-05F2-4175-BCBE-AB4FF4124B49",
+    "description" : "Miss violence alugado na apple",
+    "date" : 700956000
+  },
+  {
+    "amount" : 137.09999999999999,
+    "id" : "22A3158E-BEFC-4C90-96A9-93D2DDB9BB18",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Escova de dente elétrica ",
+    "date" : 700952160
+  },
+  {
+    "amount" : 20.350000000000001,
+    "id" : "EB9555E5-233D-4783-9E1F-87F234C19752",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Expresso tônica com doce na doce momentos com o jorge pago com sodexo",
+    "date" : 700936020
+  },
+  {
+    "amount" : 18.940000000000001,
+    "id" : "8D892CCF-6EC9-4F07-B976-D92292B766E9",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para casa da lisany",
+    "date" : 700891440
+  },
+  {
+    "amount" : 27.969999999999999,
+    "id" : "5A7EFF76-B4FB-43A1-B26B-803C7BFFC679",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Doces e drinks na conveniência com a lisany",
+    "date" : 700878840
+  },
+  {
+    "amount" : 35,
+    "id" : "C1CF4657-7ADB-4EEB-80B3-76C1F9EE066A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Massa sushi com a lisany",
+    "date" : 700877880
+  },
+  {
+    "amount" : 7.6699999999999999,
+    "id" : "7B66A95C-8358-42AB-8F07-E0EFDDCFC409",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da pao e tal para o massa com a lisany",
+    "date" : 700874640
+  },
+  {
+    "amount" : 29.100000000000001,
+    "id" : "E6968ED9-3E8F-4AC0-965F-3F5544CCA705",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café da tarde com o jorge e lisany na pao e tal pago com sodexo",
+    "date" : 700871400
+  },
+  {
+    "amount" : 6.6600000000000001,
+    "id" : "28290F3C-9FD7-496A-9242-F766C48C3C2E",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para casa do jorge e depois para pao e tal",
+    "date" : 700858560
+  },
+  {
+    "amount" : 80.189999999999998,
+    "id" : "A1D02B59-33F5-4D3F-ACD2-8EE3B0F914CE",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com o kenzo e o jorge",
+    "date" : 700801860
+  },
+  {
+    "amount" : 5.3300000000000001,
+    "id" : "DC1D0602-FD13-42ED-8986-1D61287F790B",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do shopping para smartfit com o jorge",
+    "date" : 700786320
+  },
+  {
+    "amount" : 145.93000000000001,
+    "id" : "5549B592-8D21-4565-8460-7628793BD432",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar no madero com a luciana e o tiago pago com sodexo",
+    "date" : 700785420
+  },
+  {
+    "amount" : 17.149999999999999,
+    "id" : "70D09A07-E710-4853-A46E-D0301DB8F566",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café na kopenhagem com o jorge",
+    "date" : 700781280
+  },
+  {
+    "amount" : 5.1900000000000004,
+    "id" : "DEE259D7-3EF4-4F45-B14A-2234DBBEDE89",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa do jorge e depois para o shopping ",
+    "date" : 700775580
+  },
+  {
+    "amount" : 10.960000000000001,
+    "id" : "0622B773-C3C2-4F5A-B7B2-70AF70B11A34",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Coca e bolacha no açougue ",
+    "date" : 700758780
+  },
+  {
+    "amount" : 7.7199999999999998,
+    "id" : "383649ED-1839-4360-93B8-F63212893049",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para minha casa e depois para casa do jorge",
+    "date" : 700710180
+  },
+  {
+    "amount" : 15,
+    "id" : "1B15C2C0-1F4A-4627-ADC3-05552512375B",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete na sesamo com o jorge",
+    "date" : 700708140
+  },
+  {
+    "amount" : 27,
+    "id" : "1ECA8870-846D-4123-9B16-7201939F173A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Hot Filadélfia no riory com o jorge",
+    "date" : 700707600
+  },
+  {
+    "amount" : 4.2000000000000002,
+    "id" : "30478544-B098-4541-B487-4F4F4E062228",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão e tal com o jorge pago com sodexo",
+    "date" : 700697880
+  },
+  {
+    "amount" : 8.5,
+    "id" : "B1345CFF-2E64-45FD-87D6-076D38FB9B37",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para pão e tal",
+    "date" : 700694340
+  },
+  {
+    "amount" : 5.8700000000000001,
+    "id" : "6AACFB99-0961-4150-99FA-14BDAC772FA6",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do massa sushi para minha casa e depois para casa do jorge",
+    "date" : 700627560
+  },
+  {
+    "amount" : 10,
+    "id" : "BA6E1030-C294-494C-883D-8AC2C17360E1",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão e tal com o jorge pago com sodexo",
+    "date" : 700615200
+  },
+  {
+    "amount" : 10.5,
+    "id" : "9C108A1C-F1BC-4CAE-A220-FC1756C891E0",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiaria na sésamo com o jorge",
+    "date" : 700605660
+  },
+  {
+    "amount" : 6.25,
+    "id" : "8E8C8EC1-1AFF-44C8-85FE-64839480CBF0",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa do jorge para sesamo",
+    "date" : 700604040
+  },
+  {
+    "amount" : 16.899999999999999,
+    "id" : "118FA759-0F2E-40B4-ABA6-DCA82E5EA916",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Proxyman premium",
+    "date" : 700559100
+  },
+  {
+    "amount" : 10.699999999999999,
+    "id" : "6EED353C-A02D-44F2-90B9-D3527AF82245",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca e pão com mel na pao e tal com o jorge",
+    "date" : 700528864.461905
+  },
+  {
+    "amount" : 8.2300000000000004,
+    "id" : "67474F8D-6F25-45D7-B817-B65FE3F1D82E",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para minha casa e depois para casa do jorge",
+    "date" : 700452240
+  },
+  {
+    "amount" : 25.5,
+    "id" : "2754C033-61C5-4C55-A180-99105E78997A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiarias e sorvete na sesamo com o jorge",
+    "date" : 700450020
+  },
+  {
+    "amount" : 10.710000000000001,
+    "id" : "76EFCFB1-61EA-4C29-8535-32F9036FC32C",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para doce momentos",
+    "date" : 700438380
+  },
+  {
+    "amount" : 110,
+    "id" : "A2FAB543-4505-48F5-97DD-7D25A87929DA",
+    "categoryUUID" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "description" : "Churrasco do cartola",
+    "date" : 700415700
+  },
+  {
+    "amount" : 18.550000000000001,
+    "id" : "00ADF01D-CAA0-4A20-9ED9-454D0833670C",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa da lisany",
+    "date" : 700373880
+  },
+  {
+    "amount" : 21.109999999999999,
+    "id" : "B7F3ABB5-B470-4921-9838-F0A8D02625CE",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do shopping para minha casa com a lisany",
+    "date" : 700361640
+  },
+  {
+    "amount" : 117.7,
+    "id" : "FAD404CB-B255-45EF-A3DE-5384F3E57CED",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar no outback com a lisany pago com sodexo",
+    "date" : 700359960
+  },
+  {
+    "amount" : 7.2000000000000002,
+    "id" : "50E11845-392D-4F52-A4CF-934080969603",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para shopping com o jorge",
+    "date" : 700352820
+  },
+  {
+    "amount" : 15,
+    "id" : "03CD2C13-8B4A-4663-B89D-4564D87EB8AC",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sesamo com o jorge",
+    "date" : 700350600
+  },
+  {
+    "amount" : 9.8000000000000007,
+    "id" : "3B45A127-B910-4F5F-BF40-3ADD417D24AA",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café coado na pão e tal com o jorge pago com sodexo",
+    "date" : 700346580
+  },
+  {
+    "amount" : 4.4299999999999997,
+    "id" : "4E19BED9-DF8C-4A4A-84E0-13B123AE5DDA",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minhacasa para casa do jorge e depois para sesamo",
+    "date" : 700342980
+  },
+  {
+    "amount" : 5.9800000000000004,
+    "id" : "C0DC2F81-97FB-4278-AF2D-F9C9FE8A9020",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da doce momentos para minha casa e depois para casa do jorge",
+    "date" : 700239660
+  },
+  {
+    "amount" : 9.2699999999999996,
+    "id" : "36DEA924-4C73-4AD2-8219-ADE09A1144B9",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca com jorge e bem casado para luciana na doce momentos pago com sodexo",
+    "date" : 700239180
+  },
+  {
+    "amount" : 56.729999999999997,
+    "id" : "E99545B5-5496-4FE1-9269-873B3E21CB96",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta de celular da vivo",
+    "date" : 700236300
+  },
+  {
+    "amount" : 8.9000000000000004,
+    "id" : "007696E7-3EEC-4D92-8D41-BB4E255872A4",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca e pão na chapa com o jorge na pão e tal",
+    "date" : 700234440
+  },
+  {
+    "amount" : 23.600000000000001,
+    "id" : "41DDB17C-7DEC-40F7-A780-9234FB366DB7",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para levar a lisany em casa",
+    "date" : 700203960
+  },
+  {
+    "amount" : 23.09,
+    "id" : "C2313447-754E-4021-AFE4-97F938CC44EC",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Cuidados pessoais na drogasil ",
+    "date" : 700200720
+  },
+  {
+    "amount" : 8.3100000000000005,
+    "id" : "E4E52286-8701-4EE7-BEC0-C8FA33463CDC",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para minha casa com a lisany",
+    "date" : 700192800
+  },
+  {
+    "amount" : 30,
+    "id" : "629CB5E6-5327-46B2-83B4-3EAB7A763F0D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sesamo com a lisany",
+    "date" : 700191180
+  },
+  {
+    "amount" : 159.40000000000001,
+    "id" : "65E5834C-9B03-4E34-86CA-D257B38150E4",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi no ryori com a lisany",
+    "date" : 700189920
+  },
+  {
+    "amount" : 17,
+    "id" : "DE0E0AD4-8E8A-4F23-BC65-9D0BC2523672",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiarias e café carioca na sesamo com o jorge",
+    "date" : 700182000
+  },
+  {
+    "amount" : 6.29,
+    "id" : "70B3B9B5-753B-4D89-97EF-C1D5908A3A0B",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para casa do jorge depois para sésamo",
+    "date" : 700171800
+  },
+  {
+    "amount" : 50.439999999999998,
+    "id" : "74F3DAA8-2BD5-4446-800C-23D14AE9936A",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Remédio para alergia",
+    "date" : 700148640
+  },
+  {
+    "amount" : 6.8600000000000003,
+    "id" : "C08EAF5D-B4C1-4277-A4F5-16EF14EA8AC5",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do massa para casa e depois para casa do jorge",
+    "date" : 700108260
+  },
+  {
+    "amount" : 28,
+    "id" : "85FA5BB6-2837-4A40-8869-543AAA2403A4",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com o jorge no massa",
+    "date" : 700107660
+  },
+  {
+    "amount" : 18.5,
+    "id" : "831085A9-245E-4481-8B20-606DA5782FAB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café com a lisany na doce momentos pago com sodexo",
+    "date" : 700094940
+  },
+  {
+    "amount" : 4.2000000000000002,
+    "id" : "3DA05C1A-BE51-4DDE-B052-D42B7D9291E9",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para doce momentos com a lisany",
+    "date" : 700086660
+  },
+  {
+    "amount" : 7.6900000000000004,
+    "id" : "1F7D0945-C712-40E5-A97C-0355F5737292",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do sushi para minha casa e depois para casa do jorge",
+    "date" : 700023240
+  },
+  {
+    "amount" : 26,
+    "id" : "472B243D-6C10-4B1F-B82E-192F1E20879C",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi no massa com o jorge",
+    "date" : 700023180
+  },
+  {
+    "amount" : 4.2000000000000002,
+    "id" : "5D1507A2-AA46-4A8D-AE2D-E5118E3993EB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na pão e tal com o jorge",
+    "date" : 700014812.51314604
+  },
+  {
+    "amount" : 34.899999999999999,
+    "id" : "B139A212-316F-4F1E-84DF-B8681023BA50",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Assinatura apple one pessoal",
+    "date" : 699947640
+  },
+  {
+    "amount" : 34.899999999999999,
+    "id" : "059EFCE1-72D2-4B50-9FCE-8E31FA23D231",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "iCloud 2TB",
+    "date" : 699947640
+  },
+  {
+    "amount" : 6.8899999999999997,
+    "id" : "DEAF10AD-85D1-42FC-8A0C-A4CD4151C00F",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do massa para minha casa e depois para casa do jorge",
+    "date" : 699850140
+  },
+  {
+    "amount" : 28,
+    "id" : "F892F6B1-6B37-4D53-BBD1-6F949C16FFF7",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi no massa com o jorge",
+    "date" : 699849300
+  },
+  {
+    "amount" : 19.899999999999999,
+    "id" : "72F1FCA1-AAB1-49D2-8EAC-57DDC08A1FD1",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Calera para academia",
+    "date" : 699837960
+  },
+  {
+    "amount" : 4.7999999999999998,
+    "id" : "282B911A-644B-4A9F-B3EE-764D383259E8",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca e bubbalo na pão e tal com o jorge",
+    "date" : 699837060
+  },
+  {
+    "amount" : 16.379999999999999,
+    "id" : "E1A49199-3E48-4B24-A254-16CB4CFEF332",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para a lisany ir para casa",
+    "date" : 699769860
+  },
+  {
+    "amount" : 9.6400000000000006,
+    "id" : "0388E70F-FBE3-40BD-9865-D6B2A51E7AE7",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do jardim central para minha casa com a lisany",
+    "date" : 699757560
+  },
+  {
+    "amount" : 101,
+    "id" : "E0EE6DB5-1453-46C0-A343-ED66DF78DF31",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar com a lisany no jardim central pago com sodexo",
+    "date" : 699754980
+  },
+  {
+    "amount" : 35.100000000000001,
+    "id" : "C29D8F53-0624-4616-A22B-4A5884183B57",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Misto light e cappuccino com a lisany na pão e tal pago com sodexo",
+    "date" : 699744600
+  },
+  {
+    "amount" : 41.009999999999998,
+    "id" : "D83096C0-F8FE-4494-BEE6-85B5AA20FEF7",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do shopping para casa da lisany depois para minha",
+    "date" : 699682620
+  },
+  {
+    "amount" : 105.59999999999999,
+    "id" : "ABE38DD7-13A1-4D14-87F9-A43D5CB407C2",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar no ítalo pasta com a lisany pago com sodexo",
+    "date" : 699672600
+  },
+  {
+    "amount" : 40,
+    "id" : "502778D6-776E-4A0D-A9BE-BE5E80503979",
+    "categoryUUID" : "963B961D-05F2-4175-BCBE-AB4FF4124B49",
+    "description" : "Ingresso do filme a baleia com a lisany",
+    "date" : 699661800
+  },
+  {
+    "amount" : 13.369999999999999,
+    "id" : "5F6EA56A-BDD3-481C-995F-3D49608C8D5A",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para casa e depois para o shopping",
+    "date" : 699660300
+  },
+  {
+    "amount" : 6.7699999999999996,
+    "id" : "1165D636-3F19-428C-A404-CBBEEBAAF097",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa do jorge e depois para a sesamo",
+    "date" : 699651000
+  },
+  {
+    "amount" : 6.3899999999999997,
+    "id" : "102E638A-387E-465E-B851-96E7BDB36B5F",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da smart fit para minha casa e depois para casa do jorge",
+    "date" : 699633960
+  },
+  {
+    "amount" : 19.949999999999999,
+    "id" : "5867C87C-EE45-4456-B29B-2B5B73D189B5",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Almoço no serra com a luciana",
+    "date" : 699633900
+  },
+  {
+    "amount" : 4.2000000000000002,
+    "id" : "DA13980C-AE25-477F-9CAC-5E979EFAE0B2",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na pão e tal com jorge",
+    "date" : 699628500
+  },
+  {
+    "amount" : 4.2000000000000002,
+    "id" : "E999EC32-435A-46C8-B784-A905F1CA0FF7",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na pao e tal com o jorge",
+    "date" : 699582660
+  },
+  {
+    "amount" : 13.949999999999999,
+    "id" : "23B0D12B-92B6-4BAC-9260-9F254C9E130F",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "HBO Max",
+    "date" : 699574560
+  },
+  {
+    "amount" : 310,
+    "id" : "F38500AE-791B-4CC0-9D4E-0EBC2E54A688",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Whey protein, creatina e coqueteleira",
+    "date" : 699555060
+  },
+  {
+    "amount" : 24.989999999999998,
+    "id" : "4F8B0CA6-5A1C-4A8E-A37D-4235636D88C9",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Uber pass",
+    "date" : 699411300
+  },
+  {
+    "amount" : 119.90000000000001,
+    "id" : "AFD0832D-8416-46E2-B4B9-B84CF64A69C2",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Mensalidade smart fit plano smart",
+    "date" : 699388380
+  },
+  {
+    "amount" : 22,
+    "id" : "6C7AD09A-73BC-4FE2-A25D-609DB2E23494",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pizza com a luciana e tiago em casa",
+    "date" : 699319020
+  },
+  {
+    "amount" : 4.5,
+    "id" : "EF34B0DD-2828-44C5-9AC9-D888DAFD004D",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Aplicativo mock view",
+    "date" : 699305267.41672099
+  },
+  {
+    "amount" : 31.309999999999999,
+    "id" : "A012928B-F68D-463C-960D-D95F08E9DA20",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para casa da lisany e volta para minha ",
+    "date" : 699241140
+  },
+  {
+    "amount" : 11.199999999999999,
+    "id" : "A062E2F0-A1A7-427B-8B3B-AF2F9F187904",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do shopping para casa com a lisany",
+    "date" : 699234780
+  },
+  {
+    "amount" : 606,
+    "id" : "653F4CFB-072A-48F2-A9A4-733635711F73",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Multa de rompimento de contrato do inglês ",
+    "date" : 699197615.025015
+  },
+  {
+    "amount" : 123.2,
+    "id" : "0814B229-126F-4551-BCA0-AFE9040B2A7C",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar com a lisany no madero pago com sodexo",
+    "date" : 699147960
+  },
+  {
+    "amount" : 5.8099999999999996,
+    "id" : "221556AF-3DAE-4ABD-8D05-D6928615F643",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da volta do shopping para o jorge",
+    "date" : 699143280
+  },
+  {
+    "amount" : 18.300000000000001,
+    "id" : "3EEB590A-48A4-4730-885D-CF39F1FE2F5F",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café com leite e cappuccino com a lisany e jorge",
+    "date" : 699137220
+  },
+  {
+    "amount" : 7.4400000000000004,
+    "id" : "38EC5398-FAAC-457B-806C-4DAE136EE794",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para o shopping com o jorge",
+    "date" : 699134400
+  },
+  {
+    "amount" : 15,
+    "id" : "2240D2CD-9CA0-4A9B-A59B-0AEE46736F76",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Torcida, duas cocas zero e um kit kat na conveniência para luciana",
+    "date" : 699069960
+  },
+  {
+    "amount" : 12.5,
+    "id" : "9834CF72-2053-480B-9AF1-C0E7E71E4369",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pudim e café coado na fornelo ",
+    "date" : 699037740
+  },
+  {
+    "amount" : 26.949999999999999,
+    "id" : "C39782EF-B1D2-4CB6-BBBB-D9AF0243A8AC",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Almoço no serra com a luciana e tiago",
+    "date" : 699036240
+  },
+  {
+    "amount" : 5.9900000000000002,
+    "id" : "A6702614-F1D9-470E-BCA4-18CB066EE39A",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da smart fit para o empório do cravo para luciana",
+    "date" : 699027720
+  },
+  {
+    "amount" : 4.7999999999999998,
+    "id" : "74E7470E-33D0-462A-81E2-8109C5B5BA89",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na pão e tal com o jorge",
+    "date" : 699022920
+  },
+  {
+    "amount" : 14.140000000000001,
+    "id" : "AE565E1A-1637-44E4-B6FA-03ECD5D1A67E",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para casa da lisany",
+    "date" : 698977140
+  },
+  {
+    "amount" : 16,
+    "id" : "0F6C99A4-4AF5-4772-8982-B39FE5AFFFD7",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete sesamo com a lisany",
+    "date" : 698975160
+  },
+  {
+    "amount" : 90.969999999999999,
+    "id" : "9BAD4787-25A2-474E-A785-B4F898CC8843",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar no tatu bola com a lisany",
+    "date" : 698974740
+  },
+  {
+    "amount" : 13.75,
+    "id" : "1BE35298-FDC1-4425-B8E8-7F868B5CF1B2",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da casa da lisany para sesamo",
+    "date" : 698965000.47695994
+  },
+  {
+    "amount" : 6.5,
+    "id" : "13F61F19-5F1D-4254-9BBA-19D02582E6B0",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na sesamo com o jorge",
+    "date" : 698963520
+  },
+  {
+    "amount" : 4.7999999999999998,
+    "id" : "FEED6D38-9125-4314-B727-69CC7F3AB4DD",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na pão e tal com jorge",
+    "date" : 698890680
+  },
+  {
+    "amount" : 5.6900000000000004,
+    "id" : "F318B23B-4839-4A41-820B-03AEC49420FB",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do massa para minha casa depois para casa do jorge",
+    "date" : 698812740
+  },
+  {
+    "amount" : 28,
+    "id" : "137C8549-01DF-4270-BD47-4087A6A41B7B",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Hot Filadélfia no massa sushi com o jorge",
+    "date" : 698812680
+  },
+  {
+    "amount" : 13,
+    "id" : "C0B73F4D-32F3-40AB-9A75-538CFDC7CFA1",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete na sesamo com o jorge",
+    "date" : 698808180
+  },
+  {
+    "amount" : 4.3399999999999999,
+    "id" : "3045467E-BA97-4A7A-9C94-7581FC8E5DB5",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para sesamo com o jorge",
+    "date" : 698808120
+  },
+  {
+    "amount" : 265.16000000000003,
+    "id" : "52DBF325-D25A-4C4C-AFF2-4C94320FF730",
+    "categoryUUID" : "45A319E9-4578-4EF5-91E1-8D3D5D1C5C1D",
+    "description" : "Curso de inglês pago com atraso",
+    "date" : 698787960
+  },
+  {
+    "amount" : 6.5,
+    "id" : "9ADC76EA-6832-47AE-95FA-05B2A9C55383",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para minha casa e depois para casa do jorge",
+    "date" : 698768400
+  },
+  {
+    "amount" : 14.5,
+    "id" : "549BA878-34AA-42EE-AE74-80B67811C8FB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca e água com gás na doce momentos com o jorge pago com sodexo",
+    "date" : 698768322.229321
+  },
+  {
+    "amount" : 8.9000000000000004,
+    "id" : "00E18055-66C4-402B-B36A-0EC238BDD365",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa e café carioca na pão e tal com o jorge",
+    "date" : 698760480
+  },
+  {
+    "amount" : 19.5,
+    "id" : "B8222A84-6BED-46DA-A9D6-5A274914D21E",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete e café carioca com o jorge na sesamo ",
+    "date" : 698721353.80908704
+  },
+  {
+    "amount" : 7.2599999999999998,
+    "id" : "3349142B-3C41-4A56-AFBF-0921D310473E",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da academia para casa e para o trabalho do jorge",
+    "date" : 698682900
+  },
+  {
+    "amount" : 15,
+    "id" : "E86E64EF-CC71-4FBF-AD83-BE6C0013582E",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Panqueca americana na doce momentos com jorge pago com sodexo",
+    "date" : 698682720
+  },
+  {
+    "amount" : 9.5,
+    "id" : "E315DB4F-B2FA-4201-99C4-D668E3512E2A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa com café carioca na pão e tal com o jorge",
+    "date" : 698676300
+  },
+  {
+    "amount" : 13.48,
+    "id" : "E9AD94CA-D97A-4DC2-AA2A-94A77067EED9",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da casa da lisany para a minha",
+    "date" : 698636340
+  },
+  {
+    "amount" : 16.620000000000001,
+    "id" : "7653F85F-E40C-4B57-BEA2-3EEDDB8AE460",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa da lisany",
+    "date" : 698623800
+  },
+  {
+    "amount" : 9.5,
+    "id" : "F1F7CC7A-0C0A-4674-87D5-75079AE40580",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café com o kenzo na pão e tal ",
+    "date" : 698615580
+  },
+  {
+    "amount" : 21,
+    "id" : "C2F14F90-9FDA-4568-B44E-77F9907CEFED",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pizza com o jorge em casa",
+    "date" : 698547540
+  },
+  {
+    "amount" : 5.9199999999999999,
+    "id" : "F4E2BF0B-D533-45A2-B0E6-37A52A3FB0B5",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo pra casa com o jorge",
+    "date" : 698544600
+  },
+  {
+    "amount" : 10.5,
+    "id" : "57E0E1A1-2A2D-4C06-9269-F595F1010A0B",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiarias na sésamo com o jorge",
+    "date" : 698537580
+  },
+  {
+    "amount" : 29.899999999999999,
+    "id" : "3729BFA9-0109-4E32-8EF4-D654933B9C7A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café e misto light na pão e tal com o jorge pago com sodexo",
+    "date" : 698537100
+  },
+  {
+    "amount" : 16.82,
+    "id" : "D98BC4DF-5777-4969-BE2B-42D499F95775",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da casa da lisany para minha",
+    "date" : 698472840
+  },
+  {
+    "amount" : 14.94,
+    "id" : "F6FE1CC8-5D87-4680-B7B8-4B651BEBAD78",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para casa da lisany",
+    "date" : 698448960
+  },
+  {
+    "amount" : 14.9,
+    "id" : "1F16E6D3-954B-4D7D-9521-FBE35F236922",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Flor de chocolate para lisany",
+    "date" : 698437920
+  },
+  {
+    "amount" : 66.959999999999994,
+    "id" : "52D1746F-C8F9-48E5-9A94-1F53907584ED",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Havianas no shopping ",
+    "date" : 698437620
+  },
+  {
+    "amount" : 149,
+    "id" : "6CE1633C-AB08-45D1-B983-BAD79022DE73",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Camiseta na Calvin Klein ",
+    "date" : 698436720
+  },
+  {
+    "amount" : 8.9000000000000004,
+    "id" : "C62837A5-4726-4971-AB63-63A430B3F2B8",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café canelinha na Kopenhagen",
+    "date" : 698435400
+  },
+  {
+    "amount" : 190.08000000000001,
+    "id" : "81C1428F-F6E9-49EF-81B4-E5B525941D0F",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Almoço no madero com a luciana e tiago pago no sodexo",
+    "date" : 698428320
+  },
+  {
+    "amount" : 9.5,
+    "id" : "5C4743DC-9DDE-4D2C-9311-E4ADE0AA9B46",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café da manhã na pão e tal com o jorge e a joana",
+    "date" : 698419560
+  },
+  {
+    "amount" : 30.879999999999999,
+    "id" : "B0D8B22F-E71A-4CD5-ADB4-15147E674FBA",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa da lisany e depois voltando para minha casa",
+    "date" : 698385900
+  },
+  {
+    "amount" : 8.1500000000000004,
+    "id" : "2A7EB610-BA04-4B52-9A93-77A1C5112F4F",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber dacasa coloquial para minha casa com a lisany",
+    "date" : 698379780
+  },
+  {
+    "amount" : 328.88999999999999,
+    "id" : "F1A8007E-54C3-44F7-B008-09C36D079B83",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar na casa coloquial com a lisany pago com sodexo",
+    "date" : 698379000
+  },
+  {
+    "amount" : 18.940000000000001,
+    "id" : "815C0F59-534C-4710-9BE3-9AB6B7C3D4FA",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da casa da lisany para minha casa e depois para casa colonial",
+    "date" : 698365380
+  },
+  {
+    "amount" : 46.210000000000001,
+    "id" : "E7FF85C0-7596-4238-9166-C742A17D464D",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta celular vivo controle",
+    "date" : 698310180
+  },
+  {
+    "amount" : 5.5999999999999996,
+    "id" : "0ACB5E99-E641-46C9-AC5F-59B869D7C134",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da smart fit para casa e depois para casa do jorge",
+    "date" : 698290080
+  },
+  {
+    "amount" : 6.1699999999999999,
+    "id" : "3286B39C-811F-46A1-8C46-83A961E51EA2",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa e barrinha de cereal na pão e tal com o jorge",
+    "date" : 698286240
+  },
+  {
+    "amount" : 216.03,
+    "id" : "C7E36471-0D78-47B5-BAAB-E6429B06AE4A",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta de energia",
+    "date" : 698252480.71807098
+  },
+  {
+    "amount" : 18,
+    "id" : "C3112FC6-F52D-40D9-9187-2DD920FC1B24",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete no chiquinho com o jorge e com kenzo",
+    "date" : 698209200
+  },
+  {
+    "amount" : 31.899999999999999,
+    "id" : "0FCAE7DB-71CB-45F3-A6D8-BFB73FF7A03D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com o jorge e o kenzo no roppongi",
+    "date" : 698208840
+  },
+  {
+    "amount" : 8.9000000000000004,
+    "id" : "71A4D344-EC3C-41D8-914E-C07C3EF70128",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa com café carioca com o jorge na pão e tal",
+    "date" : 698113380
+  },
+  {
+    "amount" : 18,
+    "id" : "90324334-45BA-4180-A1D8-569E3F8C84B4",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete no chiquinho com o kenzo e o jorge",
+    "date" : 698037240
+  },
+  {
+    "amount" : 9.5,
+    "id" : "1A4A6755-4CCD-4343-9F90-F6954CC313BB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Espeto de frango com o kenzo e o jorge",
+    "date" : 698034420
+  },
+  {
+    "amount" : 32.950000000000003,
+    "id" : "05A19E11-717C-4414-B632-43724AEEE86B",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pizza em casa com luciana e tiago",
+    "date" : 697934520
+  },
+  {
+    "amount" : 6.2300000000000004,
+    "id" : "4439DF4D-003A-4107-9922-669C42CEB868",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para minha casa e depois para casa do jorge",
+    "date" : 697855620
+  },
+  {
+    "amount" : 23.5,
+    "id" : "931ADA0D-CCA1-4C2E-8465-5B8F3B2085DF",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Gelato e café especiarias na sesamo com o jorge",
+    "date" : 697851840
+  },
+  {
+    "amount" : 38.399999999999999,
+    "id" : "5DA104BA-A26F-4EA3-8E52-B8393801B559",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com o jorge no ryori",
+    "date" : 697848960
+  },
+  {
+    "amount" : 2.5699999999999998,
+    "id" : "A9EFE39A-9359-465D-AE29-C5856AAC8CDD",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do shopping para o Ryori sushi com o jorge",
+    "date" : 697847700
+  },
+  {
+    "amount" : 11,
+    "id" : "1636D51F-EE3D-4836-995D-C93C5A7BBEF6",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Meia porção de pão de queijo e café carioca na leitura com o jorge",
+    "date" : 697846620
+  },
+  {
+    "amount" : 6.96,
+    "id" : "5DB479A8-11BC-4922-AF24-0B446B22EB7E",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo de casa para o shopping com jorge",
+    "date" : 697841160
+  },
+  {
+    "amount" : 5.2800000000000002,
+    "id" : "FD3A99AD-8058-413B-A0EE-29D6EE04D21F",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo da casa e depois pra casa do jorge da academia ",
+    "date" : 697838640
+  },
+  {
+    "amount" : 38.170000000000002,
+    "id" : "BD3A8C23-2BCA-4C72-8F12-2B9CEFE44E9F",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café expresso com tônica e alfogato com a lisany na doce momentos pago com sodexo",
+    "date" : 697834980
+  },
+  {
+    "amount" : 45.399999999999999,
+    "id" : "E4256289-088B-4C4D-B96D-7E32E54DB953",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Almoço no serra com a lisany, luciana e tiago",
+    "date" : 697827780
+  },
+  {
+    "amount" : 15.359999999999999,
+    "id" : "9ED4E24F-4462-4D71-B932-A6304088D2C0",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo da casa da lisany para a minha",
+    "date" : 697780260
+  },
+  {
+    "amount" : 34.490000000000002,
+    "id" : "6FACEDC0-4281-4079-8202-88085654F77D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Açaí na casa da lisany",
+    "date" : 697773420
+  },
+  {
+    "amount" : 23.190000000000001,
+    "id" : "10CDE4F3-19AD-4292-832A-E753907F3519",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo para casa da lisany",
+    "date" : 697717860
+  },
+  {
+    "amount" : 35,
+    "id" : "15AA59A6-C98B-472F-BEC7-07586FCA84D4",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Tartar no massa com o kenzo e o jorge",
+    "date" : 697689480
+  },
+  {
+    "amount" : 4.7000000000000002,
+    "id" : "E26548E7-247F-45AB-8854-70451156693B",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa na pão e tal com o jorge e kenzo",
+    "date" : 697680746.92369103
+  },
+  {
+    "amount" : 110.86,
+    "id" : "56056156-DA29-43CA-BCC2-2EFF664E5FE1",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Vivo fibra 300 MB + Disney plus",
+    "date" : 697614619.59772599
+  },
+  {
+    "amount" : 5.8399999999999999,
+    "id" : "FAB469B0-D460-401F-9538-3F01A49B25AE",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da farmácia para minha depois para casa do jorge",
+    "date" : 697604160
+  },
+  {
+    "amount" : 6.5,
+    "id" : "4EAF118B-036E-4AE4-B7B8-C5D8E38569DA",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Picole na farmácia pague menos com o jorge",
+    "date" : 697603920
+  },
+  {
+    "amount" : 26.449999999999999,
+    "id" : "2B698CDD-09BC-49F1-8EE8-A1D71058E774",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Parmesão ralado e coca 600 ml para luciana",
+    "date" : 697565760
+  },
+  {
+    "amount" : 34.899999999999999,
+    "id" : "A66A5E17-6703-48F8-A87C-9AF9BF80EB33",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Apple one",
+    "date" : 697528500
+  },
+  {
+    "amount" : 34.899999999999999,
+    "id" : "A05B0A64-1D36-47A1-A0AD-2AE7519FE667",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "iCloud 2TB",
+    "date" : 697528440
+  },
+  {
+    "amount" : 28,
+    "id" : "1ABB1383-F252-4A9C-8688-5CC67772B39B",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com o jorge depois do treino ",
+    "date" : 697515829.68159103
+  },
+  {
+    "amount" : 4.7999999999999998,
+    "id" : "E08DC039-5A70-43BA-B3D9-43E6E8826717",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na pão e tal com o jorge",
+    "date" : 697507560
+  },
+  {
+    "amount" : 32.840000000000003,
+    "id" : "CDAF2589-6FFD-49D4-8542-8A6B4DF0EABB",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo do shopping para casa da lisany e depois para minha",
+    "date" : 697429140
+  },
+  {
+    "amount" : 31.300000000000001,
+    "id" : "67AD25E7-B224-4D07-9924-31746EFA1951",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca e chocolate quente na bauducco com a lisany sodexo",
+    "date" : 697425720
+  },
+  {
+    "amount" : 48,
+    "id" : "5E9BE112-EDBC-4879-A399-C02D61955472",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Salada para lisany e um suco no Boali com sodexo",
+    "date" : 697417740
+  },
+  {
+    "amount" : 24,
+    "id" : "83BFE5D1-DCB9-4980-BA65-0523D5F4FF8E",
+    "categoryUUID" : "963B961D-05F2-4175-BCBE-AB4FF4124B49",
+    "description" : "Filme megan no cinema com a lisany ",
+    "date" : 697415580
+  },
+  {
+    "amount" : 11.49,
+    "id" : "FAFC33C9-F5EA-4890-88D3-E25A87DA5AAE",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo de casa para o shopping ",
+    "date" : 697414200
+  },
+  {
+    "amount" : 8.25,
+    "id" : "4D8C197C-DA96-4B98-98E0-D7CD4DF4045E",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Coca zero mini e um kit kat no frios",
+    "date" : 697403460
+  },
+  {
+    "amount" : 28.899999999999999,
+    "id" : "6D4BA126-8E84-413D-9C56-DA85DA20B454",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Açaí e um café carioca na pão e tal com kenzo e jorge",
+    "date" : 697238100
+  },
+  {
+    "amount" : 20,
+    "id" : "469B6973-DEB1-402F-BE09-A89ECFBCC484",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Almoço no serra com a luciana",
+    "date" : 697218000
+  },
+  {
+    "amount" : 26.120000000000001,
+    "id" : "4E878FA3-3BEB-475C-847F-273066EB5709",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Levando a lisany para casa e depois voltando para minha",
+    "date" : 697174200
+  },
+  {
+    "amount" : 60.600000000000001,
+    "id" : "441D6150-E5EE-4BD4-93AF-711ECBDF4137",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Misto light, x-bacon e capuccino grande na pão e tal com a lisany",
+    "date" : 697161840
+  },
+  {
+    "amount" : 13.949999999999999,
+    "id" : "7495A278-CEA4-4F0E-9952-78E01E7BA559",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "HBO Max",
+    "date" : 697154760
+  },
+  {
+    "amount" : 7.5800000000000001,
+    "id" : "89A213B8-C660-4965-9E47-2F74CCA18329",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Uber da sesamo para casa do jorge e depois para pao e tal",
+    "date" : 697150560
+  },
+  {
+    "amount" : 10.5,
+    "id" : "C6411E3E-95D1-45F3-A8E4-9E7102A75F31",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiarias na sesamo com o jorge",
+    "date" : 697145100
+  },
+  {
+    "amount" : 25.949999999999999,
+    "id" : "26D506D5-C0E9-4126-A6C5-99EF2B8F5FD9",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Soro pediality na farmácia pague menos",
+    "date" : 697060920
+  },
+  {
+    "amount" : 5.5,
+    "id" : "5BE6C1A6-8233-437A-8B31-9F9E672294A3",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Salgadinho e uma barra de ceral com o jorge depois da academia ",
+    "date" : 696926820
+  },
+  {
+    "amount" : 24.989999999999998,
+    "id" : "137C5155-CEFF-41BA-B0D8-BA419E6FFFA3",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Assinatura do uber pass",
+    "date" : 696926760
+  },
+  {
+    "amount" : 5.7199999999999998,
+    "id" : "18EB440B-E836-4519-BCC2-74E2EBBFAA91",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uner da academia para casa",
+    "date" : 696887168.892946
+  },
+  {
+    "amount" : 9.1999999999999993,
+    "id" : "90BFDFFD-71E6-4725-AB73-982CCC0CE8DA",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café com leite na pão e tal com o jorge",
+    "date" : 696887089.82460403
+  },
+  {
+    "amount" : 100,
+    "id" : "3603D936-C467-4C57-995D-436C79D42942",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi no massa com o jorge",
+    "date" : 696840240
+  },
+  {
+    "amount" : 16.510000000000002,
+    "id" : "408942E6-732B-4FDF-A0CF-F6B6A51C775C",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da doce momentos para casa da lisany",
+    "date" : 696816478.78349495
+  },
+  {
+    "amount" : 42.350000000000001,
+    "id" : "B6B56FF6-F02F-4CFF-8F28-B36DC6E49B35",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café caramelo, torta de limão e lanche na doce momentos com a lisany pago com sodexo",
+    "date" : 696816378.67402601
+  },
+  {
+    "amount" : 5.2800000000000002,
+    "id" : "BA2EB1F3-F332-4D0B-BCE9-5C0EFD749F65",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo para doce momentos com a lisany",
+    "date" : 696816351.52834201
+  },
+  {
+    "amount" : 13,
+    "id" : "51B0375C-1ED9-40BE-A5EF-4FEEAE9ABB5E",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sorvete na sesamo com o jorge",
+    "date" : 696709231.48383403
+  },
+  {
+    "amount" : 8.7200000000000006,
+    "id" : "759964E1-6A33-48BC-9F0C-6C84BB9EFD79",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para smartfit pegar o jorge e ir para sesamo",
+    "date" : 696709173.44969797
+  },
+  {
+    "amount" : 25.699999999999999,
+    "id" : "3BC733BD-DD7D-4470-9F56-314D71C927DF",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Levando a lisany para casa e depois voltando para minha ",
+    "date" : 696709138.03324294
+  },
+  {
+    "amount" : 33,
+    "id" : "3CAA10F2-7B0D-4CA8-AAA5-806EC92FA747",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pizza com o jorge, luciana e tiago",
+    "date" : 696699360
+  },
+  {
+    "amount" : 8.7200000000000006,
+    "id" : "4B0EF915-887F-40F4-8CD1-5D901B3D8F2A",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da sesamo para minha casa com o jorge",
+    "date" : 696699300
+  },
+  {
+    "amount" : 6.5,
+    "id" : "BE36489F-F22B-44E9-BAB9-B2C67EFAD445",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca na sesamo com o jorge",
+    "date" : 696699240
+  },
+  {
+    "amount" : 10.5,
+    "id" : "C57056CF-053E-461A-ACC1-CA0FB6950BAA",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiarias na sesamo com o jorge",
+    "date" : 696699120
+  },
+  {
+    "amount" : 28,
+    "id" : "BA539EE6-6BC4-4590-8E0D-B9757F7AC1DB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi no massacom a lisany",
+    "date" : 696647649.43403101
+  },
+  {
+    "amount" : 14.050000000000001,
+    "id" : "A168AAC4-0B30-4A07-8490-F48ED367C093",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da lisany para minha casa",
+    "date" : 696644864.72695696
+  },
+  {
+    "amount" : 33.549999999999997,
+    "id" : "97CB0554-63E2-4A30-962B-9CA42CA8C743",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café com tomica com a lisany pago com sodexo",
+    "date" : 696644710.97690499
+  },
+  {
+    "amount" : 18,
+    "id" : "E61E2BE1-94C9-498E-ADDB-E47C6D26B599",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Almoço no serra com a luciana e o tiago",
+    "date" : 696644678.68496799
+  },
+  {
+    "amount" : 13.199999999999999,
+    "id" : "EDCEAE6C-A15A-4392-9F44-8212DA9F56E8",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café com o jorge na doce momentos depois da academia pago com sodexo",
+    "date" : 696644479.09029806
+  },
+  {
+    "amount" : 27.310000000000002,
+    "id" : "EA901F60-7A83-409C-82E8-5AF5BB0F9EF5",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Assinatura do discord para ajudar o Leonardo ",
+    "date" : 696558180
+  },
+  {
+    "amount" : 26.739999999999998,
+    "id" : "CE2C1695-36AB-4869-9187-1C08755906C4",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Levando a lisany oara casa dela do shopping e depois indo pra casa",
+    "date" : 696558000
+  },
+  {
+    "amount" : 148.50999999999999,
+    "id" : "713A1B52-F127-4690-9865-7A09E120E4CE",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Lanche e salada outback com a lisany pago com sodex",
+    "date" : 696557820
+  },
+  {
+    "amount" : 25.800000000000001,
+    "id" : "DD5DB755-F326-4B3B-9EFD-7809EAC9596D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café na balduco do shopping campo grande com a lisany pago com sodexo",
+    "date" : 696557460
+  },
+  {
+    "amount" : 6.9500000000000002,
+    "id" : "DEA18A55-FEAD-455A-AB70-0323881B9243",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para o shopping com a lisany",
+    "date" : 696557400
+  },
+  {
+    "amount" : 5.2299999999999995,
+    "id" : "52B530A2-457D-4BFA-B059-CFBD10821866",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do massa para casa",
+    "date" : 696557340
+  },
+  {
+    "amount" : 106.5,
+    "id" : "E8D581CC-6BE0-4D72-97C8-4A7B5CA8D6DC",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Rodízio de sushi com o jorge no massa",
+    "date" : 696557280
+  },
+  {
+    "amount" : 55,
+    "id" : "AD6D07EA-7C4B-41CC-8188-30C1E385A71E",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Corte de cabelo na banca",
+    "date" : 696463200.48273897
+  },
+  {
+    "amount" : 9.6999999999999993,
+    "id" : "BD476FD2-70AC-47D2-9919-B0A2BA84386C",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café, bombom de morango com elaine, luciana, tiago",
+    "date" : 696383758.38112795
+  },
+  {
+    "amount" : 67.5,
+    "id" : "F7A5CC2A-0EBB-4B23-AA3D-C7B9006E6301",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com a elaine, Luciana e tiago",
+    "date" : 696380332.89862204
+  },
+  {
+    "amount" : 58,
+    "id" : "EF8FE837-3211-492A-B496-46E70DE16EB6",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com a luciana",
+    "date" : 696282427.35738802
+  },
+  {
+    "amount" : 4.2000000000000002,
+    "id" : "43EEA74A-3DB4-4459-93FA-EA2F151DEFB7",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão francês para elaine",
+    "date" : 696211421.67117202
+  },
+  {
+    "amount" : 3.04,
+    "id" : "B34368AB-9158-4F0F-B94C-09DE9B1CAD21",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão para elaine",
+    "date" : 696211406.60792303
+  },
+  {
+    "amount" : 32.880000000000003,
+    "id" : "F18F422D-7E3A-4BB3-A24D-BA25D6F08965",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Lanche do mac pelo ifood com sodexo",
+    "date" : 696211349.06863201
+  },
+  {
+    "amount" : 7.9900000000000002,
+    "id" : "3E416DBD-79A2-40DC-B986-14CBBF4D35F1",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Chocolate diet na Drogasil com luciana",
+    "date" : 696211326.73525
+  },
+  {
+    "amount" : 5.8200000000000003,
+    "id" : "ECE59639-1E92-46D5-8AB9-7203A6D31882",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do comper para minha casa e para casa do jorge",
+    "date" : 696124343.64988899
+  },
+  {
+    "amount" : 14.5,
+    "id" : "D493CC4F-E256-4AB8-A5FB-1562130BB3DD",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca com um pão de queijo com o jorge no café do ponto pago com sodexo",
+    "date" : 696123826.89881206
+  },
+  {
+    "amount" : 6.3799999999999999,
+    "id" : "CB65BE2F-E21F-4F79-B04C-ADDC7A2939B2",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa do jorge e depois para o comper",
+    "date" : 696123720.63187301
+  },
+  {
+    "amount" : 13.390000000000001,
+    "id" : "AA2F1F1C-4EC6-4558-992E-515C3D4E976B",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da smartfit para casa da lisany",
+    "date" : 696041666.00146699
+  },
+  {
+    "amount" : 14.49,
+    "id" : "1283F1D8-C151-442F-AC9A-512FCEA0A63A",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da casa da lisany para minha casa",
+    "date" : 696037260
+  },
+  {
+    "amount" : 10.5,
+    "id" : "92F63886-ADF0-4CC8-9E4F-ECF63364F913",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café especiarias na sesamo com o jorge",
+    "date" : 696030812.38601899
+  },
+  {
+    "amount" : 15,
+    "id" : "D3488DBD-7A20-471E-BB22-F16A44E762A4",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Milkshake para assistir gato de botas com o jorge",
+    "date" : 696030518.11116397
+  },
+  {
+    "amount" : 22,
+    "id" : "F20DBAEE-761A-4CD1-8E70-3D2A43691DD9",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Cinema gato de botas 2 com o jorge",
+    "date" : 696021765.45097494
+  },
+  {
+    "amount" : 4.6500000000000004,
+    "id" : "8B9E72B5-A3AE-47ED-875F-2B67C23DCF4A",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo da smartfit para o shopping com o jorge",
+    "date" : 696020362.49388003
+  },
+  {
+    "amount" : 2.5,
+    "id" : "31788D9C-9C35-4187-B2DA-734A8ACACDC4",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Água antes do treino com o jorge",
+    "date" : 696020336.71941102
+  },
+  {
+    "amount" : 5.4000000000000004,
+    "id" : "EDB06646-2703-49A4-B54B-7C2ADAF49A56",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "2 chicletes e um café carioca com o jorge na pão e tal",
+    "date" : 696016402.89613497
+  },
+  {
+    "amount" : 15,
+    "id" : "0351EA8B-B48D-4F2B-A4BF-B634DCFEEB52",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Marmita no serra ",
+    "date" : 696016369.26908398
+  },
+  {
+    "amount" : 8.9900000000000002,
+    "id" : "35B35FCC-C156-4F96-81DC-6AF272C5F9AE",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber até o restaurante serra para pegar marmita para elaine, luciana e tiago",
+    "date" : 696016289.82820296
+  },
+  {
+    "amount" : 28.380000000000003,
+    "id" : "F4BDC0B5-7C5A-46F6-AA52-E21009CCB564",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Levando a lisany para casa dela de uber e depois voltando para minha ",
+    "date" : 695970249.001001
+  },
+  {
+    "amount" : 10.02,
+    "id" : "419B3A45-14BC-44B1-A50F-1885610198AC",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do safari para minha casa com a lisany",
+    "date" : 695970221.47531295
+  },
+  {
+    "amount" : 165,
+    "id" : "14288E3C-D0AA-46D5-A9D6-735659E510BF",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Dois lanches, um aperol e um milkshake de ovomaltine com a lisany pago com sodexo",
+    "date" : 695970153.48772204
+  },
+  {
+    "amount" : 7.4000000000000004,
+    "id" : "54A8E1CC-1E32-4890-BAF5-8A9A094D0047",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para o safari com a lisany",
+    "date" : 695970109.41262102
+  },
+  {
+    "amount" : 57.950000000000003,
+    "id" : "0BA3F5A7-8208-4A59-91E4-5B87ECA6493C",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "La parisiene com elaine, luciana e tiago",
+    "date" : 695970073.44937205
+  },
+  {
+    "amount" : 6.04,
+    "id" : "030AB5F3-1169-4A6D-968F-0B1424E2EC91",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da academia para casa com o jorge",
+    "date" : 695932094.87819397
+  },
+  {
+    "amount" : 9.5,
+    "id" : "1345956A-3CD4-4C43-B4FF-5546A469A752",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa com café carioca na pão e tal com o jorge",
+    "date" : 695932051.403808
+  },
+  {
+    "amount" : 157.75999999999999,
+    "id" : "E1E71F29-1081-4450-AEBC-D58EBE27F653",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta de luz",
+    "date" : 695931506.08968306
+  },
+  {
+    "amount" : 11.379999999999999,
+    "id" : "94F96A17-9733-48F8-A872-34CC12AB3128",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do shopping para casa com elaine, luciana e tiago",
+    "date" : 695845560
+  },
+  {
+    "amount" : 135.34999999999999,
+    "id" : "3DA5C500-FD2A-45B5-AD98-9612023CE263",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar no madero com elaine, luciana e tiago pago com sodexo",
+    "date" : 695845440
+  },
+  {
+    "amount" : 13,
+    "id" : "359BD397-2B0F-4743-B847-EE9C7CD57CBB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Gelato sesamo com luciana, elaine e tiago",
+    "date" : 695845440
+  },
+  {
+    "amount" : 10.809999999999999,
+    "id" : "BD0FDB74-5DF1-4C84-9A03-04E3B2D660FE",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para o shopping com elaine, luciana e tiago",
+    "date" : 695845380
+  },
+  {
+    "amount" : 16.399999999999999,
+    "id" : "1CFDE7B6-DA45-4CB4-8125-18DE0270A1C9",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da minha casa para casa da lisany",
+    "date" : 695845200
+  },
+  {
+    "amount" : 63,
+    "id" : "DC648817-DB51-429B-A0B6-1CF0580286DE",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com a luciana no massa",
+    "date" : 695785547.85724199
+  },
+  {
+    "amount" : 6.5499999999999998,
+    "id" : "EC63EEB7-6D77-4B1E-91DA-549192B93E66",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da academia para massa sushi",
+    "date" : 695783362.41121805
+  },
+  {
+    "amount" : 5.4299999999999997,
+    "id" : "0A985C31-6DB8-4A6C-A79C-8449BD88F8B0",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do trabalho do jorge para casa dele depois para minha casa e por fim para academia",
+    "date" : 695783315.31440496
+  },
+  {
+    "amount" : 9.7400000000000002,
+    "id" : "F1E5EDE0-BC20-4573-A80A-C457A84C34B6",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do sushi com a luciana para casa",
+    "date" : 695758740
+  },
+  {
+    "amount" : 3.1699999999999999,
+    "id" : "76F62323-8D11-4431-85A5-06492D9DD74A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Chiclete e barrinha de cereal na pão e tal com o jorge",
+    "date" : 695707866.95127499
+  },
+  {
+    "amount" : 50,
+    "id" : "C0214E3F-CE12-45F2-B8BC-355ED4FDA43D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Ajuda na compra de carne no açougue ",
+    "date" : 695604840
+  },
+  {
+    "amount" : 22,
+    "id" : "805995B0-5312-486A-BBE9-79FE096584B0",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pizza com o jorge em casa",
+    "date" : 695518320
+  },
+  {
+    "amount" : 6.3399999999999999,
+    "id" : "A782C2D6-20D7-48D1-B033-6F9199A3C532",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo pra casa com o jorge partindo da smart fit",
+    "date" : 695518080
+  },
+  {
+    "amount" : 13,
+    "id" : "646941AF-E585-43C5-A7E0-4EE87F03FB38",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Gelato da sesamo com o jorge",
+    "date" : 695510352.61349702
+  },
+  {
+    "amount" : 17.5,
+    "id" : "0E7C1569-7336-4C45-85EA-4924ACD8EAEB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão de queijo com café especiarias da sésamo com o jorge",
+    "date" : 695508677.13166106
+  },
+  {
+    "amount" : 8.5,
+    "id" : "74F1B1DB-B1C0-41A0-B9D1-603E6C6DC5F9",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Rosquinha no café do ponto no comper com o jorge pago com sodexo",
+    "date" : 695427062.30514002
+  },
+  {
+    "amount" : 8,
+    "id" : "DEB83BD8-05A2-4845-800F-ADCBA85EC368",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Esfirra no comper com o jorge",
+    "date" : 695423105.516927
+  },
+  {
+    "amount" : 7,
+    "id" : "2B96C096-0C70-497D-8456-6ADE247BFD30",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café carioca no café do ponto no comper com sodexo",
+    "date" : 695422332.64828098
+  },
+  {
+    "amount" : 27.389999999999997,
+    "id" : "8EE771E2-7D4C-4787-ADA7-14A18BD8545E",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber para levar a lisany para casa e voltar para minha ",
+    "date" : 695421720
+  },
+  {
+    "amount" : 19.98,
+    "id" : "B719CC60-6E95-48E4-BBC4-F21CD2887596",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Duas caipirinhas, uma coca, um Kit Kat para luciana e lisany",
+    "date" : 695421600
+  },
+  {
+    "amount" : 6.7299999999999995,
+    "id" : "283AE858-9E26-426D-926F-B98485FE45E8",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para casa do jorge para o comper",
+    "date" : 695421530.81402302
+  },
+  {
+    "amount" : 110.7,
+    "id" : "4AADE46A-D775-4525-8740-61E5A562BB3F",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Lanche do paulistinha com a lisany e com a luciana sodexo",
+    "date" : 695421480
+  },
+  {
+    "amount" : 17.84,
+    "id" : "52C17576-94CC-40F5-AA73-8A2D833BA0D0",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da lisany da pão e tal para casa dela",
+    "date" : 695335020
+  },
+  {
+    "amount" : 16.77,
+    "id" : "BCF9F574-01C8-4F6D-BB07-6C0969ECE4C7",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café coado e cerveja stela na pão e tal com sodexo",
+    "date" : 695334960
+  },
+  {
+    "amount" : 8.2300000000000004,
+    "id" : "2D88ABD9-53E2-4800-9831-84AD27C21F1B",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber do sushi para pão e tal",
+    "date" : 695334900
+  },
+  {
+    "amount" : 94.179999999999993,
+    "id" : "E617FE3E-4F19-4871-9B07-60FAA3D0DD57",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi no império com o jorge e a lisany",
+    "date" : 695334840
+  },
+  {
+    "amount" : 9.1099999999999994,
+    "id" : "6493218E-90C0-4443-835E-D335A8912017",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber da academia para o império do sushi com a lisany e o jorge",
+    "date" : 695334720
+  },
+  {
+    "amount" : 19.969999999999999,
+    "id" : "E566238F-F83D-45E5-86AD-A6C1E18987CF",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa com café coado e um chocolate na pão e tal antes do treino",
+    "date" : 695261449.23326099
+  },
+  {
+    "amount" : 3.5,
+    "id" : "E5C7BD66-C5A8-4F07-938F-C475B209DA6C",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "KitKat depois do sushi",
+    "date" : 695183356.16377497
+  },
+  {
+    "amount" : 63,
+    "id" : "A7D79C43-320A-4CC9-8084-37AFE542C9BB",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Sushi com o jorge depois do treino",
+    "date" : 695181948.73962295
+  },
+  {
+    "amount" : 7.9900000000000002,
+    "id" : "7506058A-992D-4AB8-B520-35A42AFCC306",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Energético monster antes do treino",
+    "date" : 695173871.69429505
+  },
+  {
+    "amount" : 7.3499999999999996,
+    "id" : "D7CB4916-DB2C-4497-9B3F-6A135762AD8D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Coca e chiclete para elaine e luciana",
+    "date" : 695146698.36080003
+  },
+  {
+    "amount" : 56.729999999999997,
+    "id" : "FD7B10B0-3C15-49A4-AB78-4C2C9F5BC75C",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta de celular vivo controle",
+    "date" : 695094222.67675805
+  },
+  {
+    "amount" : 126.42999999999999,
+    "id" : "F0840EBB-C05D-422E-B9CD-145A32FA7383",
+    "categoryUUID" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "description" : "Mensalidade smartfit ",
+    "date" : 695094154.01023102
+  },
+  {
+    "amount" : 12.9,
+    "id" : "37FD361E-935D-4226-AEB1-0A6AA10B6ACC",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Chipa com café carioca na pão e tal antes da academia",
+    "date" : 695094102.33464599
+  },
+  {
+    "amount" : 8.9000000000000004,
+    "id" : "35B5260B-530A-4B2C-BEC3-3EA7FEB5615A",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa e café carioca antes do treino",
+    "date" : 695001411.33402395
+  },
+  {
+    "amount" : 117.89000000000001,
+    "id" : "581A549B-752E-4DB2-A922-7570E62E827B",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Conta de internet vivo 300MB",
+    "date" : 694915404.371979
+  },
+  {
+    "amount" : 7.9900000000000002,
+    "id" : "A053DF00-C7F0-4300-8C0F-D9764E7844E7",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Energético na pague menos ",
+    "date" : 694907702.38245499
+  },
+  {
+    "amount" : 10.5,
+    "id" : "E44A6ACA-D7CB-47D4-90AF-DBA24C87AC6B",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café com açúcar mascavo sesamo com o jorge",
+    "date" : 694901789.88738894
+  },
+  {
+    "amount" : 13,
+    "id" : "496BEFAD-2491-47A4-93BC-BF6CB9A5DB1F",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Gelato sesamo com jorge",
+    "date" : 694900851.56158996
+  },
+  {
+    "amount" : 18.57,
+    "id" : "E698AA03-7D64-471C-9226-A5052694337D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Parmesão ralado e coca zero para luciana e elaine",
+    "date" : 694885345.95016503
+  },
+  {
+    "amount" : 34.899999999999999,
+    "id" : "5071A482-FEDF-4320-A269-E8D23BD292FC",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "iCloud 2TB",
+    "date" : 694879233.27015305
+  },
+  {
+    "amount" : 34.899999999999999,
+    "id" : "58759197-FD51-482E-8F8A-2DD2F3E78B78",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Apple one",
+    "date" : 694879221.62957001
+  },
+  {
+    "amount" : 22.5,
+    "id" : "AE54853F-B377-4587-A478-DAE963DD33BD",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Meia pizza depois do treino com o jorge",
+    "date" : 694845420
+  },
+  {
+    "amount" : 40.880000000000003,
+    "id" : "431155F5-149A-4A63-8F91-88CD932868FD",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Carbonara do spoleto",
+    "date" : 694801515.93592703
+  },
+  {
+    "amount" : 4.7000000000000002,
+    "id" : "F3C7F3B2-E0A4-41D1-9CBB-D16F249B65C3",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa da pão e tal depois da academia com o jorge",
+    "date" : 694798856.69904494
+  },
+  {
+    "amount" : 19.030000000000001,
+    "id" : "FE8BA713-A35D-435D-9138-19A9816210AC",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Voltando do aniversário da lisany",
+    "date" : 694792920
+  },
+  {
+    "amount" : 16.699999999999999,
+    "id" : "401DBD4D-FC39-4780-9537-38B74BE66F9E",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo para casa da lisany para comemorar o aniversário ",
+    "date" : 694792620
+  },
+  {
+    "amount" : 8.1799999999999997,
+    "id" : "DDDFB216-E117-4575-B716-A33D39B1462A",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo do tatu bola para o maracutaia com a lisany",
+    "date" : 694750839.16342402
+  },
+  {
+    "amount" : 7.8300000000000001,
+    "id" : "A98B838F-D062-405D-8BA3-5E6AF8103942",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo com a lisany para o tatu bola partindo da minha casa",
+    "date" : 694750780.26954103
+  },
+  {
+    "amount" : 31.600000000000001,
+    "id" : "873CF582-BCE3-4970-B02D-7F8F8FDD48A4",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Levando a lisany pra casa e voltando para minha",
+    "date" : 694709220
+  },
+  {
+    "amount" : 159.55000000000001,
+    "id" : "37F699C7-C5A5-46BD-A717-4AEAC71E0BCC",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Jantar com a lisany no maracutaia",
+    "date" : 694699860
+  },
+  {
+    "amount" : 8.9000000000000004,
+    "id" : "8AE37578-6C2E-466E-9D92-9FFA7EA8ABCF",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão na chapa com café carioca antes da academia com o jorge",
+    "date" : 694656216.61656702
+  },
+  {
+    "amount" : 258,
+    "id" : "ECDA72A3-8755-4150-8FBC-C4E5A1F81440",
+    "categoryUUID" : "45A319E9-4578-4EF5-91E1-8D3D5D1C5C1D",
+    "description" : "Mensalidade do curso de idioma inglês na times",
+    "date" : 694589580
+  },
+  {
+    "amount" : 28,
+    "id" : "4F8C9159-38F0-483F-BCE9-341AD1B47CF7",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Cinema com a luciana",
+    "date" : 694568172.20227301
+  },
+  {
+    "amount" : 12.109999999999999,
+    "id" : "D6C1DCEF-E160-49F9-9D2E-AD6E314648C5",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Uber de casa para shoppin cinema com a luciana",
+    "date" : 694566948.540892
+  },
+  {
+    "amount" : 13,
+    "id" : "AC80905E-4948-404C-8C64-ACCFE38F744D",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Chá moncloa no shopping para assistir avatar no cinema",
+    "date" : 694536600
+  },
+  {
+    "amount" : 25.939999999999998,
+    "id" : "DBD9413B-3F45-4236-8687-938D71916CD9",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Pão e mateiga no supermercado frios",
+    "date" : 694477945.61071706
+  },
+  {
+    "amount" : 13.949999999999999,
+    "id" : "467E1177-448A-4D3A-BD29-9F71037B4CCC",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Hbo max",
+    "date" : 694477138.211326
+  },
+  {
+    "amount" : 15.959999999999999,
+    "id" : "F415310D-1408-4C22-9FD1-446767128A85",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Lisany indo da academia para casa",
+    "date" : 694403870.68116105
+  },
+  {
+    "amount" : 1.2,
+    "id" : "6CE85715-EE72-4E8A-8F89-6B7C7ECA5FE5",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Chiclete na pao e tal com a lisany e jorge ",
+    "date" : 694398361.48187399
+  },
+  {
+    "amount" : 799,
+    "id" : "CE83E08F-18E3-4CED-9887-607027D3901C",
+    "categoryUUID" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "description" : "Bolsa da kipling de presente para lisany comprada no shopping",
+    "date" : 694395238.88198102
+  },
+  {
+    "amount" : 28,
+    "id" : "70EB995D-9164-4712-854C-EA38C24396FB",
+    "categoryUUID" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "description" : "Sabonete líquido no shopping da granado",
+    "date" : 694389817.875386
+  },
+  {
+    "amount" : 7.9000000000000004,
+    "id" : "90ECBDDC-AE37-41BC-A8E8-34733173F7BF",
+    "categoryUUID" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "description" : "Café no shopping da bauducco",
+    "date" : 694386796.92037594
+  },
+  {
+    "amount" : 12.279999999999999,
+    "id" : "E7601AE8-222D-4A5C-92CC-15331883C47D",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo ao shopping com a luciana para comprar presente da lisany",
+    "date" : 694386710.11887503
+  },
+  {
+    "amount" : 17.350000000000001,
+    "id" : "34995131-BBCD-42CF-BF14-E5E0C4D84478",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Indo da casa da lisany para a minha casa",
+    "date" : 694318922.24135995
+  },
+  {
+    "amount" : 24.990000000000002,
+    "id" : "8CE0380E-C5AD-42C0-9A75-B3F8A719C673",
+    "categoryUUID" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "description" : "Assinatura uber pass",
+    "date" : 694318892.70205998
+  },
+  {
+    "amount" : 15.869999999999999,
+    "id" : "9B911B80-4490-4D4A-B478-EC617256255A",
+    "categoryUUID" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "description" : "Churrasco na casa da lisany",
+    "date" : 694307116.850986
+  }
+]

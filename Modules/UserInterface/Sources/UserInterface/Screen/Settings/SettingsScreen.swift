@@ -17,7 +17,8 @@ public struct SettingsScreen<Presenter: SettingsPresenterProtocol>: View {
     
     public var body: some View {
         if Device.current == .macOS {
-            HStack {}
+            SettingsmacOSView<Presenter>()
+                .environmentObject(presenter)
         } else {
             SettingsiOSView<Presenter>()
                 .environmentObject(presenter)

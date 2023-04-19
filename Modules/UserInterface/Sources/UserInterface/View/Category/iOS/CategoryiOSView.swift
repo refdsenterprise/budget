@@ -17,11 +17,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         List {
             sectionOptions
             
-            if let previousDate = presenter.getDateFromLastCategoriesByCurrentDate() {
-                sectionDuplicateCategories(previousDate: previousDate)
-            }
-            
-            if !presenter.getCategoriesFiltred().isEmpty {
+            if !presenter.viewData.budgets.isEmpty {
                 sectionCategories
                 sectionTotal
             }
@@ -55,30 +51,11 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         }
     }
     
-    private func sectionDuplicateCategories(previousDate: Date) -> some View {
-        Section {
-            VStack(alignment: .center, spacing: 20) {
-                RefdsText(presenter.string(.sectionDuplicateNotFound), size: .large, weight: .bold, alignment: .center)
-                RefdsText(presenter.string(.sectionDuplicateSuggestion), color: .secondary, alignment: .center)
-                Button {
-                    presenter.duplicateCategories(from: previousDate)
-                } label: {
-                    RefdsText(presenter.string(.sectionDuplicateButton).uppercased(), size: .small, color: .accentColor, weight: .bold)
-                        .frame(maxWidth: .infinity)
-                }
-                .padding()
-                .background(Color.accentColor.opacity(0.2))
-                .cornerRadius(10)
-            }
-            .padding()
-        }
-    }
-    
     private var sectionCategories: some View {
         Section {
-            ForEach(presenter.getCategoriesFiltred(), id: \.id) { category in
+            ForEach(presenter.viewData.budgets, id: \.id) { category in
                 NavigationLink(destination: {
-                    presenter.router.configure(routes: .transactions(category, presenter.date))
+                    presenter.router.configure(routes: .transactions(category.id, presenter.date))
                 }, label: {
                     rowCategory(category)
                 })
@@ -93,7 +70,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             }
         } header: {
             RefdsText(
-                presenter.string(.sectionCategoriosHeader),
+                presenter.string(.mediumBudget),
                 size: .extraSmall,
                 color: .secondary
             )
@@ -109,7 +86,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     color: .secondary
                 )
                 RefdsText(
-                    presenter.totalActual.currency,
+                    presenter.viewData.value.totalActual.currency,
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
@@ -118,7 +95,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     lineLimit: 1
                 )
                 RefdsText(
-                    presenter.totalBudget.currency,
+                    presenter.viewData.value.totalBudget.currency,
                     size: .custom(20),
                     color: .accentColor,
                     weight: .bold,
@@ -129,40 +106,33 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         .frame(maxWidth: .infinity)
     }
     
-    private func rowCategory(_ category: CategoryEntity) -> some View {
+    private func rowCategory(_ category: CategoryViewData.Budget) -> some View {
         HStack(spacing: 10) {
             IndicatorPointView(color: category.color)
             VStack(spacing: 2) {
                 HStack {
                     RefdsText(category.name.capitalized, weight: .bold)
                     Spacer()
-                    if let budget = presenter.getBudget(by: category) {
-                        RefdsText(
-                            budget.amount.currency,
-                            family: .moderatMono,
-                            lineLimit: 1
-                        )
-                    }
+                    RefdsText(
+                        category.budget.currency,
+                        family: .moderatMono,
+                        lineLimit: 1
+                    )
                 }
-                if let transactions = presenter.getTransactions(by: category),
-                   let percent = presenter.getDifferencePercent(on: category, hasPlaces: true) {
-                    HStack {
-                        RefdsText(presenter.string(.rowCategorySpending(percent)), color: .secondary)
-                        Spacer()
-                        RefdsText(presenter.string(.rowCategoryTransaction(transactions.count)), color: .secondary)
-                    }
+                
+                HStack {
+                    RefdsText(presenter.string(.rowSpending(category.percent)), color: .secondary)
+                    Spacer()
+                    RefdsText(presenter.string(.rowTransactionsAmount(category.amountTransactions)), color: .secondary)
                 }
+                
             }
         }
     }
     
-    private func swipeRemoveCategory(_ category: CategoryEntity) -> some View {
+    private func swipeRemoveCategory(_ category: CategoryViewData.Budget) -> some View {
         Button {
-            withAnimation {
-                presenter.remove(category: category) {
-                    presenter.alert = .init(error: $0)
-                }
-            }
+            Task { await presenter.remove(category) }
         } label: {
             RefdsIcon(
                 symbol: .trashFill,
@@ -174,10 +144,10 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         .tint(.red)
     }
     
-    private func swipeEditCategory(_ category: CategoryEntity) -> some View {
+    private func swipeEditCategory(_ category: CategoryViewData.Budget) -> some View {
         Button {
             withAnimation {
-                presenter.category = category
+                presenter.category = category.id
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     presenter.isPresentedEditCategory.toggle()
                 }
@@ -193,10 +163,10 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         .tint(.orange)
     }
     
-    private func contextMenuEditCategory(_ category: CategoryEntity) -> some View {
+    private func contextMenuEditCategory(_ category: CategoryViewData.Budget) -> some View {
         Button {
             withAnimation {
-                presenter.category = category
+                presenter.category = category.id
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     presenter.isPresentedEditCategory.toggle()
                 }
@@ -206,13 +176,9 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         }
     }
     
-    private func contextMenuRemoveCategory(_ category: CategoryEntity) -> some View {
+    private func contextMenuRemoveCategory(_ category: CategoryViewData.Budget) -> some View {
         Button {
-            withAnimation {
-                presenter.remove(category: category) {
-                    presenter.alert = .init(error: $0)
-                }
-            }
+            Task { await presenter.remove(category) }
         } label: {
             Label(presenter.string(.remove), systemImage: RefdsIconSymbol.trashFill.rawValue)
         }

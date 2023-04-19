@@ -1,0 +1,205 @@
+[
+  {
+    "budgets" : [
+      {
+        "amount" : 991.79999999999995,
+        "id" : "C0070436-4FFD-4CDE-A1D8-478E9DE12B5C",
+        "category" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+        "date" : 694252800
+      },
+      {
+        "amount" : 1370,
+        "id" : "312EE92E-7C27-49B8-BD81-8DB768DCAF87",
+        "category" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+        "date" : 696940440
+      },
+      {
+        "amount" : 1212,
+        "id" : "80DF5802-E16C-4AB4-B25A-5A3847B2C3E2",
+        "category" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+        "date" : 699410400
+      }
+    ],
+    "id" : "D9C1034A-8099-4A3D-89C8-A487177F51B4",
+    "name" : "ALIMENTAÇÃO",
+    "color" : "#FF2D55"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 108,
+        "id" : "D3794CE2-5207-4A82-A450-D9F1D6DE809C",
+        "category" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+        "date" : 694252800
+      },
+      {
+        "amount" : 108.73999999999999,
+        "id" : "BE62B277-6196-46FD-A54C-48E469C88D5E",
+        "category" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+        "date" : 696940320
+      },
+      {
+        "amount" : 108.73999999999999,
+        "id" : "3722E7C4-3044-4C19-853E-EE50E3A75955",
+        "category" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+        "date" : 699641266
+      }
+    ],
+    "id" : "171508B7-DD2F-4491-80A6-9D90B23591E3",
+    "name" : "ASSINATURA",
+    "color" : "#30B0C7"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 413.77999999999997,
+        "id" : "DF69C512-E9AD-4C31-955F-1D2F2AFF0394",
+        "category" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+        "date" : 694252800
+      },
+      {
+        "amount" : 416.02999999999997,
+        "id" : "591A6707-25F6-4126-B696-9741E5098D7D",
+        "category" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+        "date" : 696940200
+      },
+      {
+        "amount" : 403.83999999999997,
+        "id" : "6E07898D-5E0C-4400-B42A-44DA50AF5806",
+        "category" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+        "date" : 699410340
+      }
+    ],
+    "id" : "DEB8EAF5-1A05-4330-B2E5-8B2022A54415",
+    "name" : "CASA",
+    "color" : "#AF52DE"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 258,
+        "id" : "3FD3297B-4290-422C-9381-8C5DFDA49572",
+        "category" : "45A319E9-4578-4EF5-91E1-8D3D5D1C5C1D",
+        "date" : 694252800
+      },
+      {
+        "amount" : 258,
+        "id" : "8FD91BD8-342A-4203-AB3D-87D7B2E20C1E",
+        "category" : "45A319E9-4578-4EF5-91E1-8D3D5D1C5C1D",
+        "date" : 696940500
+      }
+    ],
+    "id" : "45A319E9-4578-4EF5-91E1-8D3D5D1C5C1D",
+    "name" : "EDUCAÇÃO",
+    "color" : "#FF9500"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 600,
+        "id" : "69DDF0C9-E406-4DA2-84D3-1108C851FD82",
+        "category" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+        "date" : 694252800
+      },
+      {
+        "amount" : 80,
+        "id" : "21E0FEE8-ADF6-4054-8041-3F8ABDB06278",
+        "category" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+        "date" : 696971100
+      },
+      {
+        "amount" : 80,
+        "id" : "AA114908-9FF0-4ECD-B5FE-C5F85C911F9F",
+        "category" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+        "date" : 699641266
+      }
+    ],
+    "id" : "20C60818-5E3D-442B-8ECE-08D26D370785",
+    "name" : "IMPREVISTO",
+    "color" : "#FFCC00"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 80,
+        "id" : "A5084617-E4BC-4F38-A48D-57CCBC27FA64",
+        "category" : "963B961D-05F2-4175-BCBE-AB4FF4124B49",
+        "date" : 697027225
+      },
+      {
+        "amount" : 100,
+        "id" : "FEC36787-7098-4DB4-BF04-5B8E4AF1275E",
+        "category" : "963B961D-05F2-4175-BCBE-AB4FF4124B49",
+        "date" : 699410460
+      }
+    ],
+    "id" : "963B961D-05F2-4175-BCBE-AB4FF4124B49",
+    "name" : "LAZER",
+    "color" : "#B51A00"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 120,
+        "id" : "9B817E93-E26B-4A98-8F7D-660CB166BFE4",
+        "category" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+        "date" : 694252800
+      },
+      {
+        "amount" : 175,
+        "id" : "368A23F5-1421-4EA7-AECF-59552AE81FA5",
+        "category" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+        "date" : 696940620
+      },
+      {
+        "amount" : 554,
+        "id" : "59D6F510-3798-4EB5-A7DE-FF2541226147",
+        "category" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+        "date" : 699410580
+      }
+    ],
+    "id" : "5C9646ED-1A01-45E6-B608-71979A9E5B09",
+    "name" : "SAÚDE",
+    "color" : "#5856D6"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 612,
+        "id" : "DF5BE9AF-F0E8-4B95-8B4C-B7AC8A80F1BF",
+        "category" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+        "date" : 694252800
+      },
+      {
+        "amount" : 628,
+        "id" : "A1FFDE8F-312D-4B73-A02D-145AFDA0F3B6",
+        "category" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+        "date" : 696940740
+      },
+      {
+        "amount" : 455,
+        "id" : "6B75890E-5656-4FA3-AD4C-FF2D022D9D9F",
+        "description" : "",
+        "category" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+        "date" : 699345420
+      }
+    ],
+    "id" : "30A9AF6A-033A-4296-A7F6-CD393AABCD77",
+    "name" : "TRANSPORTE",
+    "color" : "#34C759"
+  },
+  {
+    "budgets" : [
+      {
+        "amount" : 1240,
+        "id" : "12871F0F-A55E-469B-8AD8-7D2EA3164841",
+        "description" : "Confraternização do cartola no Rio de Janeiro",
+        "category" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+        "date" : 701599440
+      }
+    ],
+    "id" : "0668FAE3-B03B-45F9-96CF-1E9DE22D815B",
+    "name" : "VIAGEM",
+    "color" : "#FF7900"
+  }
+]

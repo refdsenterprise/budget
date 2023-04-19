@@ -6,46 +6,65 @@
 //
 
 import SwiftUI
-import RefdsCore
 
-public final class BudgetViewData: ObservableObject {
-    public static let shared = BudgetViewData()
+public struct BudgetViewData {
+    public var value: Value = .init(totalActual: 0, totalBudget: 0)
+    public var remainingCategory: [RemainingCategory] = []
+    public var remainingCategoryValue: RemainingValue = .init(amount: 0, percentString: "0")
+    public var amountTransactions: Int = 0
+    public var chart: [BudgetChart] = []
+    public var biggerBuy: TransactionViewData.Transaction?
+    public var weekdays: [String] = []
+    public var weekdaysDetail: BudgetWeekdayDetail?
+    public var weekdayTransactions: [TransactionViewData.Transaction] = []
+    public var bubbleWords: [Bubble] = []
     
-    @Published public var remainingCategory: [RemainingCategoryViewData] = []
-    @Published public var remainingValue: RemainingValueViewData = .init(amount: 0, percent: 0)
-    @Published public var amountTransactionView: Int = 0
-    @Published public var chartData: [BudgetChartViewData] = []
-    @Published public var biggerBuy: TransactionViewData?
-    @Published public var weekdays: [String] = []
-    @Published public var weekdaysDetail: [BudgetWeekdayDetailViewData] = []
-    @Published public var weekdayTransactions: [TransactionViewData] = []
-}
-
-public struct RemainingCategoryViewData: DomainModel {
-    public var categoryName: String
-    public var remainingValue: Double
-    public var remainingPercent: Double
-    public var percentColor: Color
-}
-
-public struct RemainingValueViewData: DomainModel {
-    public var amount: Double
-    public var percent: Double
-}
-
-public struct BudgetChartViewData: DomainModel {
-    public var label: String
-    public var data: [ChartData]
-    
-    public struct ChartData: DomainModel {
-        public var category: String
-        public var value: Double
+    public struct Value {
+        public var totalActual: Double
+        public var totalBudget: Double
     }
-}
-
-public struct BudgetWeekdayDetailViewData: DomainModel {
-    public var position: Int
-    public var amount: Double
-    public var percent: Double
-    public var amountTransactions: Double
+    
+    public struct RemainingCategory {
+        public var id: UUID
+        public var name: String
+        public var value: Double
+        public var percent: Double
+        public var percentString: String
+        public var percentColor: Color
+    }
+    
+    public struct RemainingValue {
+        public var amount: Double
+        public var percentString: String
+        public var color: Color {
+            let percentStringFormatted = percentString.replacingOccurrences(of: "%", with: "").replacingOccurrences(of: ",", with: ".")
+            let percent = Double(percentStringFormatted) ?? 0
+            return percent >= 100 ? .red : percent >= 70 ? .yellow : .green
+        }
+    }
+    
+    public struct BudgetChart {
+        public var label: String
+        public var data: [ChartData]
+        
+        public struct ChartData {
+            public var category: String
+            public var value: Double
+        }
+    }
+    
+    public struct BudgetWeekdayDetail {
+        public var amount: Double
+        public var percentString: String
+        public var amountTransactions: Int
+    }
+    
+    public struct Bubble: Equatable {
+        public var id: String = UUID().uuidString
+        public var title: String
+        public var value: CGFloat
+        public var color: Color
+        public var offset = CGSize.zero
+        public var realValue: Double
+    }
 }

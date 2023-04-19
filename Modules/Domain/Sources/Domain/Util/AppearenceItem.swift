@@ -10,10 +10,10 @@ import RefdsUI
 import RefdsCore
 import Resource
 
-public enum AppearenceItem: CaseIterable, DomainModel {
-    case automatic
-    case dark
-    case light
+public enum AppearenceItem: Double, CaseIterable, DomainModel {
+    case automatic = 0.0
+    case dark = 1.0
+    case light = 2.0
     
     public var description: String {
         switch self {

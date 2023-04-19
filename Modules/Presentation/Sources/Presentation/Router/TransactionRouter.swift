@@ -9,7 +9,7 @@ import SwiftUI
 import Domain
 
 public enum TransactionRoutes {
-    case addTransaction(TransactionEntity?)
+    case addTransaction(UUID?)
 }
 
 public struct TransactionRouter {

@@ -9,5 +9,7 @@ import Foundation
 import Domain
 
 extension TransactionEntity {
-    public var category: CategoryEntity? { Storage.shared.category.getCategory(by: categoryUUID) }
+    public var categoryValue: CategoryEntity? {
+        Worker.shared.category.getCategory(by: category)
+    }
 }

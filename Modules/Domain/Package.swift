@@ -28,6 +28,7 @@ let package = Package(
                 "Resource",
                 .product(name: "RefdsCore", package: "refds-core"),
                 .product(name: "RefdsUI", package: "refds-design-system")
-            ]),
+            ]
+        ),
     ]
 )

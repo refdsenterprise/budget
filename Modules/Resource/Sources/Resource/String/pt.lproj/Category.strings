@@ -3,6 +3,8 @@
 "addBudget.infoMonth" = "Informe o mês";
 "addBudget.placeholder.description" = "Informe a descrição (Opcional)";
 "addBudget.description" = "Descrição";
+"addBudget.category" = "Categoria";
+"addBudget.addNewCategory" = "Adicionar nova categoria";
 
 // MARK: - Add Category Scene
 "addCategory.navigation.title" = "Nova Categoria";
@@ -24,10 +26,13 @@
 "category.section.duplicate.notFound" = "Nenhuma categoria encontrada";
 "category.section.duplicate.suggestion" = "Podemos duplicar os budgets do mês anterior mantendo a mesma categoria";
 "category.section.duplicate.button" = "Duplicar";
-"category.section.header.category.mediumBudget" = "budget%@";
+"category.section.header.category.mediumBudget" = "budget";
 "category.row.spending" = "%@ gasto";
 "category.row.transactionsAmount" = "%d transações";
 "category.row.medium" = "médio";
+"currentValue" = "valor atual";
+"edit" = "Editar";
+"remove" = "Remover";
 
 // MARK: - General
 "save.button" = "Salvar Alterações";

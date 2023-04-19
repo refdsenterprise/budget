@@ -12,10 +12,10 @@ import Presentation
 
 struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
-    private let newBudget: ((BudgetEntity) -> Void)?
+    private let newBudget: ((AddBudgetViewData) -> Void)?
     @Environment(\.dismiss) var dismiss
     
-    init(newBudget: ((BudgetEntity) -> Void)? = nil) {
+    init(newBudget: ((AddBudgetViewData) -> Void)? = nil) {
         self.newBudget = newBudget
     }
     
@@ -31,15 +31,48 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
     private var sectionAmount: some View {
         Section {
             rowDescription
+            if !(presenter.viewData.categories?.isEmpty ?? true) { rowCategory }
             rowDate
         } header: {
             rowCurrency
         }
     }
     
+    private var rowCategory: some View {
+        Group {
+            if let name = presenter.viewData.category?.name, let categories = presenter.viewData.categories {
+                CollapsedView(title: presenter.string(.category), description: name.capitalized) {
+                    rowCategoryOptions(categories: categories)
+                }
+            } else { buttonAddCategory }
+        }
+    }
+    
+    private var buttonAddCategory: some View {
+        NavigationLink { presenter.router.configure(routes: .addCategory) } label: {
+            HStack {
+                RefdsText(presenter.string(.category))
+                Spacer()
+                RefdsText(presenter.string(.addNewCategory), color: .secondary, alignment: .trailing, lineLimit: 1)
+            }
+        }
+    }
+    
+    private func rowCategoryOptions(categories: [AddBudgetViewData.Category]) -> some View {
+        ForEach(categories, id: \.id) { category in
+            Button { presenter.viewData.category = category } label: {
+                HStack(spacing: 10) {
+                    IndicatorPointView(color: category.color)
+                    RefdsText(category.name.capitalized)
+                    Spacer()
+                }
+            }
+        }
+    }
+    
     private var rowCurrency: some View {
         RefdsCurrency(
-            value: $presenter.amount,
+            value: $presenter.viewData.amount,
             size: .custom(40)
         )
         .padding()
@@ -49,14 +82,18 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
         HStack {
             RefdsText(presenter.string(.description))
             Spacer()
-            RefdsTextField(presenter.string(.placeholderDescription), text: $presenter.description, alignment: .trailing)
+            RefdsTextField(
+                presenter.string(.placeholderDescription),
+                text: $presenter.viewData.message,
+                alignment: .trailing
+            )
         }
     }
     
     private var rowDate: some View {
         DatePicker(
             .empty,
-            selection: $presenter.date,
+            selection: $presenter.viewData.date,
             displayedComponents: .date
         )
         .datePickerStyle(.graphical)
@@ -70,7 +107,13 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
                 dismiss()
             }
         } label: {
-            RefdsIcon(symbol: .checkmarkRectangleFill, color: presenter.buttonForegroundColor, size: 20, weight: .medium, renderingMode: .hierarchical)
+            RefdsIcon(
+                symbol: .checkmarkRectangleFill,
+                color: presenter.buttonForegroundColor,
+                size: 20,
+                weight: .medium,
+                renderingMode: .hierarchical
+            )
         }
     }
 }

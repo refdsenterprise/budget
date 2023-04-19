@@ -21,10 +21,15 @@ public struct SelectionTabView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 15) {
                 ForEach(values.indices, id: \.self) { index in
-                    Button {
-                        selected = values[index]
-                    } label: {
-                        RefdsTag(values[index], size: .custom(12), color: values[index] == selected ? .accentColor : .secondary, lineLimit: 1)
+                    Button { selected = values[index] } label: {
+                        GroupBox {
+                            RefdsText(
+                                values[index].uppercased(),
+                                size: .extraSmall,
+                                color: values[index] == selected ? .accentColor : .secondary,
+                                weight: values[index] == selected ? .bold : .regular
+                            )
+                        }.listGroupBoxStyle()
                     }
                 }
             }

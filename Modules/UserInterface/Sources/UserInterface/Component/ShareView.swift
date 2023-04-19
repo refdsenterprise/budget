@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ShareView.swift
 //  
 //
 //  Created by Rafael Santos on 09/03/23.
@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+#if os(iOS)
 public struct ShareView: UIViewControllerRepresentable {
     private var itemsToShare: [Any]
     private var servicesToShareItem: [UIActivity]?
@@ -28,3 +29,4 @@ public struct ShareView: UIViewControllerRepresentable {
         context: UIViewControllerRepresentableContext<ShareView>
     ) {}
 }
+#endif

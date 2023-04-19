@@ -4,3 +4,7 @@
 "currentValue" = "valor atual";
 "edit" = "Editar";
 "remove" = "Remover";
+"week" = "Semanal";
+"day" = "Diário";
+"month" = "Mensal";
+"year" = "Anual";

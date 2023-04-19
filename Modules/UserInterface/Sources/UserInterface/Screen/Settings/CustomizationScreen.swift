@@ -17,7 +17,8 @@ public struct CustomizationScree<Presenter: CustomizationPresenterProtocol>: Vie
     
     public var body: some View {
         if Device.current == .macOS {
-            HStack {}
+            CustomizationmacOSView<Presenter>()
+                .environmentObject(presenter)
         } else {
             CustomizationiOSView<Presenter>()
                 .environmentObject(presenter)

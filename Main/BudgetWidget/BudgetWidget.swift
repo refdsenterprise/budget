@@ -9,6 +9,7 @@ import WidgetKit
 import SwiftUI
 import RefdsUI
 import Presentation
+import Domain
 import Intents
 import UserInterface
 import Charts
@@ -24,7 +25,9 @@ struct Provider: IntentTimelineProvider {
             diffColor: Self.presenter.diffColor,
             totalActual: Self.presenter.totalActual,
             chartData: Self.presenter.chartData,
-            categories: Self.presenter.categories
+            categories: Self.presenter.categories,
+            isEmpty: Self.presenter.isEmpty,
+            isActive: Self.presenter.isActive
         )
     }
 
@@ -36,7 +39,9 @@ struct Provider: IntentTimelineProvider {
             diffColor: Self.presenter.diffColor,
             totalActual: Self.presenter.totalActual,
             chartData: Self.presenter.chartData,
-            categories: Self.presenter.categories
+            categories: Self.presenter.categories,
+            isEmpty: Self.presenter.isEmpty,
+            isActive: Self.presenter.isActive
         )
         completion(entry)
     }
@@ -50,7 +55,9 @@ struct Provider: IntentTimelineProvider {
                 diffColor: Self.presenter.diffColor,
                 totalActual: Self.presenter.totalActual,
                 chartData: Self.presenter.chartData,
-                categories: Self.presenter.categories
+                categories: Self.presenter.categories,
+                isEmpty: Self.presenter.isEmpty,
+                isActive: Self.presenter.isActive
             )
         ]
         let timeline = Timeline(entries: entries, policy: .never)
@@ -64,8 +71,10 @@ struct CurrencyEntry: TimelineEntry {
     let totalBudget: Double
     let diffColor: Color
     let totalActual: Double
-    let chartData: [(label: String, data: [(category: String, value: Double)])]
+    let chartData: [ChartDataItem]
     let categories: [(color: Color, name: String, percent: Double, percentColor: Color)]
+    let isEmpty: Bool
+    let isActive: Bool
 }
 
 struct BudgetWidgetEntryView : View {
@@ -84,119 +93,198 @@ struct BudgetWidgetEntryView : View {
         let totalActual = entry.totalActual
         let chartData = entry.chartData
         let categories = entry.categories
+        let isEmpty = entry.isEmpty
+        let isActive = entry.isActive
         
         switch size {
-        case .systemSmall: systemSmall(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor)
-        case .systemMedium: systemMedium(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData)
-        case .systemLarge: systemLarge(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData, categories: categories)
-        case .accessoryInline: accessoryInline(diff: diff)
-        case .accessoryRectangular: accessoryRectangular(diff: diff, totalBudget: totalBudget, totalActual: totalActual)
-        case .accessoryCircular: accessoryCircular(diff: diff, totalBudget: totalBudget)
+        case .systemSmall: systemSmall(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, isEmpty: isEmpty || !isActive)
+        case .systemMedium: systemMedium(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData, isEmpty: isEmpty || !isActive)
+        case .systemLarge: systemLarge(diff: diff, totalBudget: totalBudget, totalActual: totalActual, diffColor: diffColor, chartData: chartData, categories: categories, isEmpty: isEmpty || !isActive)
+        case .accessoryInline: accessoryInline(diff: diff, isEmpty: isEmpty || !isActive)
+        case .accessoryRectangular: accessoryRectangular(diff: diff, totalBudget: totalBudget, totalActual: totalActual, isEmpty: isEmpty || !isActive)
+        case .accessoryCircular: accessoryCircular(diff: diff, totalBudget: totalBudget, isEmpty: isEmpty || !isActive)
         default: HStack{}
         }
     }
-
-    private func systemSmall(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color) -> some View {
+    
+    private var systemSmallEmpty: some View {
         ViewThatFits {
             VStack(alignment: .leading) {
                 Label {
-                    (
-                        Text("Budget ") +
-                        Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
-                            .foregroundColor(.secondary)
-                    )
-                    .font(.system(size: 20, weight: .bold))
-                    .minimumScaleFactor(0.5)
+                    Text("Budget")
+                        .font(.system(size: 18, weight: .bold))
+                        .minimumScaleFactor(0.5)
                 } icon: {
                     Image(systemName: "dollarsign.square.fill")
                         .symbolRenderingMode(.hierarchical)
-                        .foregroundColor(diffColor)
+                        .foregroundColor(.green)
                         .scaleEffect(1.3)
                 }
                 
                 Spacer()
-                Text("valor atual".uppercased())
-                    .font(.system(size: 8))
+                Text(entry.isActive ? "Até o momento, nenhum orçamento para o mês de \(entry.date.asString(withDateFormat: .custom("MMMM"))) foi realizado." : "Tenha acesso a todos as funcionalidades, como: relatórios e recursos especiais.")
+                    .font(.system(size: 12))
                     .foregroundColor(.secondary)
-                    .lineLimit(1)
-                Text(totalActual.currency)
-                    .font(.system(size: 20, weight: .bold, design: .monospaced))
-                    .foregroundColor(diffColor)
-                    .minimumScaleFactor(0.5)
-                    .lineLimit(1)
-                Text(totalBudget.currency)
-                    .font(.system(size: 20, weight: .bold, design: .monospaced))
-                    .minimumScaleFactor(0.5)
-                    .lineLimit(1)
-                Text("valor budget".uppercased())
-                    .font(.system(size: 8))
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
                 Spacer()
-                
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack(spacing: 5) {
-                        Text(presenter.string(.diff).uppercased())
-                            .font(.system(size: 10, weight: .bold))
-                        Text("restante".uppercased())
-                            .font(.system(size: 8))
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
+                Button(action: {}) {
+                    Text((entry.isActive ? "planejar" : "seja pro").uppercased())
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(.white)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.all, 8)
+                .background(Color.green)
+                .cornerRadius(6)
+            }
+        }
+    }
+
+    private func systemSmall(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color, isEmpty: Bool) -> some View {
+        ViewThatFits {
+            if isEmpty {
+                systemSmallEmpty
+            } else {
+                VStack(alignment: .leading) {
+                    Label {
+                        (
+                            Text("Budget ") +
+                            Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
+                                .foregroundColor(.secondary)
+                        )
+                        .font(.system(size: 20, weight: .bold))
+                        .minimumScaleFactor(0.5)
+                    } icon: {
+                        Image(systemName: "dollarsign.square.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundColor(diffColor)
+                            .scaleEffect(1.3)
                     }
-                    ProgressView(value: totalActual, total: totalBudget)
-                        .progressViewStyle(.linear)
-                        .scaleEffect(1.5)
-                        .tint(diffColor)
-                        .padding(.horizontal, 20)
+                    
+                    Spacer()
+                    Text("valor atual".uppercased())
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                    Text(totalActual.currency)
+                        .font(.system(size: 20, weight: .bold, design: .monospaced))
+                        .foregroundColor(diffColor)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                    Text(totalBudget.currency)
+                        .font(.system(size: 20, weight: .bold, design: .monospaced))
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                    Text("valor budget".uppercased())
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 5) {
+                        HStack(spacing: 5) {
+                            Text(presenter.string(.diff).uppercased())
+                                .font(.system(size: 10, weight: .bold))
+                            Text("restante".uppercased())
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                        ProgressView(value: totalActual, total: totalBudget)
+                            .progressViewStyle(.linear)
+                            .scaleEffect(1.5)
+                            .tint(diffColor)
+                            .padding(.horizontal, 20)
+                    }
                 }
             }
         }
         .padding()
     }
     
-    private func systemMedium(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color, chartData: [(label: String, data: [(category: String, value: Double)])]) -> some View {
+    private var systemMediumEmpty: some View {
         ViewThatFits {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     HStack {
                         Image(systemName: "dollarsign.square.fill")
                             .symbolRenderingMode(.hierarchical)
-                            .foregroundColor(diffColor)
+                            .foregroundColor(.green)
                             .scaleEffect(1.5)
-                        VStack(alignment: .leading) {
-                            (
-                                Text("Budget ") +
-                                Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
-                                    .foregroundColor(.secondary)
-                            )
+                        Text("Budget")
                             .font(.system(size: 17, weight: .bold))
-                            Text(totalBudget.currency)
-                                .font(.system(size: 12, design: .monospaced))
-                                .foregroundColor(.secondary)
-                        }
                     }
-                    ProgressView(value: totalActual, total: totalBudget) {
-                        HStack(spacing: 5) {
-                            Text(totalActual.currency)
-                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
-                                .lineLimit(1)
-                            
-                            Spacer()
-                            Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
-                                .font(.system(size: 8.5))
-                            
+                    
+                    Spacer()
+                    
+                    Button(action: {}) {
+                        Button(action: {}) {
+                            Text((entry.isActive ? "planejar" : "seja pro").uppercased())
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
                         }
+                        .frame(maxWidth: 100)
+                        .padding(.all, 8)
+                        .background(Color.green)
+                        .cornerRadius(6)
                     }
-                    .scaleEffect(1.5)
-                    .progressViewStyle(.linear)
-                    .tint(diffColor)
-                    .padding()
-                    .padding(.horizontal, 15)
-                    .padding(.leading, 3)
                 }
-                sectionChartBar(chartData: chartData, isLarge: false)
+                Spacer()
+                Text(entry.isActive ? "Até o momento, nenhum orçamento para o mês de \(entry.date.asString(withDateFormat: .custom("MMMM"))) foi realizado. Clique aqui e comece seu mês planejando sua vida financeira." : "Para utilizar os widget é necessário ser PRO. Com isso, você terá acesso a todos os relatórios e diversos recursos especiais.")
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+                Spacer()
             }
             .padding()
+        }
+    }
+    
+    private func systemMedium(diff: Double, totalBudget: Double, totalActual: Double, diffColor: Color, chartData: [ChartDataItem], isEmpty: Bool) -> some View {
+        ViewThatFits {
+            if isEmpty {
+                systemMediumEmpty
+            } else {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack {
+                        HStack {
+                            Image(systemName: "dollarsign.square.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundColor(diffColor)
+                                .scaleEffect(1.5)
+                            VStack(alignment: .leading) {
+                                (
+                                    Text("Budget ") +
+                                    Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
+                                        .foregroundColor(.secondary)
+                                )
+                                .font(.system(size: 17, weight: .bold))
+                                Text(totalBudget.currency)
+                                    .font(.system(size: 12, design: .monospaced))
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        ProgressView(value: totalActual, total: totalBudget) {
+                            HStack(spacing: 5) {
+                                Text(totalActual.currency)
+                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .lineLimit(1)
+                                
+                                Spacer()
+                                Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
+                                    .font(.system(size: 8.5))
+                                
+                            }
+                        }
+                        .scaleEffect(1.5)
+                        .progressViewStyle(.linear)
+                        .tint(diffColor)
+                        .padding()
+                        .padding(.horizontal, 15)
+                        .padding(.leading, 3)
+                    }
+                    sectionChartBar(chartData: chartData, isLarge: false)
+                }
+                .padding()
+            }
         }
     }
     
@@ -205,9 +293,9 @@ struct BudgetWidgetEntryView : View {
         totalBudget: Double,
         totalActual: Double,
         diffColor: Color,
-        chartData: [(label: String, data: [(category: String, value: Double)])],
+        chartData: [ChartDataItem],
         categories: [(color: Color, name: String, percent: Double, percentColor: Color)]
-    ) -> some View {
+        , isEmpty: Bool) -> some View {
         ViewThatFits {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
@@ -282,57 +370,102 @@ struct BudgetWidgetEntryView : View {
         }
     }
     
-    private func accessoryRectangular(diff: Double, totalBudget: Double, totalActual: Double) -> some View {
-        ViewThatFits {
-            VStack(alignment: .leading) {
-                HStack {
-                    Image(systemName: "dollarsign.square.fill")
-                        .symbolRenderingMode(.hierarchical)
-                        .fontWeight(.bold)
-                        .scaleEffect(1.2)
-                    Text(presenter.string(.diff) + " Restante")
-                        .fontWeight(.bold)
-                }
-                
-                ProgressView(value: totalActual, total: totalBudget)
-                .progressViewStyle(.linear)
-                .scaleEffect(1.5)
-                .padding(.horizontal, 25)
-                
-                HStack {
-                    Text("Valor:")
-                    Text((totalBudget - totalActual).currency)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-            }
-        }
-    }
-    
-    private func accessoryCircular(diff: Double, totalBudget: Double) -> some View {
-        ViewThatFits {
-            ProgressView(value: diff, total: totalBudget) {
+    private var accessoryRectangularEmpty: some View {
+        VStack(alignment: .leading) {
+            HStack {
                 Image(systemName: "dollarsign.square.fill")
                     .symbolRenderingMode(.hierarchical)
-                    .scaleEffect(0.9)
+                    .fontWeight(.bold)
+                    .scaleEffect(1.2)
+                Text("Budget")
+                    .fontWeight(.bold)
             }
-            .progressViewStyle(.circular)
+            
+            Text(entry.isActive ? "Faça orçamento para \(entry.date.asString(withDateFormat: .custom("MMMM")))." : "Funcionalidade para usuário PRO.")
         }
     }
     
-    private func accessoryInline(diff: Double) -> some View {
+    private func accessoryRectangular(diff: Double, totalBudget: Double, totalActual: Double, isEmpty: Bool) -> some View {
+        ViewThatFits {
+            if isEmpty {
+                accessoryRectangularEmpty
+            } else {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Image(systemName: "dollarsign.square.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .fontWeight(.bold)
+                            .scaleEffect(1.2)
+                        Text(presenter.string(.diff) + " Restante")
+                            .fontWeight(.bold)
+                    }
+                    
+                    ProgressView(value: totalActual, total: totalBudget)
+                        .progressViewStyle(.linear)
+                        .scaleEffect(1.5)
+                        .padding(.horizontal, 25)
+                    
+                    HStack {
+                        Text("Valor:")
+                        Text((totalBudget - totalActual).currency)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                }
+            }
+        }
+    }
+    
+    private var accessoryCircularEmpty: some View {
+        Image(systemName: "dollarsign.square.fill")
+            .symbolRenderingMode(.hierarchical)
+            .scaleEffect(3.5)
+    }
+    
+    private func accessoryCircular(diff: Double, totalBudget: Double, isEmpty: Bool) -> some View {
+        ViewThatFits {
+            if isEmpty {
+                accessoryCircularEmpty
+            } else {
+                ProgressView(value: diff, total: totalBudget) {
+                    Image(systemName: "dollarsign.square.fill")
+                        .symbolRenderingMode(.hierarchical)
+                        .scaleEffect(0.9)
+                }
+                .progressViewStyle(.circular)
+            }
+        }
+    }
+    
+    private var accessoryInlineEmpty: some View {
         ViewThatFits {
             Label {
-                Text("Resta \((diff).currency)")
+                Text(entry.isActive ? "\(entry.date.asString(withDateFormat: .custom("MMMM")).capitalized) sem orçamento" : "Funcionalidade PRO")
             } icon: {
                 Image(systemName: "dollarsign.square.fill")
                     .symbolRenderingMode(.hierarchical)
-                    .scaleEffect(1.1)
+                     
             }
         }
     }
     
-    private func sectionChartBar(chartData: [(label: String, data: [(category: String, value: Double)])], isLarge: Bool) -> some View {
+    private func accessoryInline(diff: Double, isEmpty: Bool) -> some View {
+        ViewThatFits {
+            if isEmpty {
+                accessoryInlineEmpty
+            } else {
+                Label {
+                    Text("Resta \((diff).currency)")
+                } icon: {
+                    Image(systemName: "dollarsign.square.fill")
+                        .symbolRenderingMode(.hierarchical)
+                        .scaleEffect(1.1)
+                }
+            }
+        }
+    }
+    
+    private func sectionChartBar(chartData: [ChartDataItem], isLarge: Bool) -> some View {
         Chart(chartData, id: \.label) { chartData in
             ForEach(chartData.data, id: \.category) {
                 BarMark(
@@ -385,7 +518,9 @@ struct BudgetWidget_Previews: PreviewProvider {
             diffColor: .teal,
             totalActual: 3510.05,
             chartData: [],
-            categories: []
+            categories: [],
+            isEmpty: true,
+            isActive: false
         ))
         
         entryView

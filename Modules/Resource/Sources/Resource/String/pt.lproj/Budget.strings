@@ -17,6 +17,7 @@
 "maxTransactionTitle" = "Nessa área é possível acompanhar seus gastos por dias da semana.";
 "maxTransactionDescription" = "Lembrando que está por ordem de maior gasto.";
 "maxTransactionHeader" = "resumo dos dias da semana";
-"maxTransactionRanking" = "Esse dia da semana está em %dº lugar dos dias com  mais gastos, totalizando:";
-"maxTransactionRankingRepresentaion" = "O qual representa %@ do gasto mensal. Sendo composto por %d transações";
+"maxTransactionRanking" = "%d transações";
 "showTransactoins" = "Exibir transações";
+"concentrationValue" = "Valores das concentrações";
+"expansesConcentration" = "concentração das dispesas";
