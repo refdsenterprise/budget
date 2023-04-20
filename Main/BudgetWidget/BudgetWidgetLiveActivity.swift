@@ -228,18 +228,19 @@ struct BudgetWidgetLiveActivity_Previews: PreviewProvider {
     )
 
     static var previews: some View {
-        attributes
-            .previewContext(contentState, viewKind: .dynamicIsland(.compact))
-            .previewDisplayName("Island Compact")
-        attributes
-            .previewContext(contentState, viewKind: .dynamicIsland(.expanded))
-            .previewDisplayName("Island Expanded")
-        attributes
-            .previewContext(contentState, viewKind: .dynamicIsland(.minimal))
-            .previewDisplayName("Minimal")
-        attributes
-            .previewContext(contentState, viewKind: .content)
-            .previewDisplayName("Notification")
+        HStack {}
+//        attributes
+//            .previewContext(contentState, viewKind: .dynamicIsland(.compact))
+//            .previewDisplayName("Island Compact")
+//        attributes
+//            .previewContext(contentState, viewKind: .dynamicIsland(.expanded))
+//            .previewDisplayName("Island Expanded")
+//        attributes
+//            .previewContext(contentState, viewKind: .dynamicIsland(.minimal))
+//            .previewDisplayName("Minimal")
+//        attributes
+//            .previewContext(contentState, viewKind: .content)
+//            .previewDisplayName("Notification")
     }
 }
 #endif

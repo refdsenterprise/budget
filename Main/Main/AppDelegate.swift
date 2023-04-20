@@ -14,6 +14,7 @@ import ActivityKit
 import Core
 import Presentation
 import Data
+import StoreKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -21,6 +22,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
+        SKPaymentQueue.default().add(self)
         #if targetEnvironment(macCatalyst)
         #else
         if #available(iOS 16.1, *) {
@@ -55,5 +57,24 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate {
         completionHandler: @escaping (Bool) -> Void
     ) {
         completionHandler(true)
+    }
+}
+
+extension AppDelegate: SKPaymentTransactionObserver {
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        for transaction in transactions {
+            switch transaction.transactionState {
+            case .failed:
+                queue.finishTransaction(transaction)
+                print("Transaction Failed \(transaction)")
+            case .purchased, .restored:
+                queue.finishTransaction(transaction)
+                print("Transaction purchased or restored: \(transaction)")
+            case .deferred, .purchasing:
+                print("Transaction in progress: \(transaction)")
+            default:
+                print("Transaction Error: \(transaction)")
+            }
+        }
     }
 }
