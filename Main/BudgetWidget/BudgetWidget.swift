@@ -288,6 +288,42 @@ struct BudgetWidgetEntryView : View {
         }
     }
     
+    private var systemLargeEmpty: some View {
+        ViewThatFits {
+            VStack(alignment: .center) {
+                Spacer()
+                VStack(spacing: 10) {
+                    Image(systemName: "dollarsign.square.fill")
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundColor(.green)
+                        .font(.system(size: 50))
+                    Text("Budget")
+                        .font(.system(size: 28, weight: .bold))
+                }
+                Spacer()
+                Text(entry.isActive ? "Até o momento, nenhum orçamento para o mês de \(entry.date.asString(withDateFormat: .custom("MMMM"))) foi realizado. Clique aqui e comece seu mês planejando sua vida financeira. Crie suas categorias e cadastre suas despesas em instantes" : "Para utilizar os widget é necessário ser PRO. Com isso, você terá acesso a todos os relatórios e diversos recursos especiais. Crie suas categorias e cadastre suas despesas em instantes")
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                Spacer()
+                Button(action: {}) {
+                    Button(action: {}) {
+                        Text((entry.isActive ? "planejar agora mesmo" : "Comece agora mesmo").uppercased())
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white)
+                            .padding(.all, 10)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.all, 8)
+                    .background(Color.green)
+                    .cornerRadius(6)
+                }
+                Spacer()
+            }
+            .padding()
+        }
+    }
+    
     private func systemLarge(
         diff: Double,
         totalBudget: Double,
@@ -297,76 +333,80 @@ struct BudgetWidgetEntryView : View {
         categories: [(color: Color, name: String, percent: Double, percentColor: Color)]
         , isEmpty: Bool) -> some View {
         ViewThatFits {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
+            if isEmpty {
+                systemLargeEmpty
+            } else {
+                VStack(alignment: .leading, spacing: 0) {
                     HStack {
-                        Image(systemName: "dollarsign.square.fill")
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundColor(diffColor)
-                            .scaleEffect(1.5)
-                        VStack(alignment: .leading) {
-                            (
-                                Text("Budget ") +
-                                Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
+                        HStack {
+                            Image(systemName: "dollarsign.square.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundColor(diffColor)
+                                .scaleEffect(1.5)
+                            VStack(alignment: .leading) {
+                                (
+                                    Text("Budget ") +
+                                    Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
+                                        .foregroundColor(.secondary)
+                                )
+                                .font(.system(size: 17, weight: .bold))
+                                Text(totalBudget.currency)
+                                    .font(.system(size: 12, design: .monospaced))
                                     .foregroundColor(.secondary)
-                            )
-                            .font(.system(size: 17, weight: .bold))
-                            Text(totalBudget.currency)
-                                .font(.system(size: 12, design: .monospaced))
-                                .foregroundColor(.secondary)
+                            }
                         }
-                    }
-                    ProgressView(value: totalActual, total: totalBudget) {
-                        HStack(spacing: 5) {
-                            Text(totalActual.currency)
-                                .font(.system(size: 8.5, weight: .bold, design: .monospaced))
-                                .lineLimit(1)
-                            
-                            Spacer()
-                            Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
-                                .font(.system(size: 8.5))
-                            
-                        }
-                    }
-                    .scaleEffect(1.5)
-                    .progressViewStyle(.linear)
-                    .tint(diffColor)
-                    .padding()
-                    .padding(.horizontal, 15)
-                    .padding(.leading, 3)
-                }
-                
-                LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
-                    ForEach(categories.indices, id: \.self) { index in
-                        let category = categories[index]
-                        VStack(alignment: .leading, spacing: 3) {
-                            HStack(spacing: 0) {
-                                IndicatorPointView(color: category.color)
-                                    .scaleEffect(0.5)
-                                Text(category.name.capitalized)
-                                    .font(.system(size: 12))
+                        ProgressView(value: totalActual, total: totalBudget) {
+                            HStack(spacing: 5) {
+                                Text(totalActual.currency)
+                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
                                     .lineLimit(1)
+                                
                                 Spacer()
-                                Text(String(format: "%d", Int(category.percent)) + "%")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(.secondary)
-                                    .lineLimit(1)
+                                Text(String(format: "%02d", Int((totalActual * 100) / totalBudget)) + "%")
+                                    .font(.system(size: 8.5))
+                                
+                            }
+                        }
+                        .scaleEffect(1.5)
+                        .progressViewStyle(.linear)
+                        .tint(diffColor)
+                        .padding()
+                        .padding(.horizontal, 15)
+                        .padding(.leading, 3)
+                    }
+                    
+                    LazyVGrid(columns: [.init(.flexible()), .init(.flexible())]) {
+                        ForEach(categories.indices, id: \.self) { index in
+                            let category = categories[index]
+                            VStack(alignment: .leading, spacing: 3) {
+                                HStack(spacing: 0) {
+                                    IndicatorPointView(color: category.color)
+                                        .scaleEffect(0.5)
+                                    Text(category.name.capitalized)
+                                        .font(.system(size: 12))
+                                        .lineLimit(1)
+                                    Spacer()
+                                    Text(String(format: "%d", Int(category.percent)) + "%")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(1)
+                                }
+                                
+                                ProgressView(value: category.percent, total: 100)
+                                    .scaleEffect(1.5)
+                                    .padding(.horizontal, 28)
+                                    .tint(category.percentColor)
                             }
                             
-                            ProgressView(value: category.percent, total: 100)
-                                .scaleEffect(1.5)
-                                .padding(.horizontal, 28)
-                                .tint(category.percentColor)
                         }
-                        
                     }
+                    
+                    Spacer()
+                    
+                    sectionChartBar(chartData: chartData, isLarge: true)
                 }
-                
-                Spacer()
-                
-                sectionChartBar(chartData: chartData, isLarge: true)
+                .padding()
             }
-            .padding()
         }
     }
     
@@ -416,24 +456,14 @@ struct BudgetWidgetEntryView : View {
         }
     }
     
-    private var accessoryCircularEmpty: some View {
-        Image(systemName: "dollarsign.square.fill")
-            .symbolRenderingMode(.hierarchical)
-            .scaleEffect(3.5)
-    }
-    
     private func accessoryCircular(diff: Double, totalBudget: Double, isEmpty: Bool) -> some View {
         ViewThatFits {
-            if isEmpty {
-                accessoryCircularEmpty
-            } else {
-                ProgressView(value: diff, total: totalBudget) {
-                    Image(systemName: "dollarsign.square.fill")
-                        .symbolRenderingMode(.hierarchical)
-                        .scaleEffect(0.9)
-                }
-                .progressViewStyle(.circular)
+            ProgressView(value: diff, total: totalBudget) {
+                Image(systemName: "dollarsign.square.fill")
+                    .symbolRenderingMode(.hierarchical)
+                    .scaleEffect(0.9)
             }
+            .progressViewStyle(.circular)
         }
     }
     

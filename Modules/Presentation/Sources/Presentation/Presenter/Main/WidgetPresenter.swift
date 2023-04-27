@@ -158,7 +158,7 @@ public final class WidgetPresenter {
     }
     
     public var isActive: Bool {
-        true
+        Worker.shared.settings.get().isPro
     }
     
     private func getBudgetAmountByPeriod(by category: CategoryEntity) -> Double {

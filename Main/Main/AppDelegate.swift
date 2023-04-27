@@ -23,9 +23,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> UISceneConfiguration {
 #if targetEnvironment(macCatalyst)
 #else
-        if #available(iOS 16.1, *) {
-            LiveActivityPresenter.shared.activeLiveActivity()
-        }
+//        if #available(iOS 16.1, *) {
+//            LiveActivityPresenter.shared.activeLiveActivity()
+//        }
 #endif
         
         for scene in application.connectedScenes {
