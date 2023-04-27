@@ -61,9 +61,18 @@ final class Database: ObservableObject {
                     .attribute(name: "currentWarningNotificationAppears", type: .transformableAttributeType, isOptional: true, attributeValueClassName: "[UUID]", valueTransformerName: "NSSecureUnarchiveFromDataTransformer"),
                     .attribute(name: "currentBreakingNotificationAppears", type: .transformableAttributeType, isOptional: true, attributeValueClassName: "[UUID]", valueTransformerName: "NSSecureUnarchiveFromDataTransformer"),
                     .attribute(name: "liveActivity", type: .UUIDAttributeType, isOptional: true),
-                    .attribute(name: "dateBuyPro", type: .dateAttributeType, isOptional: true)
+                    .attribute(name: "isPro", type: .booleanAttributeType, isOptional: true)
                 ]
-            )
+            ),
+            .entity(
+                name: "BubbleEntity",
+                managedObjectClass: BubbleEntity.self,
+                attributes: [
+                    .attribute(name: "id", type: .UUIDAttributeType, isOptional: true),
+                    .attribute(name: "color", type: .stringAttributeType, isOptional: true),
+                    .attribute(name: "name", type: .stringAttributeType, isOptional: true)
+                ]
+            ),
         ])
         return description.makeModel()
     }()

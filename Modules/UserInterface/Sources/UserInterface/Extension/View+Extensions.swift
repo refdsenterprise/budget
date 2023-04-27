@@ -14,11 +14,7 @@ import Resource
 public extension View {
     func budgetAlert(_ alert: Binding<AlertItem>) -> some View {
         self.alert(isPresented: alert.isPresented) {
-            Alert(
-                title: Text(alert.title.wrappedValue),
-                message: Text(alert.message.wrappedValue ?? ""),
-                dismissButton: .cancel(Text("Ok"))
-            )
+            alert.wrappedValue.alert
         }
     }
     
@@ -36,6 +32,7 @@ public extension View {
             if let url = item.url.wrappedValue {
                 if #available(iOS 16.0, *) {
                     ShareView(itemsToShare: [url])
+                        .presentationDetents([.medium])
                 } else {
                     ShareView(itemsToShare: [url])
                 }

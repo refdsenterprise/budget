@@ -10,6 +10,7 @@ import Domain
 
 public enum CategoryRoutes {
     case addCategory(UUID?)
+    case addBudget
     case transactions(UUID, Date)
 }
 
@@ -24,6 +25,7 @@ public struct CategoryRouter {
     public func configure(routes: CategoryRoutes) -> some View {
         switch routes {
         case .addCategory(let category): AnyView(factory.makeAddCategoryScreen(category: category))
+        case .addBudget: AnyView(factory.makeAddBudgetScreen(newBudget: nil, id: nil))
         case .transactions(let category, let date): AnyView(factory.makeTransactionScreen(category: category, date: date))
         }
     }

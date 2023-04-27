@@ -33,6 +33,11 @@
 "currentValue" = "valor atual";
 "edit" = "Editar";
 "remove" = "Remover";
+"category.alertCreateCategoryTitle" = "Crie uma categoria para suas despesas";
+"category.alertCreateCategoryDescription" = "Parece que você ainda não tem nenhuma categoria para suas despesas. Para manter suas finanças organizadas, recomendamos que você crie uma agora.";
+"category.alertButton" = "Clique aqui para começar";
+"category.alertCreateBudgetTitle" = "Crie um budget para este mês";
+"category.alertCreateBudgetDescription" = "Parece que você ainda não criou um budget para suas despesas deste mês. Para garantir que você fique dentro do seu limite financeiro, sugerimos que crie um agora.";
 
 // MARK: - General
 "save.button" = "Salvar Alterações";

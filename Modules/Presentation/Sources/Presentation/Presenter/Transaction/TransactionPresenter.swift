@@ -19,9 +19,11 @@ public protocol TransactionPresenterProtocol: ObservableObject {
     var isFilterPerDate: Bool { get set }
     var isPresentedAddTransaction: Bool { get set }
     var isPresentedEditTransaction: Bool { get set }
+    var showLoading: Bool { get set }
     var alert: AlertItem { get set }
     var transaction: UUID? { get set }
     var selectedPeriod: PeriodItem { get set }
+    var isPro: Bool { get set }
     
     func string(_ string: Strings.Transaction) -> String
     func loadData()
@@ -43,6 +45,8 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
     @Published public var isPresentedEditTransaction: Bool = false
     @Published public var alert: AlertItem = .init()
     @Published public var transaction: UUID?
+    @Published public var isPro: Bool = false
+    @Published public var showLoading: Bool = true
     
     public init(router: TransactionRouter, category: UUID? = nil, date: Date? = nil) {
         self.router = router
@@ -79,9 +83,13 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
     }
     
     public func loadData() {
+        viewData = .init()
+        showLoading = true
         Task {
+            await updateNeedModalPro()
             await updateTransactions()
             loadSearchResults()
+            DispatchQueue.main.async { self.showLoading = false }
         }
     }
     
@@ -92,7 +100,12 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
             Task { await updateChartData() }
             Task { await updateTransactions() }
             Task { await updateViewDataTransactions() }
+            Task { await ProPresenter.shared.updatePurchasedProducts() }
         }
+    }
+    
+    @MainActor private func updateNeedModalPro() async {
+        isPro = Worker.shared.settings.get().isPro
     }
     
     @MainActor private func updateTransactions() async {

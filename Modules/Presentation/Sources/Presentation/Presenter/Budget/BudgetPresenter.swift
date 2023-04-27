@@ -18,20 +18,30 @@ public protocol BudgetPresenterProtocol: ObservableObject {
     var date: Date { get set }
     var isFilterPerDate: Bool { get set }
     var selectedPeriod: PeriodItem { get set }
+    var needShowModalPro: Bool { get set }
+    var showLoading: Bool { get set }
+    var bubbleName: String { get set }
+    var bubbleColor: Color { get set }
     
     func string(_ string: Strings.Budget) -> String
     func loadData()
     func loadWeekDayDetail()
+    func addBubble() async
+    func removeBubble(id: UUID) async
 }
 
 public final class BudgetPresenter: BudgetPresenterProtocol {
     public var router: BudgetRouter
-    public var viewData: BudgetViewData = .init()
+    @Published public var viewData: BudgetViewData = .init()
     
     @Published public var date: Date = Date() { didSet { loadData() } }
     @Published public var maxDay: String = "" { didSet { loadWeekDayDetail() } }
     @Published public var isFilterPerDate: Bool = true { didSet { loadData() } }
     @Published public var selectedPeriod: PeriodItem = .month { didSet { loadData() } }
+    @Published public var needShowModalPro: Bool = false
+    @Published public var showLoading: Bool = true
+    @Published public var bubbleName: String = ""
+    @Published public var bubbleColor: Color = .accentColor
     
     private var categories: [CategoryEntity] = []
     private var transactions: [TransactionEntity] = []
@@ -45,29 +55,37 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     }
     
     public func loadData() {
+        viewData = .init()
+        showLoading = true
         Task {
+            await updateShowModalPro()
             await updateBudgets()
             await updateTransactions()
-            Task {
-                await updateViewDataValue()
-                await updateViewDataRemaingValue()
+            await updateViewDataValue()
+            if !needShowModalPro {
+                Task {
+                    await updateViewDataRemaingValue()
+                }
+                Task { await updateViewDataRemainingCategories() }
+                Task { await updateViewDataChart() }
+                Task { await updateViewDataBiggerBuy() }
+                Task {
+                    await updateViewDataWeekDays()
+                    await updateViewDataWeekDaysDetail()
+                }
+                Task { await updateViewDataBubble() }
+                Task { await ProPresenter.shared.updatePurchasedProducts() }
             }
-            Task { await updateViewDataRemainingCategories() }
-            Task { await updateViewDataChart() }
-            Task { await updateViewDataBiggerBuy() }
-            Task {
-                await updateViewDataWeekDays()
-                await updateViewDataWeekDaysDetail()
-            }
-            Task { await updateViewDataBubble() }
+            DispatchQueue.main.async { self.showLoading = false }
         }
     }
     
     public func loadWeekDayDetail() {
-        Task {
-            await updateViewDataWeekDays()
-            await updateViewDataWeekDaysDetail()
-        }
+        Task { await updateViewDataWeekDaysDetail() }
+    }
+    
+    @MainActor private func updateShowModalPro() async {
+        needShowModalPro = !Worker.shared.settings.get().isPro
     }
     
     @MainActor private func updateBudgets() async {
@@ -124,7 +142,6 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     }
     
     @MainActor private func updateViewDataBiggerBuy() async {
-        viewData.biggerBuy = nil
         guard let biggerTransaction = transactions.max(by: {
             $0.amount < $1.amount
         }), let category = biggerTransaction.categoryValue else { return }
@@ -146,13 +163,10 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
         }
         let maxDay = daysCount.max(by: { $0.value < $1.value })?.key ?? ""
         viewData.weekdays = daysCount.sorted(by: { $0.value > $1.value }).map({ $0.key })
-        if self.maxDay.isEmpty { self.maxDay = maxDay }
+        DispatchQueue.main.async { if self.maxDay.isEmpty { self.maxDay = maxDay } }
     }
     
     @MainActor private func updateViewDataWeekDaysDetail() async {
-        viewData.weekdayTransactions = []
-        viewData.weekdaysDetail = nil
-        
         let transactions = transactions.filter { transaction in
             let day = transaction.date.asString(withDateFormat: .custom("EEEE"))
             return self.maxDay.lowercased() == day.lowercased()
@@ -179,15 +193,15 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     }
     
     @MainActor private func updateViewDataBubble() async {
-        let words = ["lisany", "sodexo", "jorge", "cafe", "rio de janeiro", "sushi", "uber", "aeroporto", "luciana", "pao e tal"]
-        var dataItem = words.map { word in
-            let value = transactions.filter({ $0.description.lowercased().stripingDiacritics.contains(word) }).map({ $0.amount }).reduce(0, +)
-            return BudgetViewData.Bubble(title: word, value: CGFloat(value), color: .random, realValue: value)
+        let bubbles = Worker.shared.bubble.get()
+        var dataItem = bubbles.map { bubble in
+            let value = transactions.filter({ $0.description.lowercased().stripingDiacritics.contains(bubble.name.lowercased()) }).map({ $0.amount }).reduce(0, +)
+            return BudgetViewData.Bubble(id: bubble.id, title: bubble.name.capitalized, value: CGFloat(value), color: Color(hex: bubble.color), realValue: value)
         }.sorted(by: { $0.value > $1.value })
         if let maxBubbleItem = dataItem.max(by: { $0.value < $1.value }) {
             dataItem = dataItem.map({ item in
                 let scale = item.value * 300 / (maxBubbleItem.value == 0 ? 1 : maxBubbleItem.value)
-                return .init(title: item.title, value: scale, color: item.color, realValue: item.realValue)
+                return .init(id: item.id, title: item.title, value: scale, color: item.color, realValue: item.realValue)
             })
         }
         
@@ -196,6 +210,19 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
             return
         }
         viewData.bubbleWords = dataItem
+    }
+    
+    @MainActor public func addBubble() async {
+        guard !bubbleName.isEmpty else { return }
+        try? Worker.shared.bubble.add(id: .init(), name: bubbleName, color: bubbleColor)
+        await updateViewDataBubble()
+        bubbleName = ""
+        bubbleColor = .accentColor
+    }
+    
+    public func removeBubble(id: UUID) async {
+        try? Worker.shared.bubble.remove(id: id)
+        await updateViewDataBubble()
     }
     
     private func getTotalBudget() -> Double {

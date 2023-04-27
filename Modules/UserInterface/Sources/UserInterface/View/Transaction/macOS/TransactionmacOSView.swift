@@ -15,7 +15,38 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
     var body: some View {
-        MacUIView(sections: [
+        MacUIView(sections: sections)
+            .budgetAlert($presenter.alert)
+            .navigationTitle(presenter.string(.navigationTitle))
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
+            .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
+            .onAppear { presenter.loadData() }
+            .overlay(alignment: .center) { loading }
+            .navigation(isPresented: $presenter.isPresentedAddTransaction) {
+                presenter.router.configure(routes: .addTransaction(nil))
+            }
+            .navigation(isPresented: $presenter.isPresentedEditTransaction) {
+                presenter.router.configure(routes: .addTransaction(presenter.transaction))
+            }
+    }
+    
+    private var loading: some View {
+        Group {
+            if presenter.showLoading {
+                ProgressView()
+            }
+        }
+    }
+    
+    private var sections: [MacUISection] {
+        presenter.showLoading ? [] : !presenter.isPro ? [
+            .init(maxAmount: 2, content: {
+                Group {
+                    sectionTotal
+                    sectionOptions
+                }
+            }),
+        ] : [
             .init(maxAmount: 2, content: {
                 Group {
                     sectionTotal
@@ -40,51 +71,48 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                     }
                 }
             })
-        ])
-        .budgetAlert($presenter.alert)
-        .navigationTitle(presenter.string(.navigationTitle))
-        #if os(iOS)
-        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
-        #endif
-        .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
-        .onAppear { presenter.loadData() }
-        .navigation(isPresented: $presenter.isPresentedAddTransaction) {
-            presenter.router.configure(routes: .addTransaction(nil))
-        }
-        .navigation(isPresented: $presenter.isPresentedEditTransaction) {
-            presenter.router.configure(routes: .addTransaction(presenter.transaction))
-        }
+        ]
     }
     
     private var sectionOptions: some View {
         SectionGroup {
-            CollapsedView(title: presenter.string(.options)) {
-                Group {
-                    Toggle(isOn: $presenter.isFilterPerDate) {
-                        RefdsText(presenter.string(.filterPerDate))
+            Group {
+                if !presenter.isPro {
+                    HStack {
+                        RefdsText(presenter.string(.options))
+                        Spacer()
+                        ProTag()
                     }
-                    .toggleStyle(CheckBoxStyle())
-                    
-                    if presenter.isFilterPerDate {
-                        CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
-                            VStack(alignment: .leading) {
-                                ForEach(PeriodItem.allCases.indices, id: \.self) { index in
-                                    let period = PeriodItem.allCases[index]
-                                    Button {
-                                        presenter.selectedPeriod = period
-                                    } label: {
-                                        HStack(spacing: 15) {
-                                            IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                            RefdsText(period.label.capitalized, color: .secondary)
+                } else {
+                    CollapsedView(title: presenter.string(.options)) {
+                        Group {
+                            Toggle(isOn: $presenter.isFilterPerDate) {
+                                RefdsText(presenter.string(.filterPerDate))
+                            }
+                            .toggleStyle(CheckBoxStyle())
+                            
+                            if presenter.isFilterPerDate {
+                                CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
+                                    VStack(alignment: .leading) {
+                                        ForEach(PeriodItem.allCases.indices, id: \.self) { index in
+                                            let period = PeriodItem.allCases[index]
+                                            Button {
+                                                presenter.selectedPeriod = period
+                                            } label: {
+                                                HStack(spacing: 15) {
+                                                    IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
+                                                    RefdsText(period.label.capitalized, color: .secondary)
+                                                }
+                                            }
+                                            .padding(.vertical, 4)
+                                            if index < PeriodItem.allCases.count - 1 { Divider() }
                                         }
                                     }
-                                    .padding(.vertical, 4)
-                                    if index < PeriodItem.allCases.count - 1 { Divider() }
                                 }
+                                
+                                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy"))
                             }
                         }
-                        
-                        PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy"))
                     }
                 }
             }
@@ -123,7 +151,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                     }
                 }.listGroupBoxStyle()
             }
-            .frame(minHeight: 90, maxHeight: 90)
+            .frame(minHeight: 90)
             .padding()
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 swipeEdit(transaction: transaction)

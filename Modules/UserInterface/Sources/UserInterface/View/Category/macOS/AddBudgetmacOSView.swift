@@ -129,10 +129,10 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
     private var buttonSave: some View {
         Button {
             Application.shared.endEditing()
-            presenter.add { budget in
+            presenter.add(budget: { budget in
                 newBudget?(budget)
                 dismiss()
-            }
+            }, dismiss: { dismiss() })
         } label: {
             GroupBox {
                 RefdsText(

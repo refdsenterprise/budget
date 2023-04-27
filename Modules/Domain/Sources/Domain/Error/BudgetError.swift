@@ -19,6 +19,8 @@ public enum BudgetError: Error {
     case existingBudget
     case cantSaveOnDatabase
     case dontAcceptedTerms
+    case notFoundProducts
+    case cantAddCategoryPro
     
     var alertTitle: String {
         switch self {
@@ -32,6 +34,8 @@ public enum BudgetError: Error {
         case .existingBudget: return "Budget existente"
         case .cantSaveOnDatabase: return "Erro ao salvar"
         case .dontAcceptedTerms: return "Aceite os termos"
+        case .notFoundProducts: return "Erro ao carregar Pro"
+        case .cantAddCategoryPro: return "Limite de Categorias Excedido"
         }
     }
     
@@ -47,6 +51,8 @@ public enum BudgetError: Error {
         case .existingBudget: return "Já existe o budget para o mês informado"
         case .cantSaveOnDatabase: return "Não foi possível persistir a informação no dispositivo"
         case .dontAcceptedTerms: return "Só é possível realizar a assinatura após o aceite dos termos."
+        case .notFoundProducts: return "Verifique sua conexão com a internet para prosseguir com a compra."
+        case .cantAddCategoryPro: return "Para adicionar mais categorias se torne Pro."
         }
     }
     
@@ -62,6 +68,8 @@ public enum BudgetError: Error {
         case .existingBudget: return .exclamationmarkTriangleFill
         case .cantSaveOnDatabase: return .externaldriveFillBadgeExclamationmark
         case .dontAcceptedTerms: return .exclamationmarkTriangleFill
+        case .notFoundProducts: return .wifiExclamationmark
+        case .cantAddCategoryPro: return .exclamationmarkOctagonFill
         }
     }
 }

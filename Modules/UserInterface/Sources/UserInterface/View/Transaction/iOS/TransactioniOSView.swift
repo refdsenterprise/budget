@@ -21,8 +21,16 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
             
             if #available(iOS 16.0, *),
                !presenter.viewData.chart.isEmpty {
-                CollapsedView(title: presenter.string(.chart)) {
-                    sectionChartTransactions
+                if presenter.isPro {
+                    CollapsedView(title: presenter.string(.chart)) {
+                        sectionChartTransactions
+                    }
+                } else {
+                    HStack {
+                        RefdsText(presenter.string(.chart))
+                        Spacer()
+                        ProTag()
+                    }
                 }
             }
             
@@ -36,6 +44,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
         .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
         .onAppear { presenter.loadData() }
+        .overlay(alignment: .center) { loading }
         .navigation(isPresented: $presenter.isPresentedAddTransaction) {
             presenter.router.configure(routes: .addTransaction(nil))
         }
@@ -44,27 +53,45 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         }
     }
     
+    private var loading: some View {
+        Group {
+            if presenter.showLoading {
+                ProgressView()
+            }
+        }
+    }
+    
     private var sectionOptions: some View {
-        CollapsedView(title: presenter.string(.options)) {
-            Group {
-                Toggle(isOn: $presenter.isFilterPerDate) {
-                    RefdsText(presenter.string(.filterPerDate))
+        Group {
+            if !presenter.isPro {
+                HStack {
+                    RefdsText(presenter.string(.options))
+                    Spacer()
+                    ProTag()
                 }
-                .toggleStyle(CheckBoxStyle())
-                
-                if presenter.isFilterPerDate {
-                    CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
-                        ForEach(PeriodItem.allCases, id: \.self) { period in
-                            Button { presenter.selectedPeriod = period  } label: {
-                                HStack(spacing: 15) {
-                                    IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                    RefdsText(period.label.capitalized, color: .secondary)
+            } else {
+                CollapsedView(title: presenter.string(.options)) {
+                    Group {
+                        Toggle(isOn: $presenter.isFilterPerDate) {
+                            RefdsText(presenter.string(.filterPerDate))
+                        }
+                        .toggleStyle(CheckBoxStyle())
+                        
+                        if presenter.isFilterPerDate {
+                            CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
+                                ForEach(PeriodItem.allCases, id: \.self) { period in
+                                    Button { presenter.selectedPeriod = period  } label: {
+                                        HStack(spacing: 15) {
+                                            IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
+                                            RefdsText(period.label.capitalized, color: .secondary)
+                                        }
+                                    }
                                 }
                             }
+                            
+                            PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy"))
                         }
                     }
-                    
-                    PeriodSelectionView(date: $presenter.date, dateFormat: .custom("dd MMMM, yyyy"))
                 }
             }
         }

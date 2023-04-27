@@ -62,7 +62,7 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
         ForEach(categories, id: \.id) { category in
             Button { presenter.viewData.category = category } label: {
                 HStack(spacing: 10) {
-                    IndicatorPointView(color: category.color)
+                    IndicatorPointView(color: category.id == presenter.viewData.category?.id ? category.color : .secondary)
                     RefdsText(category.name.capitalized)
                     Spacer()
                 }
@@ -102,10 +102,10 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
     private var buttonSave: some View {
         Button {
             Application.shared.endEditing()
-            presenter.add { budget in
+            presenter.add(budget: { budget in
                 newBudget?(budget)
                 dismiss()
-            }
+            }, dismiss: { dismiss() })
         } label: {
             RefdsIcon(
                 symbol: .checkmarkRectangleFill,

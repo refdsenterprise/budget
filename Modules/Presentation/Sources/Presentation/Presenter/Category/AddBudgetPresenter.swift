@@ -16,7 +16,7 @@ public protocol AddBudgetPresenterProtocol: ObservableObject {
     var buttonForegroundColor: Color { get }
     
     func string(_ string: Strings.AddBudget) -> String
-    func add(budget: (AddBudgetViewData) -> Void)
+    func add(budget: (AddBudgetViewData) -> Void, dismiss: (() -> Void)?)
 }
 
 public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
@@ -31,7 +31,7 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
     }
     
     private var canAddNewBudget: Bool {
-        return viewData.amount > 0
+        return viewData.amount > 0 && (viewData.category != nil || id != nil)
     }
     
     public var buttonForegroundColor: Color {
@@ -42,8 +42,27 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
         string.value
     }
     
-    public func add(budget: (AddBudgetViewData) -> Void) {
-        if canAddNewBudget { budget(viewData) }
+    public func add(budget: (AddBudgetViewData) -> Void, dismiss: (() -> Void)? = nil) {
+        if canAddNewBudget {
+            if id != nil { budget(viewData) }
+            else if let category = viewData.category {
+                try? Worker.shared.category.addBudget(
+                    id: viewData.id,
+                    amount: viewData.amount,
+                    date: viewData.date,
+                    message: viewData.message,
+                    category: category.id
+                )
+                let budgets = Worker.shared.category.getCategory(by: category.id)?.budgets ?? []
+                try? Worker.shared.category.addCategory(
+                    id: category.id,
+                    name: category.name,
+                    color: category.color,
+                    budgets: budgets + [viewData.id]
+                )
+                dismiss?()
+            }
+        }
     }
     
     @MainActor private func start(id: UUID?) async {
@@ -56,7 +75,7 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
                 color: Color(hex: categoryFiltered.color),
                 name: categoryFiltered.name
             )
-        } else {
+        } else if id == nil {
             let allCategories = Worker.shared.category.getAllCategories().filter({ category in
                 return !category.budgetsValue.contains(where: {
                     $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
@@ -65,10 +84,7 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
             categories = allCategories.map({ .init(id: $0.id, color: Color(hex: $0.color), name: $0.name) })
             category = categories?.first
         }
-        let bind: () -> Void = {
-            guard self.id == nil else { return }
-            Task { await self.reloadViewData() }
-        }
+        
         viewData = AddBudgetViewData(
             id: .init(),
             amount: 0,
@@ -76,12 +92,11 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
             message: "",
             category: category,
             categories: categories,
-            bind: bind
+            bind: {}
         )
     }
     
     @MainActor private func reloadViewData() async {
-        
         let allCategories = Worker.shared.category.getAllCategories().filter({ category in
             return !category.budgetsValue.contains(where: {
                 $0.date.asString(withDateFormat: .monthYear) == viewData.date.asString(withDateFormat: .monthYear)

@@ -85,6 +85,11 @@ public extension Strings {
         case currentValue
         case edit
         case remove
+        case alertCreateCategoryTitle
+        case alertCreateCategoryDescription
+        case alertButton
+        case alertCreateBudgetTitle
+        case alertCreateBudgetDescription
         
         private var key: String {
             switch self {
@@ -103,6 +108,11 @@ public extension Strings {
             case .currentValue: return "currentValue"
             case .edit: return "edit"
             case .remove: return "remove"
+            case .alertCreateCategoryTitle: return "category.alertCreateCategoryTitle"
+            case .alertCreateCategoryDescription: return "category.alertCreateCategoryDescription"
+            case .alertButton: return "category.alertButton"
+            case .alertCreateBudgetTitle: return "category.alertCreateBudgetTitle"
+            case .alertCreateBudgetDescription: return "category.alertCreateBudgetDescription"
             }
         }
         

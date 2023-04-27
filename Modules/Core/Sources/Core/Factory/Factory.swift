@@ -61,8 +61,8 @@ public final class Factory: FactoryProtocol {
         return SettingsScreen(presenter: presenter)
     }
     
-    public func makeProScreen() -> any View {
-        let presenter = ProPresenter()
+    @MainActor public func makeProScreen() -> any View {
+        let presenter = ProPresenter.shared
         return ProScreen(presenter: presenter)
     }
     

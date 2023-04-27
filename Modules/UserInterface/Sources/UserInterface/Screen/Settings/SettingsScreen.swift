@@ -9,6 +9,7 @@ import SwiftUI
 import Presentation
 
 public struct SettingsScreen<Presenter: SettingsPresenterProtocol>: View {
+    @EnvironmentObject private var appConfigurator: AppConfiguration
     @StateObject private var presenter: Presenter
     
     public init(presenter: Presenter) {
@@ -19,9 +20,11 @@ public struct SettingsScreen<Presenter: SettingsPresenterProtocol>: View {
         if Device.current == .macOS {
             SettingsmacOSView<Presenter>()
                 .environmentObject(presenter)
+                .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
         } else {
             SettingsiOSView<Presenter>()
                 .environmentObject(presenter)
+                .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
         }
     }
 }

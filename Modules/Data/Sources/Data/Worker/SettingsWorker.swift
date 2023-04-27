@@ -27,7 +27,7 @@ public final class SettingsWorker {
             settings.currentWarningNotificationAppears = [.init()]
             settings.currentBreakingNotificationAppears = [.init()]
             settings.liveActivity = .init()
-            settings.dateBuyPro = Date(timeIntervalSince1970: 0)
+            settings.isPro = false
             try? database.viewContext.save()
             return settings
         }
@@ -44,7 +44,7 @@ public final class SettingsWorker {
         currentWarningNotificationAppears: [UUID]? = nil,
         currentBreakingNotificationAppears: [UUID]? = nil,
         liveActivity: UUID? = nil,
-        dateBuyPro: Date? = nil
+        isPro: Bool? = nil
     ) throws {
         let settings = get()
         settings.date = Date.current
@@ -57,7 +57,7 @@ public final class SettingsWorker {
         settings.currentWarningNotificationAppears = currentWarningNotificationAppears ?? settings.currentWarningNotificationAppears
         settings.currentBreakingNotificationAppears = currentBreakingNotificationAppears ?? settings.currentBreakingNotificationAppears
         settings.liveActivity = liveActivity ?? settings.liveActivity
-        settings.dateBuyPro = dateBuyPro ?? settings.dateBuyPro
+        settings.isPro = isPro ?? settings.isPro
         try database.viewContext.save()
     }
 }

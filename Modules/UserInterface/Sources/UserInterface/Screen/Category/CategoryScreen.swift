@@ -10,6 +10,7 @@ import RefdsUI
 import Presentation
 
 public struct CategoryScreen<Presenter: CategoryPresenterProtocol>: View {
+    @EnvironmentObject private var appConfigurator: AppConfiguration
     @StateObject private var presenter: Presenter
     
     public init(presenter: Presenter) {
@@ -20,9 +21,11 @@ public struct CategoryScreen<Presenter: CategoryPresenterProtocol>: View {
         if Device.current == .macOS {
             CategorymacOSView<Presenter>()
                 .environmentObject(presenter)
+                .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
         } else {
             CategoryiOSView<Presenter>()
                 .environmentObject(presenter)
+                .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
         }
     }
 }

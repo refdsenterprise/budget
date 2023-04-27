@@ -15,7 +15,29 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
     var body: some View {
-        MacUIView(sections: [
+        MacUIView(sections: sections)
+            .overlay(alignment: .center) { loading }
+            .navigationTitle(presenter.string(.navigationTitle(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: .custom("MMMM")).capitalized : "")))
+            .onAppear { presenter.loadData() }
+    }
+    
+    private var loading: some View {
+        Group {
+            if presenter.showLoading {
+                ProgressView()
+            }
+        }
+    }
+    
+    private var sections: [MacUISection] {
+        presenter.showLoading ? [] : presenter.needShowModalPro ? [
+            .init(maxAmount: 2, content: {
+                Group {
+                    sectionValue
+                    sectionOptions
+                }
+            })
+        ] : [
             .init(maxAmount: 2, content: {
                 Group {
                     sectionValue
@@ -92,9 +114,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                     }
                 }
             })
-        ])
-        .navigationTitle(presenter.string(.navigationTitle(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: .custom("MMMM")).capitalized : "")))
-        .onAppear { presenter.loadData() }
+        ]
     }
     
     private var sectionValue: some View {
@@ -105,18 +125,28 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
     
     private var sectionOptions: some View {
         SectionGroup {
-            CollapsedView(title: presenter.string(.options)) {
-                Group {
+            Group {
+                if presenter.needShowModalPro {
                     HStack {
-                        Toggle(isOn: $presenter.isFilterPerDate) {
-                            RefdsText(presenter.string(.filterByDate))
-                        }
-                        .toggleStyle(CheckBoxStyle())
+                        RefdsText(presenter.string(.options))
+                        Spacer()
+                        ProTag()
                     }
-                    
-                    if presenter.isFilterPerDate {
-                        PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
-                            presenter.loadData()
+                } else {
+                    CollapsedView(title: presenter.string(.options)) {
+                        Group {
+                            HStack {
+                                Toggle(isOn: $presenter.isFilterPerDate) {
+                                    RefdsText(presenter.string(.filterByDate))
+                                }
+                                .toggleStyle(CheckBoxStyle())
+                            }
+                            
+                            if presenter.isFilterPerDate {
+                                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
+                                    presenter.loadData()
+                                }
+                            }
                         }
                     }
                 }
@@ -132,7 +162,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                 GroupBox {
                     rowDifference(category: category)
                 }
-                .listGroupBoxStyle()
+                .listGroupBoxStyle(isButton: true)
             })
             .padding(.all, 10)
         }

@@ -25,14 +25,16 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
                 sectionAppleInPurchaseDescription
             }
             .navigationTitle(presenter.string(.navigationTitle))
-            .navigationBarTitleDisplayMode(.inline)
             .budgetAlert($presenter.acceptedAlert)
             .toolbar { ToolbarItem(placement: .navigationBarTrailing) { dismissButton } }
             .overlay(alignment: .bottom) {
-                VStack(alignment: .center, spacing: 15) {
-                    buyProButton
-                        .opacity(presenter.isAcceptedTerms ? 1 : 0.2)
-                    termsButton
+                VStack {
+                    VStack(alignment: .center, spacing: 15) {
+                        buyProButton
+                        termsButton
+                    }
+                    .padding(.all, 25)
+                    .padding(.bottom)
                 }
                 .background(colorScheme == .dark ? Color(uiColor: .secondarySystemBackground) : .white)
                 .cornerRadius(20)
@@ -95,9 +97,13 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
     
     private var sectionAppleInPurchaseDescription: some View  {
         Section {} footer: {
-            RefdsText(presenter.string(.appleInPurchaseDescription), size: .extraSmall, color: .secondary, weight: .light)
-                .padding(.bottom, 200)
-                .padding(.top, -20)
+            VStack(alignment: .leading, spacing: 30) {
+                RefdsText(presenter.string(.appleInPurchaseDescription), size: .extraSmall, color: .secondary, weight: .light)
+                restorePurchaseButton
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 180)
+            .padding(.top, -20)
         }
     }
     
@@ -107,26 +113,37 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
         }
     }
     
-    private var buyProButton: some View {
+    private var restorePurchaseButton: some View {
         Button {
-            presenter.buyPro(onSuccess: nil, onError: { presenter.acceptedAlert = .init(error: $0) })
+            Task { try? await presenter.restore() }
         } label: {
             Group {
-                RefdsText(presenter.string(.beProButton(4.99.currency)), size: .large, color: .white, weight: .bold)
+                RefdsText("Restaurar Compra".uppercased(), size: .small, color: .accentColor, weight: .bold)
                     .frame(maxWidth: .infinity)
                     .padding()
             }
-            .background(Color.accentColor)
+            .background(Color(uiColor: colorScheme == .dark ? .secondarySystemBackground : .systemBackground))
             .cornerRadius(8)
         }
-        .padding([.top, .leading, .trailing], 30)
+    }
+    
+    private var buyProButton: some View {
+        Button {
+            Task { try? await presenter.buyPro() }
+        } label: {
+            Group {
+                RefdsText(presenter.string(.beProButton(4.99.currency)), size: .large, color: presenter.isAcceptedTerms ? .white : .secondary, weight: .bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+            }
+            .background(Color.accentColor.opacity(presenter.isAcceptedTerms ? 1 : 0.2))
+            .cornerRadius(8)
+        }
     }
     
     private var termsButton: some View {
         Button { } label: {
             RefdsText(presenter.string(.readTermsButton), size: .small, color: .accentColor, alignment: .center)
         }
-        .padding([.leading, .trailing, .bottom], 30)
-        .padding(.bottom, 10)
     }
 }

@@ -16,10 +16,15 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     var body: some View {
         List {
             sectionOptions
-            
-            if !presenter.viewData.budgets.isEmpty {
+            if presenter.categoryIsEmpty {
+                sectionNonCategories
+            } else if presenter.budgetIsEmpty {
+                sectionNonBudgets
+                if presenter.needShowModalPro { ProSection() }
+            } else if !presenter.viewData.budgets.isEmpty {
                 sectionCategories
                 sectionTotal
+                if presenter.needShowModalPro { ProSection() }
             }
         }
         .listStyle(.insetGrouped)
@@ -27,25 +32,83 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         .navigationTitle(presenter.string(.navigationTitle))
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
         .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
-        .onAppear { presenter.loadData()  }
+        .onAppear { presenter.loadData() }
+        .overlay(alignment: .center) { loading }
         .navigation(isPresented: $presenter.isPresentedAddCategory) {
             presenter.router.configure(routes: .addCategory(nil))
         }
         .navigation(isPresented: $presenter.isPresentedEditCategory) {
             presenter.router.configure(routes: .addCategory(presenter.category))
         }
+        .navigation(isPresented: $presenter.isPresentedAddBudget) {
+            presenter.router.configure(routes: .addBudget)
+        }
+    }
+    
+    private var loading: some View {
+        Group {
+            if presenter.showLoading {
+                ProgressView()
+            }
+        }
+    }
+    
+    private var sectionNonCategories: some View {
+        Section {
+            VStack(alignment: .center, spacing: 15) {
+                RefdsText(presenter.string(.alertCreateCategoryTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateCategoryDescription), color: .secondary, alignment: .center)
+                Button { presenter.isPresentedAddCategory.toggle() } label: {
+                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                }
+                .frame(maxWidth: .infinity)
+                .background(Color.accentColor)
+                .cornerRadius(8)
+            }
+            .padding()
+        }
+    }
+    
+    private var sectionNonBudgets: some View {
+        Section {
+            VStack(alignment: .center, spacing: 15) {
+                RefdsText(presenter.string(.alertCreateBudgetTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateBudgetDescription), color: .secondary, alignment: .center)
+                Button { presenter.isPresentedAddBudget.toggle() } label: {
+                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                }
+                .frame(maxWidth: .infinity)
+                .background(Color.accentColor)
+                .cornerRadius(8)
+            }
+            .padding()
+        }
     }
     
     private var sectionOptions: some View {
-        CollapsedView(title: presenter.string(.sectionOptions)) {
-            Group {
-                Toggle(isOn: $presenter.isFilterPerDate) {
-                    RefdsText(presenter.string(.sectionOptionsFilterPerDate))
+        Group {
+            if !presenter.isPro {
+                HStack {
+                    RefdsText(presenter.string(.sectionOptions))
+                    Spacer()
+                    ProTag()
                 }
-                .toggleStyle(CheckBoxStyle())
-                
-                if presenter.isFilterPerDate {
-                    PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy"))
+            } else {
+                CollapsedView(title: presenter.string(.sectionOptions)) {
+                    Group {
+                        Toggle(isOn: $presenter.isFilterPerDate) {
+                            RefdsText(presenter.string(.sectionOptionsFilterPerDate))
+                        }
+                        .toggleStyle(CheckBoxStyle())
+                        
+                        if presenter.isFilterPerDate {
+                            PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy"))
+                        }
+                    }
                 }
             }
         }
@@ -125,7 +188,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     Spacer()
                     RefdsText(presenter.string(.rowTransactionsAmount(category.amountTransactions)), color: .secondary)
                 }
-                
             }
         }
     }

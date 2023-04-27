@@ -24,5 +24,5 @@ public class SettingsEntity: NSManagedObject {
     @NSManaged public var currentWarningNotificationAppears: [UUID]
     @NSManaged public var currentBreakingNotificationAppears: [UUID]
     @NSManaged public var liveActivity: UUID
-    @NSManaged public var dateBuyPro: Date
+    @NSManaged public var isPro: Bool
 }

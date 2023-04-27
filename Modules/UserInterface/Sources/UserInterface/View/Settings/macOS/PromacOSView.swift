@@ -31,10 +31,12 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
                         }
                     }
                     VStack(alignment: .center, spacing: 15) {
+                        restorePurchaseButton
                         buyProButton
-                            .opacity(presenter.isAcceptedTerms ? 1 : 0.2)
                         termsButton
+                        Spacer()
                     }
+                    .padding()
                 }
             })
         ])
@@ -89,27 +91,33 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
         RefdsText(presenter.string(.appleInPurchaseDescription), size: .small, color: .secondary, weight: .light)
     }
     
+    private var restorePurchaseButton: some View {
+        Button {
+            Task { try? await presenter.restore() }
+        } label: {
+            RefdsText("Restaurar Compra".uppercased(), size: .small, color: .accentColor, weight: .bold)
+                .frame(maxWidth: .infinity)
+        }
+    }
+    
     private var buyProButton: some View {
         Button {
-            presenter.buyPro(onSuccess: nil, onError: { presenter.acceptedAlert = .init(error: $0) })
+            Task { try? await presenter.buyPro() }
         } label: {
             Group {
                 RefdsText(presenter.string(.beProButton(4.99.currency)), size: .large, color: .white, weight: .bold)
                     .frame(maxWidth: .infinity)
                     .padding()
             }
-            .background(Color.accentColor)
+            .background(Color.accentColor.opacity(presenter.isAcceptedTerms ? 1 : 0.2))
             .cornerRadius(8)
         }
-        .padding([.top, .leading, .trailing], 30)
     }
     
     private var termsButton: some View {
         Button { } label: {
             RefdsText(presenter.string(.readTermsButton), size: .small, color: .accentColor, alignment: .center)
         }
-        .padding([.leading, .trailing, .bottom], 30)
-        .padding(.bottom, 10)
     }
 }
 

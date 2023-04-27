@@ -15,48 +15,59 @@ struct SettingsiOSView<Presenter: SettingsPresenterProtocol>: View {
     var body: some View {
         List {
             sectionConfiguration
-            sectionPro
+            if presenter.needShowModalPro { ProSection() }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(presenter.string(.navigationTitle))
-        .sheet(isPresented: $presenter.isPresentedPro, content: { presenter.router.configure(routes: .pro) })
+        .onAppear { presenter.loadData() }
     }
     
     private var sectionConfiguration: some View {
         Section {
-            NavigationLink(destination: { presenter.router.configure(routes: .notification) }) {
-                HStack {
-                    RefdsIcon(symbol: .bellSquareFill, renderingMode: .multicolor)
-                    RefdsText(presenter.string(.manageNotification))
+            if presenter.needShowModalPro {
+                rowNotifications
+                rowCustomization
+            } else {
+                NavigationLink(destination: { presenter.router.configure(routes: .notification) }) {
+                    rowNotifications
                 }
+                
+                NavigationLink(destination: { presenter.router.configure(routes: .customization) }, label: {
+                    rowCustomization
+                })
             }
             
-            NavigationLink(destination: { presenter.router.configure(routes: .customization) }, label: {
-                HStack {
-                    RefdsIcon(symbol: .heartSquareFill, renderingMode: .multicolor)
-                    RefdsText(presenter.string(.manageCustomization))
-                }
-            })
-            
             NavigationLink(destination: { presenter.router.configure(routes: .about) }) {
-                HStack {
-                    RefdsIcon(symbol: .infoSquareFill, renderingMode: .multicolor)
-                    RefdsText(presenter.string(.aboutApplication))
-                }
+                rowAbout
             }
         } header: {
             RefdsText(presenter.string(.headerConfiguration), size: .extraSmall, color: .secondary)
         }
     }
     
-    private var sectionPro: some View {
-        Section {
-            Button { presenter.isPresentedPro.toggle() } label: {
-                HStack {
-                    RefdsIcon(symbol: .boltSquareFill, renderingMode: .multicolor)
-                    RefdsText(presenter.string(.optionPro))
-                }
-            }
+    private var rowNotifications: some View {
+        HStack {
+            RefdsIcon(symbol: .bellSquareFill, renderingMode: .multicolor)
+            RefdsText(presenter.string(.manageNotification))
+            Spacer()
+            if presenter.needShowModalPro { ProTag() }
+        }
+    }
+    
+    private var rowCustomization: some View {
+        HStack {
+            RefdsIcon(symbol: .heartSquareFill, renderingMode: .multicolor)
+            RefdsText(presenter.string(.manageCustomization))
+            Spacer()
+            if presenter.needShowModalPro { ProTag() }
+        }
+    }
+    
+    private var rowAbout: some View {
+        HStack {
+            RefdsIcon(symbol: .infoSquareFill, renderingMode: .multicolor)
+            RefdsText(presenter.string(.aboutApplication))
+            Spacer()
         }
     }
 }

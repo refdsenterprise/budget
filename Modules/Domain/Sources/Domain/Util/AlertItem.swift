@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import RefdsUI
 
 public struct AlertItem {
@@ -33,5 +34,13 @@ public struct AlertItem {
         self.message = error.alertMessage
         self.icon = error.alertIcon
         self.isPresented = true
+    }
+    
+    public var alert: Alert {
+        Alert(
+            title: Text("\(title)"),
+            message: Text("\(message ?? "")"),
+            dismissButton: .cancel(Text("Entendi"))
+        )
     }
 }

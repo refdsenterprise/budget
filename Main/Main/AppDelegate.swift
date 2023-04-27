@@ -14,7 +14,6 @@ import ActivityKit
 import Core
 import Presentation
 import Data
-import StoreKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -22,22 +21,21 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        SKPaymentQueue.default().add(self)
-        #if targetEnvironment(macCatalyst)
-        #else
+#if targetEnvironment(macCatalyst)
+#else
         if #available(iOS 16.1, *) {
             LiveActivityPresenter.shared.activeLiveActivity()
         }
-        #endif
+#endif
         
         for scene in application.connectedScenes {
             if let windowScene = (scene as? UIWindowScene) {
-                #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
                 if let titlebar = windowScene.titlebar {
                     titlebar.titleVisibility = .hidden
                     titlebar.toolbar = nil
                 }
-                #endif
+#endif
             }
         }
         
@@ -47,6 +45,22 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         )
         configuration.delegateClass = SceneDelegate.self
         return configuration
+    }
+    
+    func application(
+        _ application: UIApplication,
+        continue userActivity: NSUserActivity,
+        restorationHandler:
+        @escaping ([UIUserActivityRestoring]?) -> Void
+    ) -> Bool {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let url = userActivity.webpageURL,
+              let components = URLComponents(url: url,
+                                             resolvingAgainstBaseURL: true) else {
+            return false
+        }
+        print(components)
+        return true
     }
 }
 
@@ -58,23 +72,15 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate {
     ) {
         completionHandler(true)
     }
-}
-
-extension AppDelegate: SKPaymentTransactionObserver {
-    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-        for transaction in transactions {
-            switch transaction.transactionState {
-            case .failed:
-                queue.finishTransaction(transaction)
-                print("Transaction Failed \(transaction)")
-            case .purchased, .restored:
-                queue.finishTransaction(transaction)
-                print("Transaction purchased or restored: \(transaction)")
-            case .deferred, .purchasing:
-                print("Transaction in progress: \(transaction)")
-            default:
-                print("Transaction Error: \(transaction)")
-            }
+    
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let url = userActivity.webpageURL,
+              let components = URLComponents(url: url,
+                                             resolvingAgainstBaseURL: true) else {
+            return
         }
+        
+        print(components)
     }
 }

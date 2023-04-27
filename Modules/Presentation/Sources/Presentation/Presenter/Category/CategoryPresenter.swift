@@ -20,8 +20,14 @@ public protocol CategoryPresenterProtocol: ObservableObject {
     var isFilterPerDate: Bool { get set }
     var isPresentedAddCategory: Bool { get set }
     var isPresentedEditCategory: Bool { get set }
+    var isPresentedAddBudget: Bool { get set }
+    var showLoading: Bool { get set }
     var alert: AlertItem { get set }
     var category: UUID? { get set }
+    var isPro: Bool { get set }
+    var needShowModalPro: Bool { get set }
+    var categoryIsEmpty: Bool { get set }
+    var budgetIsEmpty: Bool { get set }
     
     func string(_ string: Strings.Category) -> String
     
@@ -38,8 +44,14 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     @Published public var isFilterPerDate: Bool = true { didSet { loadData() } }
     @Published public var isPresentedAddCategory: Bool = false
     @Published public var isPresentedEditCategory: Bool = false
+    @Published public var isPresentedAddBudget: Bool = false
+    @Published public var needShowModalPro: Bool = false
+    @Published public var isPro: Bool = false
     @Published public var alert: AlertItem = .init()
     @Published public var category: UUID?
+    @Published public var categoryIsEmpty: Bool = false
+    @Published public var budgetIsEmpty: Bool = false
+    @Published public var showLoading: Bool = true
     
     private var categories: [CategoryEntity] = []
     private var transactions: [TransactionEntity] = []
@@ -54,12 +66,23 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     }
     
     public func loadData() {
+        viewData = .init()
+        showLoading = true
         Task {
+            await updateShowModalPro()
             await updateCategories()
             await udpdateCategoriesFiltered()
+            await updateCheckEmpty()
             Task { await updateViewDataBudget() }
             Task { await updateViewDataValue() }
+            Task { await ProPresenter.shared.updatePurchasedProducts() }
+            DispatchQueue.main.async { self.showLoading = false }
         }
+    }
+    
+    @MainActor private func updateCheckEmpty() async {
+        categoryIsEmpty = Worker.shared.category.getAllCategories().isEmpty
+        budgetIsEmpty = isFilterPerDate ? Worker.shared.category.getCategories(from: date).isEmpty : categoryIsEmpty
     }
     
     @MainActor private func updateCategories() async {
@@ -86,7 +109,8 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
                 name: $0.name,
                 percent: percent,
                 amountTransactions: amountTransactions,
-                budget: budget
+                budget: budget,
+                date: date
             )
         }
     }
@@ -95,9 +119,14 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
         let totalBudget = categoriesFiltered.map({ getBudgetAmount(by: $0) ?? 0 }).reduce(0, +)
         let totalActual = categoriesFiltered.map({ getTransactionAmount(by: $0) }).reduce(0, +)
         viewData.value = CategoryViewData.Value(
-            totalActual: totalBudget,
-            totalBudget: totalActual
+            totalActual: totalActual,
+            totalBudget: totalBudget
         )
+    }
+    
+    @MainActor private func updateShowModalPro() async {
+        isPro = Worker.shared.settings.get().isPro
+        needShowModalPro = Worker.shared.category.getAllCategories().count > 4 && !Worker.shared.settings.get().isPro
     }
     
     private func getBudgetAmount(by category: CategoryEntity) -> Double? {
@@ -122,7 +151,9 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     
     @MainActor public func remove(_ category: CategoryViewData.Budget) async {
         guard !Worker.shared.transaction.get().contains(where: {
-            $0.category == category.id
+            let id = $0.category == category.id
+            let date = category.date.asString(withDateFormat: .monthYear) == $0.date.asString(withDateFormat: .monthYear)
+            return id && date
         }) else {
             alert = .init(error: .cantDeleteCategory)
             return
@@ -138,20 +169,22 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     
     @MainActor private func removeBudgetInsideCategory(id: UUID) async {
         guard let category = Worker.shared.category.getCategory(by: id) else { return }
-        guard let budget = category.budgetsValue.filter({
-            $0.date.asString(withDateFormat: .monthYear) != date.asString(withDateFormat: .monthYear)
-        }).first else {
+        guard category.budgets.count > 1 else {
             await removeAllCategory(id: id)
             return
         }
-        
+        guard let budget = category.budgetsValue.filter({
+            $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
+        }).first else { return }
+        let budgetID = budget.id
         try? Worker.shared.category.removeBudget(id: budget.id)
         try? Worker.shared.category.addCategory(
             id: category.id,
             name: category.name,
             color: Color(hex: category.color),
-            budgets: category.budgets.filter({ $0 != budget.id })
+            budgets: category.budgets.filter({ $0 != budgetID })
         )
+        loadData()
     }
     
     private func containsCategory(_ category: CategoryEntity) -> Bool {

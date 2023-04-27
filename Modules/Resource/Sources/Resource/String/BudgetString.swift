@@ -32,6 +32,9 @@ public extension Strings {
         case showTransactoins
         case concentrationValue
         case expansesConcentration
+        case labelBubbleName
+        case labelBubbleColor
+        case labelPlaceholderName
         
         private var key: String {
             switch self {
@@ -58,6 +61,9 @@ public extension Strings {
             case .showTransactoins: return "showTransactoins"
             case .concentrationValue: return "concentrationValue"
             case .expansesConcentration: return "expansesConcentration"
+            case .labelBubbleName: return "labelBubbleName"
+            case .labelBubbleColor: return "labelBubbleColor"
+            case .labelPlaceholderName: return "labelPlaceholderName";
             }
         }
         

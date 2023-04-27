@@ -16,33 +16,51 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     
     var body: some View {
         List {
-            sectionValue
-            sectionOptions
-            
-            if !presenter.viewData.remainingCategory.isEmpty {
-                sectionDifference
-                sectionValueDifference
+            if !presenter.showLoading {
+                sectionValue
+                sectionOptions
                 
-                if !presenter.viewData.chart.isEmpty {
-                    sectionTransactions
+                if presenter.needShowModalPro {
+                    ProSection()
+                } else {
+                    if !presenter.viewData.remainingCategory.isEmpty {
+                        sectionDifference
+                        sectionValueDifference
+                        
+                        if !presenter.viewData.chart.isEmpty {
+                            sectionTransactions
+                        }
+                    }
+                    
+                    if let maxTransaction = presenter.viewData.biggerBuy {
+                        sectionMaxTransaction(transaction: maxTransaction)
+                    }
+                    
+                    if !presenter.viewData.weekdays.isEmpty, !presenter.maxDay.isEmpty {
+                        sectionFirstMaxTrasactionsWeekday
+                    }
+                    
+                    if !presenter.viewData.weekdayTransactions.isEmpty {
+                        sectionMaxTrasactionsWeekday
+                    }
+                    
+                    if presenter.viewData.value.totalActual > 0 {
+                        sectionBubbleWords
+                    }
                 }
-            }
-            
-            if let maxTransaction = presenter.viewData.biggerBuy {
-                sectionMaxTransaction(transaction: maxTransaction)
-            }
-            
-            if !presenter.viewData.weekdays.isEmpty, !presenter.maxDay.isEmpty, !presenter.viewData.weekdayTransactions.isEmpty {
-                sectionFirstMaxTrasactionsWeekday
-                sectionMaxTrasactionsWeekday
-            }
-            
-            if !presenter.viewData.bubbleWords.isEmpty {
-                sectionBubbleWords
             }
         }
         .navigationTitle(presenter.string(.navigationTitle(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: .custom("MMMM")).capitalized : "")))
         .onAppear { presenter.loadData() }
+        .overlay(alignment: .center) { loading }
+    }
+    
+    private var loading: some View {
+        Group {
+            if presenter.showLoading {
+                ProgressView()
+            }
+        }
     }
     
     private var sectionValue: some View {
@@ -54,18 +72,28 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     }
     
     private var sectionOptions: some View {
-        CollapsedView(title: presenter.string(.options)) {
-            Group {
+        Group {
+            if presenter.needShowModalPro {
                 HStack {
-                    Toggle(isOn: $presenter.isFilterPerDate) {
-                        RefdsText(presenter.string(.filterByDate))
-                    }
-                    .toggleStyle(CheckBoxStyle())
+                    RefdsText(presenter.string(.options))
+                    Spacer()
+                    ProTag()
                 }
-                
-                if presenter.isFilterPerDate {
-                    PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
-                        presenter.loadData()
+            } else {
+                CollapsedView(title: presenter.string(.options)) {
+                    Group {
+                        HStack {
+                            Toggle(isOn: $presenter.isFilterPerDate) {
+                                RefdsText(presenter.string(.filterByDate))
+                            }
+                            .toggleStyle(CheckBoxStyle())
+                        }
+                        
+                        if presenter.isFilterPerDate {
+                            PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy")) { _ in
+                                presenter.loadData()
+                            }
+                        }
                     }
                 }
             }
@@ -194,18 +222,25 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     private var sectionBubbleWords: some View {
         Section {
             CollapsedView(title: presenter.string(.concentrationValue)) {
-                ForEach(presenter.viewData.bubbleWords.indices, id: \.self) { index in
-                    rowBubble(index: index)
+                Group {
+                    ForEach(presenter.viewData.bubbleWords.indices, id: \.self) { index in
+                        rowBubble(index: index)
+                            .contextMenu(menuItems: { contextMenuRemoveBubble(presenter.viewData.bubbleWords[index]) })
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true, content: { swipeRemoveBubble(presenter.viewData.bubbleWords[index]) })
+                    }
+                    sectionAddBubble
                 }
             }
         } header: {
             RefdsText(presenter.string(.expansesConcentration), size: .extraSmall, color: .secondary)
         } footer: {
-            BubbleView(viewData: $presenter.viewData.bubbleWords)
-                .frame(height: 300)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 20)
-                .padding(.bottom, -20)
+            if !presenter.viewData.bubbleWords.isEmpty {
+                BubbleView(viewData: $presenter.viewData.bubbleWords)
+                    .frame(height: 300)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 20)
+                    .padding(.bottom, -20)
+            }
         }
     }
     
@@ -218,6 +253,69 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 Spacer()
                 RefdsText(item.realValue.currency, color: .secondary, family: .moderatMono)
             }
+        }
+    }
+    
+    private var sectionAddBubble: some View {
+        Section {
+            CollapsedView(title: "Adicionar Bolha", description: "\(presenter.viewData.bubbleWords.count)") {
+                Group {
+                    rowBubbleName
+                    rowBubbleColor
+                    Button {
+                        Application.shared.endEditing()
+                        Task { await presenter.addBubble() }
+                    } label: {
+                        RefdsText("Salvar Bolha".uppercased(), size: .extraSmall, color: .accentColor, weight: .bold, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+        }
+    }
+    
+    private var rowBubbleName: some View {
+        HStack {
+            RefdsText(presenter.string(.labelBubbleName))
+            RefdsTextField(
+                presenter.string(.labelPlaceholderName),
+                text: $presenter.bubbleName,
+                alignment: .trailing,
+                textInputAutocapitalization: .characters
+            )
+        }
+    }
+    
+    private var rowBubbleColor: some View {
+        HStack {
+            RefdsText(presenter.string(.labelBubbleColor))
+            Spacer()
+            ColorPicker(
+                selection: $presenter.bubbleColor,
+                supportsOpacity: false
+            ) {}
+        }
+    }
+    
+    private func swipeRemoveBubble(_ bubble: BudgetViewData.Bubble) -> some View {
+        Button {
+            Task { await presenter.removeBubble(id: bubble.id) }
+        } label: {
+            RefdsIcon(
+                symbol: .trashFill,
+                color: .white,
+                size: 25,
+                renderingMode: .hierarchical
+            )
+        }
+        .tint(.red)
+    }
+    
+    private func contextMenuRemoveBubble(_ bubble: BudgetViewData.Bubble) -> some View {
+        Button {
+            Task { await presenter.removeBubble(id: bubble.id) }
+        } label: {
+            Label("Remover", systemImage: RefdsIconSymbol.trashFill.rawValue)
         }
     }
     
@@ -331,39 +429,41 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     @available(iOS 16.0, *)
     private var sectionChartLine: some View {
         Chart {
-            ForEach(presenter.viewData.chart[1].data, id: \.category) {
-                LineMark(
-                    x: .value(presenter.string(.category), String($0.category.prefix(3))),
-                    y: .value(presenter.string(.value), $0.value)
-                )
-                .interpolationMethod(.catmullRom)
-                .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
-                .symbolSize(30)
-                .foregroundStyle(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
-                .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+            if presenter.viewData.chart.indices.contains(0) && presenter.viewData.chart.indices.contains(1) {
+                ForEach(presenter.viewData.chart[1].data, id: \.category) {
+                    LineMark(
+                        x: .value(presenter.string(.category), String($0.category.prefix(3))),
+                        y: .value(presenter.string(.value), $0.value)
+                    )
+                    .interpolationMethod(.catmullRom)
+                    .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                    .symbolSize(30)
+                    .foregroundStyle(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                    .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                    
+                    AreaMark(
+                        x: .value(presenter.string(.category), String($0.category.prefix(3))),
+                        y: .value(presenter.string(.value), $0.value)
+                    )
+                    .interpolationMethod(.catmullRom)
+                    .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                    .symbolSize(30)
+                    .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
+                    .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                }
                 
-                AreaMark(
-                    x: .value(presenter.string(.category), String($0.category.prefix(3))),
-                    y: .value(presenter.string(.value), $0.value)
-                )
-                .interpolationMethod(.catmullRom)
-                .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
-                .symbolSize(30)
-                .foregroundStyle(Gradient(colors: [.accentColor.opacity(0.5), .accentColor.opacity(0.25)]))
-                .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
-            }
-            
-            ForEach(presenter.viewData.chart[0].data, id: \.category) {
-                LineMark(
-                    x: .value(presenter.string(.category), String($0.category.prefix(3))),
-                    y: .value(presenter.string(.value), $0.value)
-                )
-                .interpolationMethod(.catmullRom)
-                .lineStyle(StrokeStyle(dash: [5, 10]))
-                .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[0].label))
-                .symbolSize(30)
-                .foregroundStyle(by: .value(presenter.string(.category), presenter.viewData.chart[0].label))
-                .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                ForEach(presenter.viewData.chart[0].data, id: \.category) {
+                    LineMark(
+                        x: .value(presenter.string(.category), String($0.category.prefix(3))),
+                        y: .value(presenter.string(.value), $0.value)
+                    )
+                    .interpolationMethod(.catmullRom)
+                    .lineStyle(StrokeStyle(dash: [5, 10]))
+                    .symbol(by: .value(presenter.string(.category), presenter.viewData.chart[0].label))
+                    .symbolSize(30)
+                    .foregroundStyle(by: .value(presenter.string(.category), presenter.viewData.chart[0].label))
+                    .position(by: .value(presenter.string(.category), presenter.viewData.chart[1].label))
+                }
             }
         }
         .chartForegroundStyleScale([

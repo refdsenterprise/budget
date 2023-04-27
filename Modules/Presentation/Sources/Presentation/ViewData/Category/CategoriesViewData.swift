@@ -19,6 +19,7 @@ public struct CategoryViewData {
         public var percent: String
         public var amountTransactions: Int
         public var budget: Double
+        public var date: Date
     }
     
     public struct Value: DomainModel {

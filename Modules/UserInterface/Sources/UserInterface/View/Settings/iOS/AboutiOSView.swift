@@ -45,7 +45,7 @@ struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
     private var sectionLinks: some View {
         Section {
             Button {
-                presenter.urlShareItem = .init(isPresented: true, url: presenter.link(.website))
+                UIApplication.shared.open(presenter.link(.website))
             } label: {
                 HStack {
                     RefdsIcon(symbol: .globe, size: 20)
@@ -55,7 +55,7 @@ struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
             }
             
             Button {
-                presenter.urlShareItem = .init(isPresented: true, url: presenter.link(.github))
+                UIApplication.shared.open(presenter.link(.github))
             } label: {
                 HStack {
                     RefdsIcon(symbol: .link, size: 20)

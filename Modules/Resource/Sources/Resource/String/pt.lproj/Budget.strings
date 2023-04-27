@@ -21,3 +21,6 @@
 "showTransactoins" = "Exibir transações";
 "concentrationValue" = "Valores das concentrações";
 "expansesConcentration" = "concentração das dispesas";
+"labelBubbleName" = "Nome";
+"labelBubbleColor" = "Cor";
+"labelPlaceholderName" = "Informe o nome";

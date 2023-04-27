@@ -33,6 +33,7 @@
 		6CC3B63429BFD2CE0051C036 /* UserInterface in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC3B63329BFD2CE0051C036 /* UserInterface */; };
 		6CC3B63629C0404F0051C036 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 6CC3B63529C0404F0051C036 /* Domain */; };
 		6CD1FF9D29F0215900738440 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CD1FF9C29F0215900738440 /* StoreKit.framework */; };
+		6CD1FF9F29F1765F00738440 /* BudgetPro.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6CD1FF9E29F1765F00738440 /* BudgetPro.storekit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		6CC3B61029BFAFCC0051C036 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		6CC3B61B29BFAFCD0051C036 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
 		6CD1FF9C29F0215900738440 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		6CD1FF9E29F1765F00738440 /* BudgetPro.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = BudgetPro.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +159,7 @@
 				6C5E096D29AA8B210012C0FF /* AppDelegate.swift */,
 				6C5E096329AA8AE00012C0FF /* Main.entitlements */,
 				6C5E096429AA8AE00012C0FF /* Preview Content */,
+				6CD1FF9E29F1765F00738440 /* BudgetPro.storekit */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 				6C5E096629AA8AE00012C0FF /* Preview Assets.xcassets in Resources */,
 				6C5C05CA29EA5F8300C1522A /* categories.json in Resources */,
 				6C5C05CC29EA5F8D00C1522A /* transactions.json in Resources */,
+				6CD1FF9F29F1765F00738440 /* BudgetPro.storekit in Resources */,
 				6C5E096229AA8AE00012C0FF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

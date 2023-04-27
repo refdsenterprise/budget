@@ -39,7 +39,7 @@ public struct BudgetViewData {
         public var color: Color {
             let percentStringFormatted = percentString.replacingOccurrences(of: "%", with: "").replacingOccurrences(of: ",", with: ".")
             let percent = Double(percentStringFormatted) ?? 0
-            return percent >= 100 ? .red : percent >= 70 ? .yellow : .green
+            return percent <= 0 ? .red : percent <= 30 ? .yellow : .green
         }
     }
     
@@ -60,7 +60,7 @@ public struct BudgetViewData {
     }
     
     public struct Bubble: Equatable {
-        public var id: String = UUID().uuidString
+        public var id: UUID
         public var title: String
         public var value: CGFloat
         public var color: Color

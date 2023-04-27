@@ -14,7 +14,44 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
     var body: some View {
-        MacUIView(sections: [
+        MacUIView(sections: sections)
+            .budgetAlert($presenter.alert)
+            .navigationTitle(presenter.string(.navigationTitle))
+            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
+            .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
+            .onAppear { presenter.loadData() }
+            .overlay(alignment: .center) { loading }
+            .navigation(isPresented: $presenter.isPresentedAddCategory) {
+                presenter.router.configure(routes: .addCategory(nil))
+            }
+            .navigation(isPresented: $presenter.isPresentedEditCategory) {
+                presenter.router.configure(routes: .addCategory(presenter.category))
+            }
+            .navigation(isPresented: $presenter.isPresentedAddBudget) {
+                presenter.router.configure(routes: .addBudget)
+            }
+    }
+    
+    private var loading: some View {
+        Group {
+            if presenter.showLoading {
+                ProgressView()
+            }
+        }
+    }
+    
+    private var sections: [MacUISection] {
+        presenter.showLoading ? [] : presenter.needShowModalPro ? [
+            .init(maxAmount: 2, content: {
+                Group {
+                    sectionTotal
+                    sectionOptions
+                }
+            }),
+            .init(content: {
+                Group { ProSection() }
+            })
+        ] : [
             .init(maxAmount: 2, content: {
                 Group {
                     sectionTotal
@@ -22,20 +59,17 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 }
             }),
             .init(maxAmount: nil, content: {
-                sectionCategories
+                Group {
+                    if presenter.categoryIsEmpty {
+                        sectionNonCategories
+                    } else if presenter.budgetIsEmpty {
+                        sectionNonBudgets
+                    } else {
+                        sectionCategories
+                    }
+                }
             })
-        ])
-        .budgetAlert($presenter.alert)
-        .navigationTitle(presenter.string(.navigationTitle))
-        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
-        .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
-        .onAppear { presenter.loadData()  }
-        .navigation(isPresented: $presenter.isPresentedAddCategory) {
-            presenter.router.configure(routes: .addCategory(nil))
-        }
-        .navigation(isPresented: $presenter.isPresentedEditCategory) {
-            presenter.router.configure(routes: .addCategory(presenter.category))
-        }
+        ]
     }
     
     private var sectionTotal: some View {
@@ -69,17 +103,25 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     private var sectionOptions: some View {
         SectionGroup {
             Group {
-                CollapsedView(title: presenter.string(.sectionOptions)) {
-                    Group {
-                        HStack {
-                            Toggle(isOn: $presenter.isFilterPerDate) {
-                                RefdsText(presenter.string(.sectionOptionsFilterPerDate))
+                if !presenter.isPro {
+                    HStack {
+                        RefdsText(presenter.string(.sectionOptions))
+                        Spacer()
+                        ProTag()
+                    }
+                } else {
+                    CollapsedView(title: presenter.string(.sectionOptions)) {
+                        Group {
+                            HStack {
+                                Toggle(isOn: $presenter.isFilterPerDate) {
+                                    RefdsText(presenter.string(.sectionOptionsFilterPerDate))
+                                }
+                                .toggleStyle(CheckBoxStyle())
                             }
-                            .toggleStyle(CheckBoxStyle())
-                        }
-                        
-                        if presenter.isFilterPerDate {
-                            PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy"))
+                            
+                            if presenter.isFilterPerDate {
+                                PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy"))
+                            }
                         }
                     }
                 }
@@ -96,7 +138,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                     rowCategory(category)
                 }
                 .padding(.all, 10)
-                .listGroupBoxStyle()
+                .listGroupBoxStyle(isButton: true)
             })
             .contextMenu {
                 contextMenuEditCategory(category)
@@ -106,6 +148,42 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 swipeEditCategory(category)
                 swipeRemoveCategory(category)
             }
+        }
+    }
+    
+    private var sectionNonCategories: some View {
+        SectionGroup {
+            VStack(alignment: .center, spacing: 15) {
+                RefdsText(presenter.string(.alertCreateCategoryTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateCategoryDescription), color: .secondary, alignment: .center)
+                Button { presenter.isPresentedAddCategory.toggle() } label: {
+                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                }
+                .frame(maxWidth: .infinity)
+                .background(Color.accentColor)
+                .cornerRadius(8)
+            }
+            .padding()
+        }
+    }
+    
+    private var sectionNonBudgets: some View {
+        SectionGroup {
+            VStack(alignment: .center, spacing: 15) {
+                RefdsText(presenter.string(.alertCreateBudgetTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateBudgetDescription), color: .secondary, alignment: .center)
+                Button { presenter.isPresentedAddBudget.toggle() } label: {
+                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                }
+                .frame(maxWidth: .infinity)
+                .background(Color.accentColor)
+                .cornerRadius(8)
+            }
+            .padding()
         }
     }
     
