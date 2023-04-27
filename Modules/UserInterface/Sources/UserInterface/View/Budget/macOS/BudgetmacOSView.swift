@@ -245,6 +245,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                         rowBubble(index: index)
                     }.listGroupBoxStyle()
                 }
+                sectionAddBubble
             }
         }
     }
@@ -347,6 +348,69 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
             GroupBox {
                 RefdsText("\(presenter.viewData.amountTransactions)", weight: .bold, family: .moderatMono)
             }
+        }
+    }
+    
+    private var sectionAddBubble: some View {
+        SectionGroup {
+            CollapsedView(title: "Adicionar Bolha", description: "\(presenter.viewData.bubbleWords.count)") {
+                Group {
+                    rowBubbleName
+                    rowBubbleColor
+                    Button {
+                        Application.shared.endEditing()
+                        Task { await presenter.addBubble() }
+                    } label: {
+                        RefdsText("Salvar Bolha".uppercased(), size: .extraSmall, color: .accentColor, weight: .bold, alignment: .center)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+        }
+    }
+    
+    private var rowBubbleName: some View {
+        HStack {
+            RefdsText(presenter.string(.labelBubbleName))
+            RefdsTextField(
+                presenter.string(.labelPlaceholderName),
+                text: $presenter.bubbleName,
+                alignment: .trailing,
+                textInputAutocapitalization: .characters
+            )
+        }
+    }
+    
+    private var rowBubbleColor: some View {
+        HStack {
+            RefdsText(presenter.string(.labelBubbleColor))
+            Spacer()
+            ColorPicker(
+                selection: $presenter.bubbleColor,
+                supportsOpacity: false
+            ) {}
+        }
+    }
+    
+    private func swipeRemoveBubble(_ bubble: BudgetViewData.Bubble) -> some View {
+        Button {
+            Task { await presenter.removeBubble(id: bubble.id) }
+        } label: {
+            RefdsIcon(
+                symbol: .trashFill,
+                color: .white,
+                size: 25,
+                renderingMode: .hierarchical
+            )
+        }
+        .tint(.red)
+    }
+    
+    private func contextMenuRemoveBubble(_ bubble: BudgetViewData.Bubble) -> some View {
+        Button {
+            Task { await presenter.removeBubble(id: bubble.id) }
+        } label: {
+            Label("Remover", systemImage: RefdsIconSymbol.trashFill.rawValue)
         }
     }
     
