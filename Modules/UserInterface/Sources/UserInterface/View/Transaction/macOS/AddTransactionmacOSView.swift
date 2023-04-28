@@ -33,7 +33,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     
     private var sectionInformation: some View {
         VStack {
-            RefdsCurrency(value: $presenter.amount, size: .custom(40))
+            RefdsCurrencyTextField(value: $presenter.amount, size: .custom(40), color: .primary, alignment: .center)
                 .padding()
             rowInformation
             Spacer()

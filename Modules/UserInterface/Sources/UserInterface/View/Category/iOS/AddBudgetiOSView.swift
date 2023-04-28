@@ -71,10 +71,7 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
     }
     
     private var rowCurrency: some View {
-        RefdsCurrency(
-            value: $presenter.viewData.amount,
-            size: .custom(40)
-        )
+        RefdsCurrencyTextField(value: $presenter.viewData.amount, size: .custom(40), color: .primary, alignment: .center)
         .padding()
     }
     

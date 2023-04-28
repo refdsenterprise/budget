@@ -30,7 +30,7 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
             rowDescription
             rowCategory
         } header: {
-            RefdsCurrency(value: $presenter.amount, size: .custom(40))
+            RefdsCurrencyTextField(value: $presenter.amount, size: .custom(40), color: .primary, alignment: .center)
                 .padding()
         }
     }
