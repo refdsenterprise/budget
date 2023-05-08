@@ -36,6 +36,9 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                     sectionValue
                     sectionOptions
                 }
+            }),
+            .init(content: {
+                ProSection()
             })
         ] : [
             .init(maxAmount: 2, content: {

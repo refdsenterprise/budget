@@ -41,31 +41,35 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     }
     
     private var sections: [MacUISection] {
-        presenter.showLoading ? [] : presenter.needShowModalPro ? [
+        presenter.showLoading ? [] : [
             .init(maxAmount: 2, content: {
                 Group {
                     sectionTotal
-                    sectionOptions
+                    VStack {
+                        sectionOptions
+                        if !presenter.categoryIsEmpty, !presenter.budgetIsEmpty {
+                            sectionAddBudget
+                        }
+                    }
                 }
             }),
             .init(content: {
-                Group { ProSection() }
-            })
-        ] : [
-            .init(maxAmount: 2, content: {
                 Group {
-                    sectionTotal
-                    sectionOptions
+                    if !presenter.categoryIsEmpty, !presenter.budgetIsEmpty {
+                        sectionCategories
+                    }
                 }
             }),
             .init(maxAmount: nil, content: {
                 Group {
+                    if presenter.needShowModalPro {
+                        ProSection()
+                    }
+                    
                     if presenter.categoryIsEmpty {
                         sectionNonCategories
                     } else if presenter.budgetIsEmpty {
                         sectionNonBudgets
-                    } else {
-                        sectionCategories
                     }
                 }
             })
@@ -126,6 +130,18 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                     }
                 }
             }
+        }
+    }
+    
+    private var sectionAddBudget: some View {
+        Button { presenter.isPresentedAddBudget.toggle() } label: {
+            GroupBox {
+                HStack {
+                    RefdsText("Adicionar Budget")
+                    Spacer()
+                }
+            }
+            .listGroupBoxStyle(isButton: true)
         }
     }
     

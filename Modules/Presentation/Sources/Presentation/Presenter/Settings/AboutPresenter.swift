@@ -13,12 +13,14 @@ public enum AboutLinks {
     case website
     case github
     case appleStore
+    case policy
     
     public var url: URL {
         switch self {
         case .website: return URL(string: "https://budget.rafaelescaleira.com.br")!
         case .github: return URL(string: "https://github.com/refdsenterprise/budget")!
         case .appleStore: return URL(string: "https://apps.apple.com/us/app/budget/id6448043784")!
+        case .policy: return URL(string: "https://budget.rafaelescaleira.com.br/privacy-policy")!
         }
     }
 }

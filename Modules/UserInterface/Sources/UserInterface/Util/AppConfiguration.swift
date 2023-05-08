@@ -27,7 +27,7 @@ public final class AppConfiguration: ObservableObject {
     private var timer = Timer()
     
     public init() {
-        NotificationCenter.shared.makeReminderSetTransactions()
+        NotificationCenter.shared.updateNotificationSettings()
     }
     
     @Published public var themeColor: Color = Color(hex: Worker.shared.settings.get().theme)

@@ -9,7 +9,7 @@
   "settings" : {
     "_applicationInternalID" : "6448043784",
     "_developerTeamID" : "Q7QLR2PH2X",
-    "_lastSynchronizedDate" : 703696178.84337294
+    "_lastSynchronizedDate" : 704388147.35953999
   },
   "subscriptionGroups" : [
     {
@@ -34,12 +34,12 @@
           "localizations" : [
             {
               "description" : "Acesse todas as funcionalidades agora mesmo!",
-              "displayName" : "Budget Pro",
+              "displayName" : "Assinatura Mensal do Budget",
               "locale" : "pt_BR"
             },
             {
               "description" : "Access all features right now!",
-              "displayName" : "Budget Pro",
+              "displayName" : "Monthly Budget Subscription",
               "locale" : "en_US"
             }
           ],

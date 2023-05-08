@@ -22,7 +22,7 @@ public struct BudgetRouter {
     @ViewBuilder
     public func configure(routes: BudgetRoutes) -> some View {
         switch routes {
-        case .transactions(let category, let date): AnyView(factory.makeTransactionScreen(category: category, date: date))
+        case .transactions(let category, let date): AnyView(factory.makeTransactionScreen(category: category, date: date, isPresentedAddTransaction: false))
         }
     }
 }

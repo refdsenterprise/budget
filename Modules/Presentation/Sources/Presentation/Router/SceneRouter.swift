@@ -19,6 +19,7 @@ public enum SceneRoutes {
 }
 
 public struct SceneRouter {
+    @State private var isPresented: Bool = false
     private let factory: FactoryProtocol
     
     public init(factory: FactoryProtocol) {
@@ -28,13 +29,13 @@ public struct SceneRouter {
     @ViewBuilder
     public func configure(routes: SceneRoutes) -> some View {
         switch routes {
-        case .category: AnyView(factory.makeCategoryScreen())
+        case .category: AnyView(factory.makeCategoryScreen(isPresentedAddCategory: false, isPresentedAddBudget: false))
         case .budget: AnyView(factory.makeBudgetScreen())
-        case .transactions: AnyView(factory.makeTransactionScreen(category: nil, date: nil))
-        case .addTransaction: AnyView(factory.makeAddTransactionScreen(transaction: nil))
-        case .addCategory: AnyView(factory.makeAddCategoryScreen(category: nil))
+        case .transactions: AnyView(factory.makeTransactionScreen(category: nil, date: nil, isPresentedAddTransaction: false))
+        case .addTransaction: AnyView(factory.makeTransactionScreen(category: nil, date: nil, isPresentedAddTransaction: true))
+        case .addCategory: AnyView(factory.makeCategoryScreen(isPresentedAddCategory: true, isPresentedAddBudget: false))
         case .settings: AnyView(factory.makeSettingsScreen())
-        case .addBudget: AnyView(factory.makeAddBudgetScreen(newBudget: nil, id: nil))
+        case .addBudget: AnyView(factory.makeCategoryScreen(isPresentedAddCategory: false, isPresentedAddBudget: true))
         }
     }
 }

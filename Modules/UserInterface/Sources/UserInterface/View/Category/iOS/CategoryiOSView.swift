@@ -25,12 +25,14 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 sectionCategories
                 sectionTotal
                 if presenter.needShowModalPro { ProSection() }
+                sectionAddBudget
             }
+            
         }
         .listStyle(.insetGrouped)
+        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
-        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
         .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
         .onAppear { presenter.loadData() }
         .overlay(alignment: .center) { loading }
@@ -110,6 +112,14 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    private var sectionAddBudget: some View {
+        Section {
+            NavigationLink(destination: { presenter.router.configure(routes: .addBudget) }) {
+                RefdsText("Adicionar Budget")
             }
         }
     }

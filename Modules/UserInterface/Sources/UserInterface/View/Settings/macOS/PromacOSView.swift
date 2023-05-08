@@ -54,6 +54,7 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
                 }
                 Spacer()
             }
+            .frame(minHeight: 80)
         }.listGroupBoxStyle()
     }
     
@@ -115,7 +116,7 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
     }
     
     private var termsButton: some View {
-        Button { } label: {
+        Button { UIApplication.shared.open(AboutLinks.policy.url) } label: {
             RefdsText(presenter.string(.readTermsButton), size: .small, color: .accentColor, alignment: .center)
         }
     }

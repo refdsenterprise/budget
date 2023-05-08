@@ -39,14 +39,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
     }
     
     private var sections: [MacUISection] {
-        presenter.showLoading ? [] : !presenter.isPro ? [
-            .init(maxAmount: 2, content: {
-                Group {
-                    sectionTotal
-                    sectionOptions
-                }
-            }),
-        ] : [
+        presenter.showLoading ? [] : [
             .init(maxAmount: 2, content: {
                 Group {
                     sectionTotal

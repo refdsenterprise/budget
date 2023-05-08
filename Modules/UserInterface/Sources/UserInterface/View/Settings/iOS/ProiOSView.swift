@@ -142,7 +142,7 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
     }
     
     private var termsButton: some View {
-        Button { } label: {
+        Button { UIApplication.shared.open(AboutLinks.policy.url) } label: {
             RefdsText(presenter.string(.readTermsButton), size: .small, color: .accentColor, alignment: .center)
         }
     }

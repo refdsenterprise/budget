@@ -73,7 +73,7 @@
 /* Begin PBXFileReference section */
 		6C5C05C929EA5F8300C1522A /* categories.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = categories.json; sourceTree = "<group>"; };
 		6C5C05CB29EA5F8D00C1522A /* transactions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = transactions.json; sourceTree = "<group>"; };
-		6C5E095A29AA8ADF0012C0FF /* Main.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Main.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C5E095A29AA8ADF0012C0FF /* Budget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Budget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C5E095D29AA8ADF0012C0FF /* MainApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainApp.swift; sourceTree = "<group>"; };
 		6C5E096129AA8AE00012C0FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6C5E096329AA8AE00012C0FF /* Main.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Main.entitlements; sourceTree = "<group>"; };
@@ -141,7 +141,7 @@
 		6C5E095B29AA8ADF0012C0FF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6C5E095A29AA8ADF0012C0FF /* Main.app */,
+				6C5E095A29AA8ADF0012C0FF /* Budget.app */,
 				6CC3B5E229BF975F0051C036 /* BudgetWidgetExtension.appex */,
 			);
 			name = Products;
@@ -200,9 +200,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6C5E095929AA8ADF0012C0FF /* Main */ = {
+		6C5E095929AA8ADF0012C0FF /* Budget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6C5E096929AA8AE00012C0FF /* Build configuration list for PBXNativeTarget "Main" */;
+			buildConfigurationList = 6C5E096929AA8AE00012C0FF /* Build configuration list for PBXNativeTarget "Budget" */;
 			buildPhases = (
 				6C5E095629AA8ADF0012C0FF /* Sources */,
 				6C5E095729AA8ADF0012C0FF /* Frameworks */,
@@ -215,7 +215,7 @@
 			dependencies = (
 				6CC3B5F329BF97630051C036 /* PBXTargetDependency */,
 			);
-			name = Main;
+			name = Budget;
 			packageProductDependencies = (
 				6C7868B429AAF41E000C27FF /* RefdsUI */,
 				6C7868C829AAF733000C27FF /* Core */,
@@ -224,7 +224,7 @@
 				6CC3B5FE29BF9ED50051C036 /* RefdsCore */,
 			);
 			productName = Main;
-			productReference = 6C5E095A29AA8ADF0012C0FF /* Main.app */;
+			productReference = 6C5E095A29AA8ADF0012C0FF /* Budget.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6CC3B5E129BF975F0051C036 /* BudgetWidgetExtension */ = {
@@ -285,7 +285,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6C5E095929AA8ADF0012C0FF /* Main */,
+				6C5E095929AA8ADF0012C0FF /* Budget */,
 				6CC3B5E129BF975F0051C036 /* BudgetWidgetExtension */,
 			);
 		};
@@ -495,7 +495,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.rafaelescaleira.Budget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -542,7 +542,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.1;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.rafaelescaleira.Budget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -636,7 +636,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6C5E096929AA8AE00012C0FF /* Build configuration list for PBXNativeTarget "Main" */ = {
+		6C5E096929AA8AE00012C0FF /* Build configuration list for PBXNativeTarget "Budget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6C5E096A29AA8AE00012C0FF /* Debug */,
