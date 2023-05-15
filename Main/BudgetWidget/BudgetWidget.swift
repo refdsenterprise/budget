@@ -131,7 +131,6 @@ struct BudgetWidgetEntryView : View {
                         .font(.system(size: 10, weight: .bold))
                         .foregroundColor(.white)
                 }
-                .frame(maxWidth: .infinity)
                 .padding(.all, 8)
                 .background(Color.green)
                 .cornerRadius(6)
@@ -392,7 +391,7 @@ struct BudgetWidgetEntryView : View {
                                         .lineLimit(1)
                                 }
                                 
-                                ProgressView(value: category.percent, total: 100)
+                                ProgressView(value: category.percent > 100 ? 100 : category.percent, total: 100)
                                     .scaleEffect(1.5)
                                     .padding(.horizontal, 28)
                                     .tint(category.percentColor)
@@ -549,8 +548,8 @@ struct BudgetWidget_Previews: PreviewProvider {
             totalActual: 3510.05,
             chartData: [],
             categories: [],
-            isEmpty: true,
-            isActive: false
+            isEmpty: false,
+            isActive: true
         ))
         
         entryView

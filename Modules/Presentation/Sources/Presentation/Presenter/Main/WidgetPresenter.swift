@@ -152,13 +152,11 @@ public final class WidgetPresenter {
     }
     
     public var isEmpty: Bool {
-        categoriesFiltred.map({
-            getAmountTransactions(by: $0.id)
-        }).reduce(0, +) <= 0
+        categoriesFiltred.filter({ !$0.budgets.isEmpty }).isEmpty
     }
     
     public var isActive: Bool {
-        Worker.shared.settings.get().isPro
+        true//Worker.shared.settings.get().isPro
     }
     
     private func getBudgetAmountByPeriod(by category: CategoryEntity) -> Double {

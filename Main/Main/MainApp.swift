@@ -12,6 +12,7 @@ import UserInterface
 import Presentation
 import Core
 import Data
+import WidgetKit
 
 @main
 struct MainApp: App {
@@ -29,6 +30,7 @@ struct MainApp: App {
                 .environmentObject(appConfiguration)
                 .preferredColorScheme(appConfiguration.colorScheme)
                 .onChange(of: scenePhase) { newValue in
+                    updateWidget()
                     switch newValue {
                     case .active: appConfiguration.startObserver()
                     default: appConfiguration.stopObserver()
@@ -39,5 +41,9 @@ struct MainApp: App {
 //                    Worker.shared.transaction.replaceAllTransactions(Mock.transactions.data)
 //                }
         }
+    }
+    
+    func updateWidget() {
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

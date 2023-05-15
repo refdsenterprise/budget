@@ -25,7 +25,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 sectionCategories
                 sectionTotal
                 if presenter.needShowModalPro { ProSection() }
-                sectionAddBudget
             }
             
         }
@@ -116,14 +115,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         }
     }
     
-    private var sectionAddBudget: some View {
-        Section {
-            NavigationLink(destination: { presenter.router.configure(routes: .addBudget) }) {
-                RefdsText("Adicionar Budget")
-            }
-        }
-    }
-    
     private var sectionCategories: some View {
         Section {
             ForEach(presenter.viewData.budgets, id: \.id) { category in
@@ -140,6 +131,9 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     swipeEditCategory(category)
                     swipeRemoveCategory(category)
                 }
+            }
+            NavigationLink(destination: { presenter.router.configure(routes: .addBudget) }) {
+                RefdsText("Adicionar Budget")
             }
         } header: {
             RefdsText(

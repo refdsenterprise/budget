@@ -32,7 +32,7 @@ public final class AppConfiguration: ObservableObject {
     
     @Published public var themeColor: Color = Color(hex: Worker.shared.settings.get().theme)
     @Published public var colorScheme: ColorScheme? = AppearenceItem(rawValue: Worker.shared.settings.get().appearence.rounded())?.colorScheme
-    @Published public var isPro: Bool = Worker.shared.settings.get().isPro
+    @Published public var isPro: Bool = true//Worker.shared.settings.get().isPro
     
     public func startObserver() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [self] timer in
@@ -41,9 +41,20 @@ public final class AppConfiguration: ObservableObject {
             let appearence = AppearenceItem(rawValue: settings.appearence)
             let isPro = settings.isPro
             
-            self.themeColor = themeColor
-            self.colorScheme = appearence?.colorScheme
-            self.isPro = isPro
+            if self.themeColor != themeColor { self.themeColor = themeColor }
+            if self.colorScheme != appearence?.colorScheme { self.colorScheme = appearence?.colorScheme }
+            //self.isPro = isPro
+            
+//            if !isPro, settings.notifications {
+//                try? Worker.shared.settings.add(
+//                    notifications: false,
+//                    reminderNotification: false,
+//                    warningNotification: false,
+//                    breakingNotification: false,
+//                    currentWarningNotificationAppears: [],
+//                    currentBreakingNotificationAppears: []
+//                )
+//            }
         })
     }
     

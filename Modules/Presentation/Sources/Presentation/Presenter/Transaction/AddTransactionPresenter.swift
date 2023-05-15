@@ -76,6 +76,8 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                 )
             })
             viewData.categories = categories
+            date = transaction.date.date
+            amount = transaction.amount
         } else {
             let categories = Worker.shared.category.getCategories(from: viewData.date).map({
                 let totalActual = Worker.shared.transaction.get(from: viewData.date, format: .monthYear).map({ $0.amount }).reduce(0, +)
@@ -146,12 +148,6 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                 )
                 onSuccess?()
                 checkWarning()
-                #if targetEnvironment(macCatalyst)
-                #else
-                if #available(iOS 16.1, *) {
-                    LiveActivityPresenter.shared.updateLiveActivity()
-                }
-                #endif
             } catch {
                 guard let error = error as? BudgetError else { return }
                 onError?(error)

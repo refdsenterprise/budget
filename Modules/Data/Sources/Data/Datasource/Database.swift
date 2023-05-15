@@ -11,8 +11,9 @@ import Domain
 import SwiftUI
 import CoreData
 
-final class Database: ObservableObject {
+public final class Database: ObservableObject {
     static let shared = Database()
+    
     private lazy var coreDataModel: NSManagedObjectModel = {
         let description = CoreDataModelDescription(entities: [
             .entity(
@@ -79,11 +80,14 @@ final class Database: ObservableObject {
     
     private lazy var container: NSPersistentCloudKitContainer = {
         let container = NSPersistentCloudKitContainer(name: "ApplicationEntity", managedObjectModel: self.coreDataModel)
+        let storeURL = URL.storeURL(for: "group.budget.widget", databaseName: "ApplicationEntity")
+        let storeDescription = NSPersistentStoreDescription(url: storeURL)
+        storeDescription.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.br.com.rafaelescaleira.Budget")
+        container.persistentStoreDescriptions = [storeDescription]
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
-            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/budget/local")
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy

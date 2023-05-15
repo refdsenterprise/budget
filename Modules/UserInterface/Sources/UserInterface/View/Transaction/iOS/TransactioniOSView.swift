@@ -10,32 +10,35 @@ import RefdsUI
 import Charts
 import Domain
 import Presentation
-#if os(iOS)
+
 struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
     var body: some View {
         List {
             sectionOptions
-            sectionTotal
             
-            if #available(iOS 16.0, *),
-               !presenter.viewData.chart.isEmpty {
-                if presenter.isPro {
-                    CollapsedView(title: presenter.string(.chart)) {
-                        sectionChartTransactions
-                    }
-                } else {
-                    HStack {
-                        RefdsText(presenter.string(.chart))
-                        Spacer()
-                        ProTag()
+            if !presenter.showLoading {
+                sectionTotal
+                
+                if #available(iOS 16.0, *),
+                   !presenter.viewData.chart.isEmpty {
+                    if presenter.isPro {
+                        CollapsedView(title: presenter.string(.chart)) {
+                            sectionChartTransactions
+                        }
+                    } else {
+                        HStack {
+                            RefdsText(presenter.string(.chart))
+                            Spacer()
+                            ProTag()
+                        }
                     }
                 }
-            }
-            
-            if !presenter.viewData.transactions.isEmpty {
-                sectionTransactions
+                
+                if !presenter.viewData.transactions.isEmpty {
+                    sectionTransactions
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -254,4 +257,3 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .position(by: .value(presenter.string(.chartDate), data.date))
     }
 }
-#endif

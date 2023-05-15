@@ -85,7 +85,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     }
     
     @MainActor private func updateShowModalPro() async {
-        needShowModalPro = !Worker.shared.settings.get().isPro
+        //needShowModalPro = !Worker.shared.settings.get().isPro
     }
     
     @MainActor private func updateBudgets() async {
@@ -205,10 +205,6 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
             })
         }
         
-        guard dataItem.allSatisfy({ $0.value != 0 }) else {
-            viewData.bubbleWords = []
-            return
-        }
         viewData.bubbleWords = dataItem
     }
     

@@ -106,10 +106,10 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
     }
     
     public func save(onSuccess: (() -> Void)? = nil) {
-        guard Worker.shared.category.getAllBudgets().count < 5 || Worker.shared.settings.get().isPro else {
-            alert = .init(error: .cantAddCategoryPro)
-            return
-        }
+//        guard Worker.shared.category.getAllBudgets().count < 5 || Worker.shared.settings.get().isPro else {
+//            alert = .init(error: .cantAddCategoryPro)
+//            return
+//        }
         
         if canAddNewCategory {
             do {

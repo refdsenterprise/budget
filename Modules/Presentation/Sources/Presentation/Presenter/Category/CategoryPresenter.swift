@@ -46,7 +46,7 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     @Published public var isPresentedEditCategory: Bool = false
     @Published public var isPresentedAddBudget: Bool = false
     @Published public var needShowModalPro: Bool = false
-    @Published public var isPro: Bool = false
+    @Published public var isPro: Bool = true//false
     @Published public var alert: AlertItem = .init()
     @Published public var category: UUID?
     @Published public var categoryIsEmpty: Bool = false
@@ -125,8 +125,8 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     }
     
     @MainActor private func updateShowModalPro() async {
-        isPro = Worker.shared.settings.get().isPro
-        needShowModalPro = Worker.shared.category.getAllCategories().count > 4 && !Worker.shared.settings.get().isPro
+//        isPro = Worker.shared.settings.get().isPro
+//        needShowModalPro = Worker.shared.category.getAllCategories().count > 4 && !Worker.shared.settings.get().isPro
     }
     
     private func getBudgetAmount(by category: CategoryEntity) -> Double? {

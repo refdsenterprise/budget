@@ -172,24 +172,33 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     
     private var sectionFirstMaxTrasactionsWeekday: some View {
         Section {
-            RefdsText(presenter.string(.maxTransactionTitle))
-            RefdsText(presenter.string(.maxTransactionDescription), color: .secondary)
         } header: {
             RefdsText(presenter.string(.maxTransactionHeader), size: .extraSmall, color: .secondary)
+        } footer: {
+            VStack {
+                HStack {
+                    RefdsText(presenter.string(.maxTransactionTitle))
+                    Spacer()
+                }
+                .padding(.horizontal, -15)
+                
+                HStack {
+                RefdsText(presenter.string(.maxTransactionDescription), color: .secondary)
+                    Spacer()
+                }
+                .padding(.horizontal, -15)
+                SelectionTabView(values: presenter.viewData.weekdays, selected: $presenter.maxDay)
+                    .padding(.horizontal, -30)
+                    .padding(.top, 10)
+                rowAnalysisTransactions
+                    .padding()
+            }
         }
     }
     
     private var sectionMaxTrasactionsWeekday: some View {
         Section {
             rowShowTransactions
-        } header: {
-            SelectionTabView(values: presenter.viewData.weekdays, selected: $presenter.maxDay)
-                .padding(.horizontal, -30)
-                .padding(.bottom, 8)
-                .padding(.top, -20)
-        } footer: {
-            rowAnalysisTransactions
-                .padding(.top)
         }
     }
     

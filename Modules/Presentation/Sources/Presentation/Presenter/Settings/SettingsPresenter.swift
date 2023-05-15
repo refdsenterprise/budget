@@ -36,6 +36,6 @@ public final class SettingsPresenter: SettingsPresenterProtocol {
     }
     
     @MainActor private func updateShowModalPro() async {
-        needShowModalPro = !Worker.shared.settings.get().isPro
+        //needShowModalPro = !Worker.shared.settings.get().isPro
     }
 }
