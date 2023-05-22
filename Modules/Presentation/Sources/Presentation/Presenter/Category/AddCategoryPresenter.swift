@@ -14,18 +14,26 @@ public protocol AddCategoryPresenterProtocol: ObservableObject {
     var router: AddCategoryRouter { get set }
     var viewData: AddCategoryViewData { get set }
     var alert: AlertItem { get set }
+    var isPresentedEditBudget: Bool { get set }
     var buttonForegroundColor: Color { get }
+    var id: UUID? { get }
+    var budget: UUID? { get set }
     
     func string(_ string: Strings.AddCategory) -> String
     func add(budget: AddBudgetViewData) async
     func remove(budget: AddBudgetViewData, on category: AddCategoryViewData) async
     func save(onSuccess: (() -> Void)?)
+    func start(id: UUID?) async
 }
 
 public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
     public var router: AddCategoryRouter
+    @Published public var isPresentedEditBudget: Bool = false
     @Published public var viewData: AddCategoryViewData = .init()
     @Published public var alert: AlertItem = .init()
+    public var id: UUID?
+    public var budget: UUID?
+    var isStarted: Bool = false
     
     public var buttonForegroundColor: Color {
         canAddNewCategory ? .accentColor : .secondary
@@ -37,11 +45,11 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
     
     public init(router: AddCategoryRouter, category: UUID? = nil) {
         self.router = router
-        Task { await start(id: category) }
+        self.id = category
     }
     
-    @MainActor private func start(id: UUID?) async {
-        if let id = id, let category = Worker.shared.category.getCategory(by: id) {
+    @MainActor public func start(id: UUID?) async {
+        if let id = id, let category = Worker.shared.category.getCategory(by: id), !isStarted {
             viewData = .init(
                 id: category.id,
                 name: category.name,
@@ -57,11 +65,13 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
                             color: Color(hex: category.color),
                             name: category.name
                         ),
-                        categories: nil
+                        categories: nil,
+                        bind: {}
                     )
                 })
             )
         }
+        isStarted = true
     }
     
     public func string(_ string: Strings.AddCategory) -> String {
@@ -69,12 +79,15 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
     }
     
     @MainActor public func add(budget: AddBudgetViewData) async {
-        guard !existBudget(budget) else {
-            alert = .init(error: .existingBudget)
-            return
+        if let id = self.budget, let index = viewData.budgets.firstIndex(where: { $0.id == id }) {
+            viewData.budgets[index] = budget
+        } else {
+            guard !existBudget(budget) else {
+                alert = .init(error: .existingBudget)
+                return
+            }
+            viewData.budgets.append(budget)
         }
-        
-        viewData.budgets.append(budget)
     }
     
     @MainActor public func remove(budget: AddBudgetViewData, on category: AddCategoryViewData) async {

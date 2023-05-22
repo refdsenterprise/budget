@@ -25,6 +25,12 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
         .navigationTitle(presenter.string(.navigationTitle))
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
+        .task { await presenter.start(id: presenter.id) }
+        .navigation(isPresented: $presenter.isPresentedEditBudget) {
+            presenter.router.configure(routes: .addBudget({ budget in
+                Task { await presenter.add(budget: budget) }
+            }, category: presenter.viewData.id, budget: presenter.budget))
+        }
     }
     
     private var sectionName: some View {
@@ -84,6 +90,10 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
                                 category: presenter.viewData,
                                 budget: budget
                             )
+                            contextMenuEditBudget(
+                                category: presenter.viewData,
+                                budget: budget
+                            )
                         }
                     if index < presenter.viewData.budgets.count - 1 { Divider() }
                 }
@@ -121,6 +131,20 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
         }
     }
     
+    private func contextMenuEditBudget(category: AddCategoryViewData, budget: AddBudgetViewData) -> some View {
+        Button {
+            presenter.budget = budget.id
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                presenter.isPresentedEditBudget.toggle()
+            }
+        } label: {
+            Label(
+                presenter.string(.buttonEditBudget),
+                systemImage: RefdsIconSymbol.squareAndPencil.rawValue
+            )
+        }
+    }
+    
     private var buttonSave: some View {
         Button {
             Application.shared.endEditing()
@@ -139,7 +163,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
     private var buttonAddBudget: some View {
         NavigationLink(destination: presenter.router.configure(routes: .addBudget({ budget in
             Task { await presenter.add(budget: budget) }
-        }, id: presenter.viewData.id))) {
+        }, category: presenter.viewData.id, budget: nil))) {
             SectionGroup {
                 RefdsText(
                     presenter.string(.buttonAddBudget).uppercased(),

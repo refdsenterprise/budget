@@ -83,18 +83,23 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
         Task {
             //await updateNeedModalPro()
             await updateTransactions()
-            loadSearchResults()
+            await updateTransactionsFiltered()
+            await updateViewDataValue()
+            await updateChartData()
+            await updateViewDataTransactions()
             DispatchQueue.main.async { self.showLoading = false }
         }
     }
     
     public func loadSearchResults() {
+        showLoading = true
         Task {
             await updateTransactionsFiltered()
             await updateViewDataValue()
-            Task { await updateChartData() }
-            Task { await updateViewDataTransactions() }
+            await updateChartData()
+            await updateViewDataTransactions()
             //Task { await ProPresenter.shared.updatePurchasedProducts() }
+            DispatchQueue.main.async { self.showLoading = false }
         }
     }
     
@@ -102,7 +107,7 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
         //isPro = Worker.shared.settings.get().isPro
     }
     
-    @MainActor private func updateTransactions() async {
+    private func updateTransactions() async {
         let worker = Worker.shared.transaction
         if let category = category {
             transactions = isFilterPerDate ? worker.get(
@@ -143,7 +148,7 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
         })
     }
     
-    @MainActor private func updateTransactionsFiltered() async {
+    private func updateTransactionsFiltered() async {
         transactionsFiltred = transactions.filter({
             containsTransaction($0)
         })

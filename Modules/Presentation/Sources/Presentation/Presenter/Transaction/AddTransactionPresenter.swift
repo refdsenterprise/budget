@@ -17,10 +17,13 @@ public protocol AddTransactionPresenterProtocol: ObservableObject {
     var amount: Double { get set }
     var alert: AlertItem { get set }
     var buttonForegroundColor: Color { get }
+    var transaction: UUID? { get }
+    var isStarted: Bool { get }
     
     func loadData()
     func string(_ string: Strings.AddTransaction) -> String
     func save(onSuccess: (() -> Void)?, onError: ((BudgetError) -> Void)?)
+    func start(transaction: UUID?) async
 }
 
 public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
@@ -29,6 +32,8 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
     @Published public var date: Date = .current { didSet { loadData() } }
     @Published public var amount: Double = 0 { didSet { loadData() } }
     @Published public var alert: AlertItem = .init()
+    public var transaction: UUID?
+    public var isStarted: Bool = false
     
     private var canAddNewTransaction: Bool {
         return viewData.amount > 0 && viewData.category != nil && !viewData.message.isEmpty
@@ -40,10 +45,10 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
     
     public init(router: AddTransactionRouter, transaction: UUID? = nil) {
         self.router = router
-        Task { await start(transaction: transaction) }
+        self.transaction = transaction
     }
     
-    @MainActor private func start(transaction: UUID?) async {
+    public func start(transaction: UUID?) async {
         if let id = transaction,
             let transaction = Worker.shared.transaction.get(in: id),
             let category = Worker.shared.category.getCategory(by: transaction.category) {
@@ -51,18 +56,6 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
             let totalBudget = category.budgetsValue.first(where: {
                 $0.date.asString(withDateFormat: .monthYear) == transaction.date.asString(withDateFormat: .monthYear)
             })?.amount ?? 0
-            viewData = .init(
-                id: transaction.id,
-                amount: transaction.amount,
-                message: transaction.message,
-                category: .init(
-                    id: category.id,
-                    color: Color(hex: category.color),
-                    name: category.name,
-                    remaning: totalBudget - totalActual
-                ),
-                date: transaction.date.date
-            )
             let categories = Worker.shared.category.getCategories(from: transaction.date.date).map({
                 let totalActual = Worker.shared.transaction.get(from: transaction.date.date, format: .monthYear).map({ $0.amount }).reduce(0, +)
                 let totalBudget = $0.budgetsValue.first(where: {
@@ -75,9 +68,23 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                     remaning: totalBudget - totalActual
                 )
             })
-            viewData.categories = categories
-            date = transaction.date.date
-            amount = transaction.amount
+            Task { @MainActor in
+                viewData = .init(
+                    id: transaction.id,
+                    amount: transaction.amount,
+                    message: transaction.message,
+                    category: .init(
+                        id: category.id,
+                        color: Color(hex: category.color),
+                        name: category.name,
+                        remaning: totalBudget - totalActual
+                    ),
+                    categories: categories,
+                    date: transaction.date.date
+                )
+                date = transaction.date.date
+                amount = transaction.amount
+            }
         } else {
             let categories = Worker.shared.category.getCategories(from: viewData.date).map({
                 let totalActual = Worker.shared.transaction.get(from: viewData.date, format: .monthYear).map({ $0.amount }).reduce(0, +)
@@ -91,9 +98,12 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                     remaning: totalBudget - totalActual
                 )
             })
-            viewData.categories = categories
-            viewData.category = categories.first
+            Task { @MainActor in
+                viewData.categories = categories
+                viewData.category = categories.first
+            }
         }
+        isStarted = true
     }
     
     public func loadData() {
@@ -104,11 +114,9 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
     }
     
     @MainActor private func updateCategories() async {
-        viewData.date = date
-        viewData.amount = amount
-        viewData.categories = Worker.shared.category.getCategories(from: viewData.date).map({
-            let totalActual = Worker.shared.transaction.get(on: $0.id, from: self.viewData.date, format: .monthYear).map({ $0.amount }).reduce(0, +) + self.viewData.amount
-            let totalBudget = Worker.shared.category.getBudget(on: $0.id, from: self.viewData.date)?.amount ?? 0
+        let categories = Worker.shared.category.getCategories(from: viewData.date).map({
+            let totalActual = Worker.shared.transaction.get(on: $0.id, from: viewData.date, format: .monthYear).map({ $0.amount }).reduce(0, +) + viewData.amount
+            let totalBudget = Worker.shared.category.getBudget(on: $0.id, from: viewData.date)?.amount ?? 0
             return AddTransactionViewData.Category(
                 id: $0.id,
                 color: Color(hex: $0.color),
@@ -116,6 +124,10 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                 remaning: totalBudget - totalActual
             )
         })
+        
+        viewData.date = date
+        viewData.amount = amount
+        viewData.categories = categories
     }
     
     @MainActor private func updateCategory() async {

@@ -25,7 +25,7 @@ public struct CategoryRouter {
     public func configure(routes: CategoryRoutes) -> some View {
         switch routes {
         case .addCategory(let category): AnyView(factory.makeAddCategoryScreen(category: category))
-        case .addBudget: AnyView(factory.makeAddBudgetScreen(newBudget: nil, id: nil))
+        case .addBudget: AnyView(factory.makeAddBudgetScreen(newBudget: nil, category: nil, budget: nil))
         case .transactions(let category, let date): AnyView(factory.makeTransactionScreen(category: category, date: date, isPresentedAddTransaction: false))
         }
     }

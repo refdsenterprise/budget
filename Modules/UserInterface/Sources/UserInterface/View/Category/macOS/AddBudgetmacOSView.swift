@@ -24,6 +24,7 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
         AnyView(macView)
             .navigationTitle(presenter.string(.navigationTitle))
             .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
+            .task { await presenter.start(categoryID: presenter.category, budgetID: presenter.budget) }
     }
     
     private var macView: some View {
@@ -44,8 +45,12 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
     }
         
     private var rowCurrency: some View {
-        RefdsCurrencyTextField(value: $presenter.viewData.amount, size: .custom(40), color: .primary, alignment: .center)
-        .padding()
+        Group {
+            if presenter.isStarted {
+                RefdsCurrencyTextField(value: $presenter.viewData.amount, size: .custom(40), color: .primary, alignment: .center)
+                    .padding()
+            }
+        }
     }
     
     private var rowDate: some View {

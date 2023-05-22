@@ -26,15 +26,20 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
         ])
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
-        .onAppear { presenter.loadData() }
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
+        .task {
+            await presenter.start(transaction: presenter.transaction)
+            presenter.loadData()
+        }
     }
     
     private var sectionInformation: some View {
         VStack {
-            RefdsCurrencyTextField(value: $presenter.amount, size: .custom(40), color: .primary, alignment: .center)
-                .padding()
+            if presenter.isStarted {
+                RefdsCurrencyTextField(value: $presenter.amount, size: .custom(40), color: .primary, alignment: .center)
+                    .padding()
+            }
             rowInformation
             Spacer()
         }

@@ -26,6 +26,7 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
         .navigationTitle(presenter.string(.navigationTitle))
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
+        .task { await presenter.start(categoryID: presenter.category, budgetID: presenter.budget) }
     }
     
     private var sectionAmount: some View {
@@ -71,8 +72,12 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
     }
     
     private var rowCurrency: some View {
-        RefdsCurrencyTextField(value: $presenter.viewData.amount, size: .custom(40), color: .primary, alignment: .center)
-        .padding()
+        Group {
+            if presenter.isStarted {
+                RefdsCurrencyTextField(value: $presenter.viewData.amount, size: .custom(40), color: .primary, alignment: .center)
+                    .padding()
+            }
+        }
     }
     
     private var rowDescription: some View {

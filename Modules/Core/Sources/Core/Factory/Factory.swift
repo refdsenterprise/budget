@@ -37,9 +37,9 @@ public final class Factory: FactoryProtocol {
         return AddCategoryScreen(presenter: presenter)
     }
     
-    public func makeAddBudgetScreen(newBudget: ((AddBudgetViewData) -> Void)? = nil, id: UUID? = nil) -> any View {
+    public func makeAddBudgetScreen(newBudget: ((AddBudgetViewData) -> Void)? = nil, category: UUID? = nil, budget: UUID? = nil) -> any View {
         let router = AddBudgetRouter(factory: self)
-        let presenter = AddBudgetPresenter(router: router, category: id)
+        let presenter = AddBudgetPresenter(router: router, category: category, budget: budget)
         return AddBudgetScreen(presenter: presenter, newBudget: newBudget)
     }
     

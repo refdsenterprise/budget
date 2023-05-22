@@ -15,6 +15,7 @@
 "addCategory.header.category" = "categoria";
 "addCategory.header.budgets" = "budgets";
 "addCategory.button.removeBudget" = "Remover Budget";
+"addCategory.button.editBudget" = "Editar Budget";
 "addCategory.noBudgetAdded" = "Nenhum budget adicionado";
 
 // MARK: - Category

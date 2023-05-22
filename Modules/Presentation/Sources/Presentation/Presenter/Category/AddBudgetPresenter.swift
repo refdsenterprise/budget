@@ -14,24 +14,30 @@ public protocol AddBudgetPresenterProtocol: ObservableObject {
     var router: AddBudgetRouter { get set }
     var viewData: AddBudgetViewData { get set }
     var buttonForegroundColor: Color { get }
+    var category: UUID? { get }
+    var budget: UUID? { get }
+    var isStarted: Bool { get }
     
     func string(_ string: Strings.AddBudget) -> String
     func add(budget: (AddBudgetViewData) -> Void, dismiss: (() -> Void)?)
+    func start(categoryID: UUID?, budgetID: UUID?) async
 }
 
 public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
     @Published public var router: AddBudgetRouter
     @Published public var viewData: AddBudgetViewData = .init()
-    private let id: UUID?
+    public var category: UUID?
+    public var budget: UUID?
+    public var isStarted: Bool = false
     
-    public init(router: AddBudgetRouter, category: UUID? = nil) {
+    public init(router: AddBudgetRouter, category: UUID? = nil, budget: UUID? = nil) {
         self.router = router
-        self.id = category
-        Task { await start(id: category) }
+        self.category = category
+        self.budget = budget
     }
     
     private var canAddNewBudget: Bool {
-        return viewData.amount > 0 && (viewData.category != nil || id != nil)
+        return viewData.amount > 0 && (viewData.category != nil || category != nil)
     }
     
     public var buttonForegroundColor: Color {
@@ -44,7 +50,7 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
     
     public func add(budget: (AddBudgetViewData) -> Void, dismiss: (() -> Void)? = nil) {
         if canAddNewBudget {
-            if id != nil { budget(viewData) }
+            if category != nil { budget(viewData) }
             else if let category = viewData.category {
                 try? Worker.shared.category.addBudget(
                     id: viewData.id,
@@ -65,17 +71,23 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
         }
     }
     
-    @MainActor private func start(id: UUID?) async {
+    @MainActor public func start(categoryID: UUID?, budgetID: UUID?) async {
         var category: AddBudgetViewData.Category?
         var categories: [AddBudgetViewData.Category]?
+        var amount: Double = 0
+        var message: String = ""
         let date: Date = .current
-        if let id = id, let categoryFiltered = Worker.shared.category.getCategory(by: id) {
+        if let id = categoryID, let categoryFiltered = Worker.shared.category.getCategory(by: id) {
             category = AddBudgetViewData.Category(
                 id: categoryFiltered.id,
                 color: Color(hex: categoryFiltered.color),
                 name: categoryFiltered.name
             )
-        } else if id == nil {
+            if let id = budgetID, let budget = Worker.shared.category.getBudget(in: id) {
+                amount = budget.amount
+                message = budget.message ?? ""
+            }
+        } else if categoryID == nil {
             let allCategories = Worker.shared.category.getAllCategories().filter({ category in
                 return !category.budgetsValue.contains(where: {
                     $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
@@ -86,14 +98,19 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
         }
         
         viewData = AddBudgetViewData(
-            id: .init(),
-            amount: 0,
+            id: budgetID ?? .init(),
+            amount: amount,
             date: date,
-            message: "",
+            message: message,
             category: category,
             categories: categories,
-            bind: {}
+            bind: {
+                if categoryID == nil {
+                    Task { await self.reloadViewData() }
+                }
+            }
         )
+        isStarted = true
     }
     
     @MainActor private func reloadViewData() async {

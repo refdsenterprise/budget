@@ -46,6 +46,7 @@ public extension Strings {
         case headerBudgets
         case buttonRemoveBudget
         case noBudgetAdded
+        case buttonEditBudget
         
         private var key: String {
             switch self {
@@ -58,6 +59,7 @@ public extension Strings {
             case .headerBudgets: return "addCategory.header.budgets"
             case .buttonRemoveBudget: return "addCategory.button.removeBudget"
             case .noBudgetAdded: return "addCategory.noBudgetAdded"
+            case .buttonEditBudget: return "addCategory.button.editBudget"
             }
         }
         
