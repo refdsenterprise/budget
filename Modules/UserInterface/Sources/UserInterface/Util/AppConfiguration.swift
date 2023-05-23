@@ -39,7 +39,7 @@ public final class AppConfiguration: ObservableObject {
             let settings = Worker.shared.settings.get()
             let themeColor = Color(hex: settings.theme)
             let appearence = AppearenceItem(rawValue: settings.appearence)
-            let isPro = settings.isPro
+            //let isPro = settings.isPro
             
             if self.themeColor != themeColor { self.themeColor = themeColor }
             if self.colorScheme != appearence?.colorScheme { self.colorScheme = appearence?.colorScheme }

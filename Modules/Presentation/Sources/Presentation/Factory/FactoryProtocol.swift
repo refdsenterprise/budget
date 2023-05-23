@@ -10,8 +10,8 @@ import SwiftUI
 
 public protocol FactoryProtocol {
     func makeSceneScreen() -> any View
-    func makeCategoryScreen(isPresentedAddCategory: Bool, isPresentedAddBudget: Bool) -> any View
-    func makeTransactionScreen(category: UUID?, date: Date?, isPresentedAddTransaction: Bool) -> any View
+    func makeCategoryScreen() -> any View
+    func makeTransactionScreen(category: UUID?, date: Date?) -> any View
     func makeAddCategoryScreen(category: UUID?) -> any View
     func makeAddBudgetScreen(newBudget: ((AddBudgetViewData) -> Void)?, category: UUID?, budget: UUID?) -> any View
     func makeBudgetScreen() -> any View

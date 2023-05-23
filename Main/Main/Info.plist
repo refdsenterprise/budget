@@ -6,6 +6,39 @@
 	<array>
 		<string>ConfigurationIntent</string>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>square.stack.3d.forward.dottedline.fill</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Criar nova categoria</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Nova Categoria</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>addCategory</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>list.bullet.rectangle.fill</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Criar nova transação</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Nova Transação</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>addTransaction</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>dollarsign.square.fill</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Criar novo orçamento</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Novo Orçamento</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>addBudget</string>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

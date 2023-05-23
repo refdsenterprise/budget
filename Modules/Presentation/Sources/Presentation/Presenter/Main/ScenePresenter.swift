@@ -14,6 +14,7 @@ public protocol ScenePresenterProtocol: ObservableObject {
     var tabItems: [TabItem] { get }
     var creationItems: [CreationItem] { get }
     var tabItemSelection: TabItem { get set }
+    var creationItemSelection: CreationItem? { get set }
     
     func string(_ string: Strings.Scene) -> String
 }
@@ -21,6 +22,7 @@ public protocol ScenePresenterProtocol: ObservableObject {
 public final class ScenePresenter: ScenePresenterProtocol {
     @Published public var router: SceneRouter
     @Published public var tabItemSelection: TabItem = .home
+    @Published public var creationItemSelection: CreationItem? = nil
     
     public var tabItems: [TabItem] { TabItem.allCases }
     public var creationItems: [CreationItem] { CreationItem.allCases }

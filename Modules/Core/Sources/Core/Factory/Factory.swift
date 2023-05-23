@@ -19,16 +19,16 @@ public final class Factory: FactoryProtocol {
         return SceneScreen(presenter: presenter)
     }
     
-    public func makeCategoryScreen(isPresentedAddCategory: Bool, isPresentedAddBudget: Bool) -> any View {
+    public func makeCategoryScreen() -> any View {
         let router = CategoryRouter(factory: self)
         let presenter = CategoryPresenter(router: router)
-        return CategoryScreen(presenter: presenter, isPresentedAddCategory: isPresentedAddCategory, isPresentedAddBudget: isPresentedAddBudget)
+        return CategoryScreen(presenter: presenter)
     }
     
-    public func makeTransactionScreen(category: UUID? = nil, date: Date? = nil, isPresentedAddTransaction: Bool) -> any View {
+    public func makeTransactionScreen(category: UUID? = nil, date: Date? = nil) -> any View {
         let router = TransactionRouter(factory: self)
         let presenter = TransactionPresenter(router: router, category: category, date: date)
-        return TransactionScreen(presenter: presenter, isPresentedAddTransaction: isPresentedAddTransaction)
+        return TransactionScreen(presenter: presenter)
     }
     
     public func makeAddCategoryScreen(category: UUID? = nil) -> any View {

@@ -10,7 +10,9 @@ import SwiftUI
 import RefdsUI
 import Resource
 
-public enum CreationItem: Int, CaseIterable {
+public enum CreationItem: Int, CaseIterable, Identifiable {
+    public var id: Int { self.rawValue }
+    
     case category = 1
     case budget = 2
     case transaction = 3

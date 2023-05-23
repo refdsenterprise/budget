@@ -12,6 +12,7 @@ import Presentation
 
 @available(iOS 16.0, *)
 struct macOSScene<Presenter: ScenePresenterProtocol>: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var presenter: Presenter
     
     var body: some View {
@@ -24,8 +25,41 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
             .navigationTitle(presenter.string(.navigationTitle))
         } detail: {
             NavigationStack { presenter.router.configure(routes: .budget) }
+                .sheet(item: $presenter.creationItemSelection) { item in
+                    switch item {
+                    case .category: NavigationStack {
+                        presenter.router.configure(routes: .addCategory)
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar { dismissButton }
+                    }
+                    case .transaction: NavigationStack {
+                        presenter.router.configure(routes: .addTransaction)
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar { dismissButton }
+                    }
+                    case .budget: NavigationStack {
+                        presenter.router.configure(routes: .addBudget)
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar { dismissButton }
+                    }
+                    }
+                }
         }
         .navigationSplitViewStyle(.balanced)
+    }
+    
+    private var dismissButton: ToolbarItem<(), Button<RefdsIcon>> {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button { presenter.creationItemSelection = nil } label: {
+                RefdsIcon(
+                    symbol: .xmarkCircleFill,
+                    color: .secondary,
+                    size: 20,
+                    weight: .medium,
+                    renderingMode: .hierarchical
+                )
+            }
+        }
     }
     
     private var sectionMainMenu: some View {
@@ -46,12 +80,8 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
     private var sectionCreation: some View {
         Section {
             ForEach(presenter.creationItems, id: \.rawValue) { item in
-                NavigationLink {
-                    switch item {
-                    case .category: NavigationStack { presenter.router.configure(routes: .addCategory) }
-                    case .transaction: NavigationStack { presenter.router.configure(routes: .addTransaction) }
-                    case .budget: NavigationStack { presenter.router.configure(routes: .addBudget) }
-                    }
+                Button {
+                    presenter.creationItemSelection = item
                 } label: { RefdsText(item.title, size: .large) }
             }
         } header: { RefdsText(presenter.string(.headerCreation), size: .large, weight: .bold) }

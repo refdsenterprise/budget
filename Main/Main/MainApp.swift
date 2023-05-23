@@ -32,7 +32,10 @@ struct MainApp: App {
                 .onChange(of: scenePhase) { newValue in
                     updateWidget()
                     switch newValue {
-                    case .active: appConfiguration.startObserver()
+                    case .active:
+                        appConfiguration.startObserver()
+                        UserInterface.shortcutItemReceived = shortcutItemReceived
+                        shortcutItemReceived = nil
                     default: appConfiguration.stopObserver()
                     }
                 }
