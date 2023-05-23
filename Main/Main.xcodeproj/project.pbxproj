@@ -466,7 +466,7 @@
 				CODE_SIGN_ENTITLEMENTS = Main/Main.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Main/Preview Content\"";
 				DEVELOPMENT_TEAM = Q7QLR2PH2X;
@@ -515,7 +515,7 @@
 				CODE_SIGN_ENTITLEMENTS = Main/Main.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Main/Preview Content\"";
 				DEVELOPMENT_TEAM = Q7QLR2PH2X;

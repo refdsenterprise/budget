@@ -25,7 +25,7 @@ struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
     
     private var sectionHeader: some View {
         Section {} footer: {
-            VStack(alignment: .center, spacing: 20) {
+            VStack(alignment: .center) {
                 AppIconView()
                 appTitleVersion
             }
@@ -64,10 +64,14 @@ struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
                 }
             }
             
-            HStack {
-                RefdsIcon(symbol: .heart, size: 20)
-                    .frame(width: 30)
-                RefdsText(presenter.string(.optionWriteReview))
+            Button {
+                presenter.requestReview()
+            } label: {
+                HStack {
+                    RefdsIcon(symbol: .heart, size: 20)
+                        .frame(width: 30)
+                    RefdsText(presenter.string(.optionWriteReview))
+                }
             }
             
             Button {
@@ -84,11 +88,9 @@ struct AboutiOSView<Presenter: AboutPresenterProtocol>: View {
     
     private var appTitleVersion: some View {
         VStack {
-            HStack {
-                RefdsText(presenter.string(.applicationName), size: .extraLarge, weight: .bold)
-                RefdsTag("1.0.0", size: .extraSmall, color: .secondary, family: .moderatMono, lineLimit: 1)
-            }
+            RefdsText(presenter.string(.applicationName), size: .extraLarge, weight: .bold)
             RefdsText(presenter.string(.applicationAuthor), color: .secondary)
+            RefdsTag(presenter.appVersion, size: .small, color: .accentColor)
         }
     }
 }

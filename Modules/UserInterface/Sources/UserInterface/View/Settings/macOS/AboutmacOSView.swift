@@ -72,7 +72,7 @@ struct AboutmacOSView<Presenter: AboutPresenterProtocol>: View {
                 }.listGroupBoxStyle()
             }
             
-            Button { } label: {
+            Button { presenter.requestReview() } label: {
                 GroupBox {
                     HStack {
                         RefdsIcon(symbol: .heart, size: 20)
@@ -100,11 +100,9 @@ struct AboutmacOSView<Presenter: AboutPresenterProtocol>: View {
     
     private var appTitleVersion: some View {
         VStack {
-            HStack {
-                RefdsText(presenter.string(.applicationName), size: .extraLarge, weight: .bold)
-                RefdsTag("1.0.0", size: .extraSmall, color: .secondary, family: .moderatMono, lineLimit: 1)
-            }
+            RefdsText(presenter.string(.applicationName), size: .extraLarge, weight: .bold)
             RefdsText(presenter.string(.applicationAuthor), color: .secondary)
+            RefdsTag(presenter.appVersion, size: .small, color: .accentColor)
         }
     }
 }

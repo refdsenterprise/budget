@@ -72,8 +72,7 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
                     Spacer()
                     RefdsText(
                         category.remaning.currency,
-                        color: .secondary,
-                        family: .moderatMono
+                        color: .secondary
                     )
                 }
             }

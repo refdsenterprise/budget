@@ -110,21 +110,28 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
     private func updateTransactions() async {
         let worker = Worker.shared.transaction
         if let category = category {
-            transactions = isFilterPerDate ? worker.get(
+            transactions = isFilterPerDate ? (selectedPeriod == .week ? worker.get(
                 on: category,
                 from: date,
                 format: selectedPeriod.dateFormat
-            ) : worker.get(on: category)
-        } else {
-            transactions = isFilterPerDate ? worker.get(
+            ).filter({ selectedPeriod.containsWeek(originalDate: date, compareDate: $0.date.date) }) : worker.get(
+                on: category,
                 from: date,
                 format: selectedPeriod.dateFormat
-            ) : worker.get()
+            )) : worker.get(on: category)
+        } else {
+            transactions = isFilterPerDate ? (selectedPeriod == .week ? worker.get(
+                from: date,
+                format: selectedPeriod.dateFormat
+            ).filter({ selectedPeriod.containsWeek(originalDate: date, compareDate: $0.date.date) }) : worker.get(
+                from: date,
+                format: selectedPeriod.dateFormat
+            )) : worker.get()
         }
     }
     
     @MainActor private func updateViewDataTransactions() async {
-        viewData.transactions = transactionsFiltred.map({
+        let transactions: [TransactionViewData.Transaction] = transactionsFiltred.map({
             .init(
                 id: $0.id,
                 date: $0.date.date,
@@ -134,6 +141,9 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
                 amount: $0.amount
             )
         })
+        viewData.transactions = Dictionary(grouping: transactions, by: { $0.date.asString(withDateFormat: .dayMonthYear) })
+            .map({ $0.value })
+            .sorted(by: { ($0.first?.date ?? Date()) >= ($1.first?.date ?? Date()) })
     }
     
     @MainActor private func updateViewDataValue() async {

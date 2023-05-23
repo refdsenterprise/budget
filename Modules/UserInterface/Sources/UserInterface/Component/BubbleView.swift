@@ -11,7 +11,7 @@ import Presentation
 
 public struct BubbleView: View {
     @Binding private var data: [BudgetViewData.Bubble]
-    private var spacing: CGFloat = 5
+    private var spacing: CGFloat = 10
     private var startAngle: Int = 180
     private var clockwise: Bool = Bool.random()
     
@@ -41,7 +41,8 @@ public struct BubbleView: View {
                 ForEach(data.indices, id: \.self) { index in
                     let item = data[index]
                     ZStack {
-                        Circle()
+                        Circle().opacity(0.3)
+                        Circle().scaleEffect(0.9)
                         RefdsText(
                             item.title.uppercased(),
                             size: .custom(CGFloat(item.value) * scale * 0.13),

@@ -35,12 +35,12 @@ struct NotificationmacOSView<Presenter: NotificationManagerPresenterProtocol>: V
     }
     
     private var sectionAllowNotification: some View {
-        SectionGroup {
+        SectionGroup(headerTitle: presenter.string(.status)) {
             Group {
                 Toggle(isOn: $presenter.isAllowNotification) {
                     RefdsText(presenter.string(.allowNotification))
                 }
-                .toggleStyle(CheckBoxStyle())
+                .tint(.accentColor)
             }
         }
     }
@@ -106,7 +106,7 @@ struct NotificationmacOSView<Presenter: NotificationManagerPresenterProtocol>: V
                     RefdsText(presenter.viewData[index].description, color: .secondary)
                 }
             }
-            .toggleStyle(CheckBoxStyle())
+            .tint(.accentColor)
         }
     }
 }

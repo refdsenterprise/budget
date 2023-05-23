@@ -88,7 +88,6 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 size: .custom(40),
                 color: .primary,
                 weight: .bold,
-                family: .moderatMono,
                 alignment: .center,
                 lineLimit: 1
             )
@@ -97,8 +96,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 presenter.viewData.value.totalBudget.currency,
                 size: .custom(20),
                 color: .accentColor,
-                weight: .bold,
-                family: .moderatMono
+                weight: .bold
             )
         }
         .frame(maxWidth: .infinity)
@@ -120,7 +118,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                                 Toggle(isOn: $presenter.isFilterPerDate) {
                                     RefdsText(presenter.string(.sectionOptionsFilterPerDate))
                                 }
-                                .toggleStyle(CheckBoxStyle())
+                                .tint(.accentColor)
                             }
                             
                             if presenter.isFilterPerDate {
@@ -212,7 +210,6 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                     Spacer()
                     RefdsText(
                         category.budget.currency,
-                        family: .moderatMono,
                         lineLimit: 1
                     )
                 }

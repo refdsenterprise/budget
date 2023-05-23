@@ -10,7 +10,7 @@ import RefdsCore
 
 public struct TransactionViewData {
     public var value: Value = .init(value: 0, amount: 0)
-    public var transactions: [Transaction] = []
+    public var transactions: [[Transaction]] = []
     public var chart: [Chart] = []
     
     public struct Value: DomainModel {
@@ -25,6 +25,15 @@ public struct TransactionViewData {
         public var categoryName: String
         public var categoryColor: Color
         public var amount: Double
+        
+        public init(id: UUID, date: Date, description: String, categoryName: String, categoryColor: Color, amount: Double) {
+            self.id = id
+            self.date = date
+            self.description = description
+            self.categoryName = categoryName
+            self.categoryColor = categoryColor
+            self.amount = amount
+        }
     }
     
     public struct Chart: DomainModel {

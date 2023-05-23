@@ -112,7 +112,6 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
                     budget.amount.currency,
                     size: .normal,
                     color: .secondary,
-                    family: .moderatMono,
                     lineLimit: 1
                 )
             }

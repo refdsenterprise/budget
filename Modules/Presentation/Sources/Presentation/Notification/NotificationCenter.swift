@@ -37,6 +37,9 @@ public final class NotificationCenter {
     public func updateNotificationSettings() {
         let needStop = !settings.reminderNotification
         makeReminderSetTransactions(needStop: needStop)
+        let breakingExpenses = settings.currentBreakingNotificationAppears.map({ Worker.shared.category.getBudget(in: $0) }).filter({ ($0?.date.date ?? Date.current).asString(withDateFormat: .monthYear) == Date.current.asString(withDateFormat: .monthYear) && $0 != nil }).map({ $0!.id })
+        let warinigExpenses = settings.currentWarningNotificationAppears.map({ Worker.shared.category.getBudget(in: $0) }).filter({ ($0?.date.date ?? Date.current).asString(withDateFormat: .monthYear) == Date.current.asString(withDateFormat: .monthYear) && $0 != nil }).map({ $0!.id })
+        try? Worker.shared.settings.add(currentWarningNotificationAppears: warinigExpenses, currentBreakingNotificationAppears: breakingExpenses)
     }
     
     public func makeNotificationRequest(_ trigger: Trigger, id: Identifier, title: String? = nil, subtitle: String? = nil, body: String? = nil, onError: ((Error) -> Void)? = nil) {
@@ -68,7 +71,7 @@ public final class NotificationCenter {
         })
     }
     
-    public func makeWarningExpenses(percent: Double, category: String? = nil, actual: Double, total: Double) {
+    public func makeWarningExpenses(budgetID: UUID, percent: Double, category: String? = nil, actual: Double, total: Double) {
         guard settings.warningNotification else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
@@ -77,10 +80,11 @@ public final class NotificationCenter {
                 title: "⚠️ \(category == nil ? "Dispesas atingiram" : "\(category!.capitalized) atingiu") \(String(format: "%02d", Int(percent)))%.",
                 body: "Restando apenas \((total - actual).currency) de \(total.currency) calculados."
             )
+            try? Worker.shared.settings.add(currentWarningNotificationAppears: self.settings.currentWarningNotificationAppears + [budgetID])
         })
     }
     
-    public func makeWarningBreakExpenses(category: String? = nil) {
+    public func makeWarningBreakExpenses(budgetID: UUID, category: String? = nil) {
         guard settings.breakingNotification else { return }
         requestNotificationAuthorization(onSuccess: {
             self.makeNotificationRequest(
@@ -89,6 +93,7 @@ public final class NotificationCenter {
                 title: "‼️ Limite de gasto excedido.",
                 body: "Os valores previstos para \(category == nil ? "dispesas" : category!.lowercased()) foram ultrapassados."
             )
+            try? Worker.shared.settings.add(currentBreakingNotificationAppears: self.settings.currentBreakingNotificationAppears + [budgetID])
         })
     }
 }
@@ -101,7 +106,7 @@ public extension NotificationCenter {
         public var value: UNNotificationTrigger {
             switch self {
             case .now:
-                return UNTimeIntervalNotificationTrigger(timeInterval: 60 * 10, repeats: false)
+                return UNTimeIntervalNotificationTrigger(timeInterval: 6, repeats: false)
             case .atHour(let hour, let needStop):
                 var dateComponents = DateComponents()
                 dateComponents.calendar = Calendar.current

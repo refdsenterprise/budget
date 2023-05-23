@@ -23,6 +23,7 @@ public extension Strings {
         case options
         case changeNotificationPermission
         case activeNotifications
+        case status
         
         private var key: String {
             switch self {
@@ -40,6 +41,7 @@ public extension Strings {
             case .options: return "options"
             case .changeNotificationPermission: return "changeNotificationPermission"
             case .activeNotifications: return "activeNotifications"
+            case .status: return "status"
             }
         }
         

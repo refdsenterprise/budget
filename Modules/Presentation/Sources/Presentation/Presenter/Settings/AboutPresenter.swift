@@ -8,6 +8,7 @@
 import SwiftUI
 import Domain
 import Resource
+import StoreKit
 
 public enum AboutLinks {
     case website
@@ -28,14 +29,19 @@ public enum AboutLinks {
 public protocol AboutPresenterProtocol: ObservableObject {
     var urlShareItem: ShareItem { get set }
     var appShareItem: ShareItem { get set }
+    var appVersion: String { get }
     
     func link(_ link: AboutLinks) -> URL
     func string(_ string: Strings.About) -> String
+    func requestReview()
 }
 
 public final class AboutPresenter: AboutPresenterProtocol {
     @Published public var urlShareItem: ShareItem = .init()
     @Published public var appShareItem: ShareItem = .init()
+    public var appVersion: String {
+        "  \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")  "
+    }
     
     public init() {}
     
@@ -45,5 +51,11 @@ public final class AboutPresenter: AboutPresenterProtocol {
     
     public func link(_ link: AboutLinks) -> URL {
         link.url
+    }
+    
+    public func requestReview() {
+        if let scene = UIApplication.shared.connectedScenes.first, let windowScene = scene as? UIWindowScene {
+            SKStoreReviewController.requestReview(in: windowScene)
+        }
     }
 }

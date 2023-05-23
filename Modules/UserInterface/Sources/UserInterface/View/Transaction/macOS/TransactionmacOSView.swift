@@ -82,7 +82,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                             Toggle(isOn: $presenter.isFilterPerDate) {
                                 RefdsText(presenter.string(.filterPerDate))
                             }
-                            .toggleStyle(CheckBoxStyle())
+                            .tint(.accentColor)
                             
                             if presenter.isFilterPerDate {
                                 CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
@@ -94,7 +94,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                                             } label: {
                                                 HStack(spacing: 15) {
                                                     IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                                    RefdsText(period.label.capitalized, color: .secondary)
+                                                    RefdsText(period.label.capitalized)
                                                 }
                                             }
                                             .padding(.vertical, 4)
@@ -124,7 +124,6 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                 size: .custom(40),
                 color: .primary,
                 weight: .bold,
-                family: .moderatMono,
                 alignment: .center,
                 lineLimit: 1
             )
@@ -133,15 +132,10 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
     }
     
     private var sectionTransactions: some View {
-        ForEach(presenter.viewData.transactions, id: \.id) { transaction in
+        ForEach(presenter.viewData.transactions.flatMap({ $0 }), id: \.id) { transaction in
             Button {} label: {
                 GroupBox {
-                    VStack {
-                        rowTransactionTop(transaction)
-                        Divider()
-                        rowTransactionBottom(transaction)
-                        Spacer()
-                    }
+                    TransactionCardView(transaction: transaction)
                 }.listGroupBoxStyle()
             }
             .frame(minHeight: 90)
@@ -170,7 +164,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         HStack {
             RefdsText(transaction.description.isEmpty ? presenter.string(.noDescription) : transaction.description, color: .secondary)
             Spacer()
-            RefdsText(transaction.amount.currency, family: .moderatMono, alignment: .trailing, lineLimit: 1)
+            RefdsText(transaction.amount.currency, alignment: .trailing, lineLimit: 1)
         }
     }
     

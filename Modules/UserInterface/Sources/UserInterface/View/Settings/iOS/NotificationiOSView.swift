@@ -31,7 +31,9 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
             Toggle(isOn: $presenter.isAllowNotification) {
                 RefdsText(presenter.string(.allowNotification))
             }
-            .toggleStyle(CheckBoxStyle())
+            .tint(.accentColor)
+        } header: {
+            RefdsText(presenter.string(.status), size: .extraSmall, color: .secondary)
         }
     }
     
@@ -98,7 +100,7 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
                     RefdsText(presenter.viewData[index].description, color: .secondary)
                 }
             }
-            .toggleStyle(CheckBoxStyle())
+            .tint(.accentColor)
         }
     }
 }

@@ -159,7 +159,7 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                     amount: viewData.amount
                 )
                 onSuccess?()
-                checkWarning()
+                updateNotification(category: category)
             } catch {
                 guard let error = error as? BudgetError else { return }
                 onError?(error)
@@ -167,39 +167,31 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
         }
     }
     
-    private func checkWarning() {
-//        let database = Database.shared
-//        var notification: NotificationEntity = database.get(on: .notification) ?? .init()
-//        let categories = Worker.shared.category.getCategories(from: date, format: .monthYear)
-//        let transactions = Worker.shared.transaction.getTransactions(from: date, format: .monthYear)
-//        let date = date.asString(withDateFormat: .monthYear)
-//        var totalBudget = categories.map { category in
-//            category.budgetsValue.filter {
-//                $0.date.asString(withDateFormat: .monthYear) == date
-//            }.first?.amount ?? 0
-//        }.reduce(0, +)
-//        totalBudget = totalBudget == 0 ? 1 : totalBudget
-//        let totalActual = transactions.map { $0.amount }.reduce(0, +)
-//        let percent = (totalActual * 100) / totalBudget
-//
-//        if totalActual <= totalBudget, percent >= 70, notification.warningExpensesDate?.asString(withDateFormat: .monthYear) != date {
-//            notification.warningExpensesDate = .current
-//            NotificationCenter.shared.makeWarningExpenses(percent: percent, actual: totalActual, total: totalBudget)
-//        } else if totalActual > totalBudget, notification.breakingExpensesDate?.asString(withDateFormat: .monthYear) != date {
-//            notification.breakingExpensesDate = .current
-//            NotificationCenter.shared.makeWarningBreakExpenses()
-//        } else if let category = category {
-//            let budgetCategory = category.budgetsValue.first(where: { $0.date.asString(withDateFormat: .monthYear) == date })?.amount ?? 1
-//            let actualCategory = transactions.filter { $0.categoryUUID == category.id }.map { $0.amount }.reduce(0, +)
-//            let percent = (actualCategory * 100) / budgetCategory
-//
-//            if actualCategory <= budgetCategory, percent >= 70, notification.warningExpensesCategoriesDate[category.id]?.asString(withDateFormat: .monthYear) != date {
-//                notification.warningExpensesCategoriesDate[category.id] = .current
-//                NotificationCenter.shared.makeWarningExpenses(percent: percent, category: category.name, actual: actualCategory, total: budgetCategory)
-//            } else if actualCategory > budgetCategory, notification.breakingExpensesCategoriesDate[category.id]?.asString(withDateFormat: .monthYear) != date {
-//                notification.breakingExpensesCategoriesDate[category.id] = .current
-//                NotificationCenter.shared.makeWarningBreakExpenses(category: category.name)
-//            }
-//        }
+    private func updateNotification(category: AddTransactionViewData.Category) {
+        let settings = Worker.shared.settings.get()
+        guard let category = Worker.shared.category.getCategory(by: category.id) else { return }
+        let transactions = Worker.shared.transaction.get(on: category.id, from: date, format: .monthYear)
+        guard let budget = category.budgetsValue.first(where: { $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear) }) else { return }
+        let total = budget.amount == 0 ? 1 : budget.amount
+        let actual = transactions.map({ $0.amount }).reduce(0, +)
+        let percent = (actual * 100) / total
+        guard !hasWarning(budgetID: budget.id, settings: settings, total: total, actual: actual, percent: percent, name: category.name) else { return }
+        guard !hasBreaking(budgetID: budget.id, settings: settings, total: total, actual: actual, name: category.name) else { return }
+    }
+    
+    private func hasWarning(budgetID: UUID, settings: SettingsEntity, total: Double, actual: Double, percent: Double, name: String) -> Bool {
+        if actual <= total, percent >= 70, !settings.currentWarningNotificationAppears.contains(budgetID) {
+            NotificationCenter.shared.makeWarningExpenses(budgetID: budgetID, percent: percent, category: name, actual: actual, total: total)
+            return true
+        }
+        return false
+    }
+    
+    private func hasBreaking(budgetID: UUID, settings: SettingsEntity, total: Double, actual: Double, name: String) -> Bool {
+        if actual > total, !settings.currentBreakingNotificationAppears.contains(budgetID) {
+            NotificationCenter.shared.makeWarningBreakExpenses(budgetID: budgetID, category: name)
+            return true
+        }
+        return false
     }
 }

@@ -78,7 +78,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                         Toggle(isOn: $presenter.isFilterPerDate) {
                             RefdsText(presenter.string(.filterPerDate))
                         }
-                        .toggleStyle(CheckBoxStyle())
+                        .tint(.accentColor)
                         
                         if presenter.isFilterPerDate {
                             CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
@@ -86,7 +86,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                                     Button { presenter.selectedPeriod = period  } label: {
                                         HStack(spacing: 15) {
                                             IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                            RefdsText(period.label.capitalized, color: .secondary)
+                                            RefdsText(period.label.capitalized)
                                         }
                                     }
                                 }
@@ -113,7 +113,6 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
-                    family: .moderatMono,
                     alignment: .center,
                     lineLimit: 1
                 )
@@ -123,39 +122,29 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     }
     
     private var sectionTransactions: some View {
-        ForEach(presenter.viewData.transactions, id: \.id) { transaction in
+        ForEach(presenter.viewData.transactions.indices, id: \.self) { index in
+            let transactions = presenter.viewData.transactions[index]
             Section {
-                VStack {
-                    rowTransactionTop(transaction)
-                    Divider()
-                    rowTransactionBottom(transaction)
+                ForEach(transactions, id: \.id) { transaction in
+                    TransactionCardView(transaction: transaction)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        swipeEdit(transaction: transaction)
+                        swipeRemove(transaction: transaction)
+                    }
+                    .contextMenu {
+                        contextMenuEdit(transaction: transaction)
+                        contextMenuRemove(transaction: transaction)
+                    }
                 }
-                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    swipeEdit(transaction: transaction)
-                    swipeRemove(transaction: transaction)
-                }
-                .contextMenu {
-                    contextMenuEdit(transaction: transaction)
-                    contextMenuRemove(transaction: transaction)
+            } header: {
+                if let date = transactions.first?.date {
+                    HStack {
+                        RefdsText(date.asString(withDateFormat: .custom("dd MMMM, yyyy")), size: .extraSmall, color: .secondary)
+                        Spacer()
+                        RefdsText(date.asString(withDateFormat: .custom("EEEE")), size: .extraSmall, color: .secondary)
+                    }
                 }
             }
-        }
-    }
-    
-    private func rowTransactionTop(_ transaction: TransactionViewData.Transaction) -> some View {
-        HStack {
-            RefdsTag(transaction.date.asString(withDateFormat: .custom("EEE HH:mm")), color: .secondary)
-            RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy")))
-            Spacer()
-            RefdsTag(transaction.categoryName, color: transaction.categoryColor)
-        }
-    }
-    
-    private func rowTransactionBottom(_ transaction: TransactionViewData.Transaction) -> some View {
-        HStack {
-            RefdsText(transaction.description.isEmpty ? presenter.string(.noDescription) : transaction.description, color: .secondary)
-            Spacer()
-            RefdsText(transaction.amount.currency, family: .moderatMono, alignment: .trailing, lineLimit: 1)
         }
     }
     

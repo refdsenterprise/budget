@@ -79,7 +79,7 @@ struct CollapsedView_Previews: PreviewProvider {
                 HStack {
                     RefdsText("Filtro")
                     Spacer()
-                    RefdsTag("aplied", size: .custom(14), color: .yellow, family: .moderatMono, lineLimit: 1)
+                    RefdsTag("aplied", size: .custom(14), color: .yellow, lineLimit: 1)
                 }
             }
         }

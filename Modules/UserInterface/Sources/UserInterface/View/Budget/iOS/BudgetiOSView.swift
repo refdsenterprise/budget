@@ -86,7 +86,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                             Toggle(isOn: $presenter.isFilterPerDate) {
                                 RefdsText(presenter.string(.filterByDate))
                             }
-                            .toggleStyle(CheckBoxStyle())
+                            .tint(.accentColor)
                         }
                         
                         if presenter.isFilterPerDate {
@@ -122,7 +122,6 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                     presenter.viewData.remainingCategoryValue.amount.currency,
                     size: .custom(40),
                     weight: .bold,
-                    family: .moderatMono,
                     alignment: .center,
                     lineLimit: 1
                 )
@@ -130,8 +129,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                     presenter.viewData.remainingCategoryValue.percentString,
                     size: .custom(20),
                     color: presenter.viewData.remainingCategoryValue.color,
-                    weight: .bold,
-                    family: .moderatMono
+                    weight: .bold
                 )
             }
             .frame(maxWidth: .infinity)
@@ -151,20 +149,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     
     private func sectionMaxTransaction(transaction: TransactionViewData.Transaction) -> some View {
         Section {
-            VStack {
-                HStack {
-                    RefdsTag(transaction.date.asString(withDateFormat: .custom("EEE HH:mm")), color: .secondary)
-                    RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy")))
-                    Spacer()
-                    RefdsTag(transaction.categoryName, color: transaction.categoryColor)
-                }
-                Divider()
-                HStack {
-                    RefdsText(transaction.description, color: .secondary)
-                    Spacer()
-                    RefdsText(transaction.amount.currency, family: .moderatMono, alignment: .trailing, lineLimit: 1)
-                }
-            }
+            TransactionCardView(transaction: transaction)
         } header: {
             RefdsText(presenter.string(.biggerBuy), size: .extraSmall, color: .secondary)
         }
@@ -213,7 +198,6 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 (presenter.viewData.weekdaysDetail?.amount ?? 0).currency,
                 size: .custom(40),
                 weight: .bold,
-                family: .moderatMono,
                 alignment: .center,
                 lineLimit: 1
             )
@@ -221,8 +205,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 presenter.viewData.weekdaysDetail?.percentString ?? "",
                 size: .custom(20),
                 color: .accentColor,
-                weight: .bold,
-                family: .moderatMono
+                weight: .bold
             )
         }
         .frame(maxWidth: .infinity)
@@ -260,7 +243,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 IndicatorPointView(color: item.color)
                 RefdsText(item.title.capitalized)
                 Spacer()
-                RefdsText(item.realValue.currency, color: .secondary, family: .moderatMono)
+                RefdsText(item.realValue.currency, color: .secondary)
             }
         }
     }
@@ -331,17 +314,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     private var rowShowTransactions: some View {
         CollapsedView(title: presenter.string(.showTransactoins)) {
             ForEach(presenter.viewData.weekdayTransactions, id: \.id) { transaction in
-                HStack(spacing: 10) {
-                    IndicatorPointView(color: transaction.categoryColor)
-                    VStack(alignment: .leading, spacing: 5) {
-                        RefdsText(transaction.description)
-                        HStack {
-                            RefdsText(transaction.date.asString(withDateFormat: .custom("dd MMMM, yyyy - HH:mm")), color: .secondary)
-                            Spacer()
-                            RefdsText(transaction.amount.currency, color: .secondary)
-                        }
-                    }
-                }
+                TransactionCardView(transaction: transaction)
             }
         }
     }
@@ -357,11 +330,10 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
                 actual.currency,
                 size: .custom(40),
                 weight: .bold,
-                family: .moderatMono,
                 alignment: .center,
                 lineLimit: 1
             )
-            RefdsText(budget.currency, size: .custom(20), color: .accentColor, weight: .bold, family: .moderatMono)
+            RefdsText(budget.currency, size: .custom(20), color: .accentColor, weight: .bold)
         }
     }
     
@@ -370,7 +342,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
             HStack {
                 RefdsText(category.name.capitalized, weight: .bold)
                 Spacer()
-                RefdsText(category.value.currency, family: .moderatMono)
+                RefdsText(category.value.currency)
             }
             HStack(spacing: 10) {
                 RefdsText(category.percentString, color: .secondary)
@@ -385,7 +357,7 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
             RefdsText(presenter.string(.amountTransactionsMoment))
             Spacer()
             GroupBox {
-                RefdsText("\(presenter.viewData.amountTransactions)", weight: .bold, family: .moderatMono)
+                RefdsText("\(presenter.viewData.amountTransactions)", weight: .bold)
             }
         }
     }

@@ -104,7 +104,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                         Toggle(isOn: $presenter.isFilterPerDate) {
                             RefdsText(presenter.string(.sectionOptionsFilterPerDate))
                         }
-                        .toggleStyle(CheckBoxStyle())
+                        .tint(.accentColor)
                         
                         if presenter.isFilterPerDate {
                             PeriodSelectionView(date: $presenter.date, dateFormat: .custom("MMMM, yyyy"))
@@ -157,7 +157,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     size: .custom(40),
                     color: .primary,
                     weight: .bold,
-                    family: .moderatMono,
                     alignment: .center,
                     lineLimit: 1
                 )
@@ -165,8 +164,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     presenter.viewData.value.totalBudget.currency,
                     size: .custom(20),
                     color: .accentColor,
-                    weight: .bold,
-                    family: .moderatMono
+                    weight: .bold
                 )
             }
         }
@@ -182,7 +180,6 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                     Spacer()
                     RefdsText(
                         category.budget.currency,
-                        family: .moderatMono,
                         lineLimit: 1
                     )
                 }
