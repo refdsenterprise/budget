@@ -12,6 +12,7 @@ import Domain
 
 public var shortcutItemReceived: ShortcutItem?
 public struct iOSScene<Presenter: ScenePresenterProtocol>: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var shortcutItem: ShortcutItem?
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var presenter: Presenter
@@ -36,31 +37,14 @@ public struct iOSScene<Presenter: ScenePresenterProtocol>: View {
                     switch newValue {
                     case .active:
                         if let shortcutItem = shortcutItemReceived {
+                            presenter.tabItemSelection = shortcutItem.tabItem
                             self.shortcutItem = shortcutItem
                             shortcutItemReceived = nil
                         }
                     default: break
                     }
                 }
-                .sheet(item: $shortcutItem, content: { item in
-                    switch item {
-                    case .addCategory: NavigationView {
-                        presenter.router.configure(routes: .addCategory)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar { dismissButton }
-                    }
-                    case .addTransaction: NavigationView {
-                        presenter.router.configure(routes: .addTransaction)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar { dismissButton }
-                    }
-                    case .addBudget: NavigationView {
-                        presenter.router.configure(routes: .addBudget)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar { dismissButton }
-                    }
-                    }
-                })
+                .sheet(item: $shortcutItem) { shortcutAction(item: $0) }
             }
         }
     }
@@ -75,6 +59,25 @@ public struct iOSScene<Presenter: ScenePresenterProtocol>: View {
                     weight: .medium,
                     renderingMode: .hierarchical
                 )
+            }
+        }
+    }
+    
+    private func shortcutAction(item: ShortcutItem) -> some View {
+        NavigationView {
+            switch item {
+            case .addCategory:
+                presenter.router.configure(routes: .addCategory)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { dismissButton }
+            case .addTransaction:
+                presenter.router.configure(routes: .addTransaction)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { dismissButton }
+            case .addBudget:
+                presenter.router.configure(routes: .addBudget)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { dismissButton }
             }
         }
     }

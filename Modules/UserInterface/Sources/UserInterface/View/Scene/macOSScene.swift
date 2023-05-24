@@ -25,25 +25,6 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
             .navigationTitle(presenter.string(.navigationTitle))
         } detail: {
             NavigationStack { presenter.router.configure(routes: .budget) }
-                .sheet(item: $presenter.creationItemSelection) { item in
-                    switch item {
-                    case .category: NavigationStack {
-                        presenter.router.configure(routes: .addCategory)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar { dismissButton }
-                    }
-                    case .transaction: NavigationStack {
-                        presenter.router.configure(routes: .addTransaction)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar { dismissButton }
-                    }
-                    case .budget: NavigationStack {
-                        presenter.router.configure(routes: .addBudget)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar { dismissButton }
-                    }
-                    }
-                }
         }
         .navigationSplitViewStyle(.balanced)
     }
@@ -80,10 +61,44 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
     private var sectionCreation: some View {
         Section {
             ForEach(presenter.creationItems, id: \.rawValue) { item in
-                Button {
-                    presenter.creationItemSelection = item
+                NavigationLink {
+                    NavigationStack {
+                        switch item {
+                        case .category:
+                            presenter.router.configure(routes: .category)
+                                .sheet(item: $presenter.creationItemSelection) { creationContentSheet(item: $0) }
+                                .onAppear { presenter.creationItemSelection = item }
+                        case .transaction:
+                            presenter.router.configure(routes: .transactions)
+                                .sheet(item: $presenter.creationItemSelection) { creationContentSheet(item: $0) }
+                                .onAppear { presenter.creationItemSelection = item }
+                        case .budget:
+                            presenter.router.configure(routes: .category)
+                                .sheet(item: $presenter.creationItemSelection) { creationContentSheet(item: $0) }
+                                .onAppear { presenter.creationItemSelection = item }
+                        }
+                    }
                 } label: { RefdsText(item.title, size: .large) }
             }
         } header: { RefdsText(presenter.string(.headerCreation), size: .large, weight: .bold) }
+    }
+    
+    private func creationContentSheet(item: CreationItem) -> some View {
+        NavigationStack {
+            switch item {
+            case .category:
+                presenter.router.configure(routes: .addCategory)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { dismissButton }
+            case .transaction:
+                presenter.router.configure(routes: .addTransaction)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { dismissButton }
+            case .budget:
+                presenter.router.configure(routes: .addBudget)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { dismissButton }
+            }
+        }
     }
 }
