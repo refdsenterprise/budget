@@ -8,7 +8,7 @@
 import SwiftUI
 import RefdsUI
 import Presentation
-
+#if os(iOS)
 struct SettingsiOSView<Presenter: SettingsPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
@@ -71,3 +71,4 @@ struct SettingsiOSView<Presenter: SettingsPresenterProtocol>: View {
         }
     }
 }
+#endif

@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsUI
 import Presentation
 import Resource
-
+#if os(iOS)
 struct ProiOSView<Presenter: ProPresenterProtocol>: View {
     @Environment(\.colorScheme) public var colorScheme
     @Environment(\.dismiss) public var dismiss
@@ -147,3 +147,4 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
         }
     }
 }
+#endif

@@ -12,12 +12,13 @@ import Presentation
 
 struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
+    @State private var isPresentedTransactions: Bool = false
     
     var body: some View {
         MacUIView(sections: sections)
             .budgetAlert($presenter.alert)
             .navigationTitle(presenter.string(.navigationTitle))
-            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
+            .toolbar { ToolbarItem { buttonAddCategory } }
             .searchable(text: $presenter.query, prompt: presenter.string(.searchPlaceholder))
             .onAppear { presenter.loadData() }
             .overlay(alignment: .center) { loading }
@@ -145,15 +146,13 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     
     private var sectionCategories: some View {
         ForEach(presenter.viewData.budgets, id: \.id) { category in
-            NavigationLink(destination: {
-                presenter.router.configure(routes: .transactions(category.id, presenter.date))
-            }, label: {
-                GroupBox {
-                    rowCategory(category)
-                }
-                .padding(.all, 10)
-                .listGroupBoxStyle(isButton: true)
-            })
+            GroupBox {
+                rowCategory(category)
+            }
+            .onTapGesture { isPresentedTransactions.toggle() }
+            .padding(.all, 10)
+            .listGroupBoxStyle(isButton: true)
+            .navigation(isPresented: $isPresentedTransactions, destination: { presenter.router.configure(routes: .transactions(category.id, presenter.date)) })
             .contextMenu {
                 contextMenuEditCategory(category)
                 contextMenuRemoveCategory(category)

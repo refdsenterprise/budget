@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsUI
 import Domain
 import Presentation
-
+#if os(iOS)
 struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     @Environment(\.dismiss) var dismiss
@@ -167,3 +167,4 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
         }
     }
 }
+#endif

@@ -22,8 +22,10 @@ public struct AboutScreen<Presenter: AboutPresenterProtocol>: View {
             AboutmacOSView<Presenter>()
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             AboutiOSView<Presenter>()
                 .environmentObject(presenter)
+            #endif
         }
     }
 }

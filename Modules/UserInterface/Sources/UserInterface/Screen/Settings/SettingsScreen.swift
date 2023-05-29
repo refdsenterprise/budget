@@ -22,9 +22,11 @@ public struct SettingsScreen<Presenter: SettingsPresenterProtocol>: View {
                 .environmentObject(presenter)
                 .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
         } else {
+            #if os(iOS)
             SettingsiOSView<Presenter>()
                 .environmentObject(presenter)
                 .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
+            #endif
         }
     }
 }

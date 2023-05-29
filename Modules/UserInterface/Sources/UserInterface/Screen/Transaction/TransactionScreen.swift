@@ -21,8 +21,10 @@ public struct TransactionScreen<Presenter: TransactionPresenterProtocol>: View {
             TransactionmacOSView<Presenter>()
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             TransactioniOSView<Presenter>()
                 .environmentObject(presenter)
+            #endif
         }
     }
 }

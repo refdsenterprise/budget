@@ -13,6 +13,7 @@ import Presentation
 
 struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
+    @State private var isPresentedDiffCategories: Bool = false
     
     var body: some View {
         MacUIView(sections: sections)
@@ -159,13 +160,13 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
     
     private var sectionDifference: some View {
         ForEach(presenter.viewData.remainingCategory, id: \.id) { category in
-            NavigationLink(destination: {
+            GroupBox {
+                rowDifference(category: category)
+            }
+            .listGroupBoxStyle(isButton: true)
+            .onTapGesture { isPresentedDiffCategories.toggle() }
+            .navigation(isPresented: $isPresentedDiffCategories, destination: {
                 presenter.router.configure(routes: .transactions(category.id, presenter.date))
-            }, label: {
-                GroupBox {
-                    rowDifference(category: category)
-                }
-                .listGroupBoxStyle(isButton: true)
             })
             .padding(.all, 10)
         }
@@ -194,7 +195,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
     private var sectionChart: some View {
         CollapsedView(showOptions: true, title: presenter.string(.transactions).capitalized, content: {
             Group {
-                if #available(iOS 16.0, *) {
+                if #available(iOS 16.0, *), #available(macOS 13.0, *) {
                     rowTransactionChart
                 }
             }
@@ -350,8 +351,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
             RefdsTextField(
                 presenter.string(.labelPlaceholderName),
                 text: $presenter.bubbleName,
-                alignment: .trailing,
-                textInputAutocapitalization: .characters
+                alignment: .trailing
             )
         }
     }
@@ -389,6 +389,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
         }
     }
     
+    @available(macOS 13.0, *)
     @available(iOS 16.0, *)
     private var rowTransactionChart: some View {
         VStack(spacing: 0) {
@@ -405,11 +406,17 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                 sectionChartLine
             }
             .frame(height: 350)
+            #if os(iOS)
             .tabViewStyle(.page(indexDisplayMode: .always))
             .indexViewStyle(.page(backgroundDisplayMode: .always))
+            #else
+            .padding(.top)
+            .padding(.top)
+            #endif
         }
     }
     
+    @available(macOS 13.0, *)
     @available(iOS 16.0, *)
     private var sectionChartBar: some View {
         Chart(presenter.viewData.chart, id: \.label) { chartData in
@@ -434,6 +441,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
         .padding(.vertical)
     }
     
+    @available(macOS 13.0, *)
     @available(iOS 16.0, *)
     private var sectionChartLine: some View {
         Chart {

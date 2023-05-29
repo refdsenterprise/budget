@@ -20,8 +20,10 @@ public struct NotificationScreen<Presenter: NotificationManagerPresenterProtocol
             NotificationmacOSView<Presenter>()
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             NotificationiOSView<Presenter>()
                 .environmentObject(presenter)
+            #endif
         }
     }
 }

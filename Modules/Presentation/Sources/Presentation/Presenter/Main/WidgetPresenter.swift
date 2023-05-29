@@ -10,8 +10,7 @@ import SwiftUI
 import Domain
 import Data
 import Resource
-#if targetEnvironment(macCatalyst)
-#else
+#if os(iOS)
 import ActivityKit
 #endif
 
@@ -23,8 +22,7 @@ public enum WidgetString {
     case budget
     case current
 }
-#if targetEnvironment(macCatalyst)
-#else
+#if os(iOS)
 @available(iOS 16.1, *)
 public final class LiveActivityPresenter {
     public static let shared = LiveActivityPresenter()

@@ -180,13 +180,19 @@ struct BudgetWidgetEntryView : View {
                     Spacer()
                     
                     VStack(alignment: .leading, spacing: 5) {
-                        HStack(spacing: 5) {
-                            Text(presenter.string(.diff).uppercased())
-                                .font(.system(size: 10, weight: .bold))
+                        VStack(alignment: .leading, spacing: 0) {
                             Text("restante".uppercased())
                                 .font(.system(size: 8))
                                 .foregroundColor(.secondary)
                                 .lineLimit(1)
+                            HStack {
+                                Text("\((totalBudget - totalActual).currency)")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(diffColor)
+                                Spacer()
+                                Text(presenter.string(.diff).uppercased())
+                                    .font(.system(size: 10, weight: .bold))
+                            }
                         }
                         ProgressView(value: totalActual, total: totalBudget)
                             .progressViewStyle(.linear)
@@ -526,7 +532,7 @@ struct BudgetWidget: Widget {
             BudgetWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Budget")
-        .description("Acompanhe suas dispesas sabendo até quanto pode gastar")
+        .description("Acompanhe suas despesas sabendo até quanto pode gastar")
         .supportedFamilies([
             .systemSmall,
             .systemMedium,

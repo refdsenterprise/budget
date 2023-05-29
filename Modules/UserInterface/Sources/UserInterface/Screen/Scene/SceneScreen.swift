@@ -17,12 +17,14 @@ public struct SceneScreen<Presenter: ScenePresenterProtocol>: View {
     }
     
     public var body: some View {
-        if Device.current == .macOS, #available(iOS 16.0, *) {
+        if Device.current == .macOS, #available(iOS 16.0, *), #available(macOS 13.0, *) {
             macOSScene<Presenter>()
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             iOSScene<Presenter>()
                 .environmentObject(presenter)
+            #endif
         }
     }
 }

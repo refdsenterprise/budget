@@ -8,7 +8,7 @@
 import SwiftUI
 import RefdsUI
 import Resource
-
+#if os(iOS)
 public struct OnboardingViewData {
     public var image: ResourceImage
     public var title: String
@@ -64,8 +64,9 @@ struct OnboardingView_Previews: PreviewProvider {
             .init(
                 image: .transactionsOnboarding,
                 title: "Transações",
-                description: "Adicione dispesas de forma rápida e intuitiva. Filtre as informações de um jeito simples."
+                description: "Adicione despesas de forma rápida e intuitiva. Filtre as informações de um jeito simples."
             )
         ])
     }
 }
+#endif

@@ -54,8 +54,10 @@ public final class AboutPresenter: AboutPresenterProtocol {
     }
     
     public func requestReview() {
+        #if os(iOS)
         if let scene = UIApplication.shared.connectedScenes.first, let windowScene = scene as? UIWindowScene {
             SKStoreReviewController.requestReview(in: windowScene)
         }
+        #endif
     }
 }

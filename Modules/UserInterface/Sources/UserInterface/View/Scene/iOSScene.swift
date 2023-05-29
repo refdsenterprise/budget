@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsUI
 import Presentation
 import Domain
-
+#if os(iOS)
 public var shortcutItemReceived: ShortcutItem?
 public struct iOSScene<Presenter: ScenePresenterProtocol>: View {
     @Environment(\.dismiss) private var dismiss
@@ -82,3 +82,4 @@ public struct iOSScene<Presenter: ScenePresenterProtocol>: View {
         }
     }
 }
+#endif

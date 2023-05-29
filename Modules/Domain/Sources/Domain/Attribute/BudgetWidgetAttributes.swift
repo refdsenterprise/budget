@@ -7,8 +7,7 @@
 
 import Foundation
 import SwiftUI
-#if targetEnvironment(macCatalyst)
-#else
+#if os(iOS)
 import ActivityKit
 
 public struct BudgetWidgetAttributes: ActivityAttributes {

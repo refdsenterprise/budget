@@ -24,9 +24,11 @@ public struct BudgetScreen<Presenter: BudgetPresenterProtocol>: View {
                 .environmentObject(presenter)
                 .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
         } else {
+            #if os(iOS)
             BudgetiOSView<Presenter>()
                 .environmentObject(presenter)
                 .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
+            #endif
         }
     }
 }

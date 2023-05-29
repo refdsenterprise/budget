@@ -20,8 +20,10 @@ public struct CustomizationScree<Presenter: CustomizationPresenterProtocol>: Vie
             CustomizationmacOSView<Presenter>()
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             CustomizationiOSView<Presenter>()
                 .environmentObject(presenter)
+            #endif
         }
     }
 }

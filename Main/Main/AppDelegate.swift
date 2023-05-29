@@ -6,15 +6,16 @@
 //
 
 import Domain
-import UIKit
-#if targetEnvironment(macCatalyst)
+#if os(macOS)
 #else
+import UIKit
 import ActivityKit
 #endif
 import Core
 import Presentation
 import Data
 
+#if os(iOS)
 var shortcutItemReceived: ShortcutItem?
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
@@ -22,17 +23,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        for scene in application.connectedScenes {
-            if let windowScene = (scene as? UIWindowScene) {
-                #if targetEnvironment(macCatalyst)
-                if let titlebar = windowScene.titlebar {
-                    titlebar.titleVisibility = .hidden
-                    titlebar.toolbar = nil
-                }
-                #endif
-            }
-        }
-        
         let configuration = UISceneConfiguration(
             name: connectingSceneSession.configuration.name,
             sessionRole: connectingSceneSession.role
@@ -85,3 +75,4 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate {
         print(components)
     }
 }
+#endif

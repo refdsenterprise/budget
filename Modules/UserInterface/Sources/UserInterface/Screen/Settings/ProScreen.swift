@@ -26,12 +26,14 @@ public struct ProScreen<Presenter: ProPresenterProtocol>: View {
                         dismiss()
                     }
         } else {
+            #if os(iOS)
             ProiOSView<Presenter>()
                 .environmentObject(presenter)
                 .onChange(of: appConfigurator.isPro) { newValue in
                     guard newValue else { return }
                     dismiss()
                 }
+            #endif
         }
     }
 }

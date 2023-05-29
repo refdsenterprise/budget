@@ -57,17 +57,3 @@ public struct ProSection: View {
         .padding()
     }
 }
-
-struct ProSection_Previews: PreviewProvider {
-    static var previews: some View {
-        if Device.current == .macOS, #available(iOS 16.0, *) {
-            NavigationStack {
-                MacUIView(maxAmount: 2) {
-                    ProSection()
-                }
-            }
-        } else {
-            List { ProSection() }
-        }
-    }
-}

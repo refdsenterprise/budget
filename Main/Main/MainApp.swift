@@ -17,10 +17,16 @@ import WidgetKit
 @main
 struct MainApp: App {
     @Environment(\.scenePhase) private var scenePhase
+    #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    #endif
     @StateObject private var appConfiguration = AppConfiguration.shared
     
-    init() { RefdsUI.shared.setNavigationBarAppearance() }
+    init() {
+        #if os(iOS)
+        RefdsUI.shared.setNavigationBarAppearance()
+        #endif
+    }
     
     var body: some Scene {
         WindowGroup {
@@ -34,8 +40,10 @@ struct MainApp: App {
                     switch newValue {
                     case .active:
                         appConfiguration.startObserver()
+                        #if os(iOS)
                         UserInterface.shortcutItemReceived = shortcutItemReceived
                         shortcutItemReceived = nil
+                        #endif
                     default: appConfiguration.stopObserver()
                     }
                 }

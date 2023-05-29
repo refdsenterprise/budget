@@ -66,7 +66,7 @@ public final class NotificationCenter {
                 .atHour(20, needStop),
                 id: .reminder,
                 title: "Atualização dos gastos.",
-                body: "Já informou as dispesas de hoje? Vai que é rápido"
+                body: "Já informou as despesas de hoje? Vai que é rápido"
             )
         })
     }
@@ -77,7 +77,7 @@ public final class NotificationCenter {
             self.makeNotificationRequest(
                 .now,
                 id: category == nil ? .warningExpenses : .warningExpensesCategory,
-                title: "⚠️ \(category == nil ? "Dispesas atingiram" : "\(category!.capitalized) atingiu") \(String(format: "%02d", Int(percent)))%.",
+                title: "⚠️ \(category == nil ? "Despesas atingiram" : "\(category!.capitalized) atingiu") \(String(format: "%02d", Int(percent)))%.",
                 body: "Restando apenas \((total - actual).currency) de \(total.currency) calculados."
             )
             try? Worker.shared.settings.add(currentWarningNotificationAppears: self.settings.currentWarningNotificationAppears + [budgetID])
@@ -91,7 +91,7 @@ public final class NotificationCenter {
                 .now,
                 id: category == nil ? .warningBreak : .warningBreakCategory,
                 title: "‼️ Limite de gasto excedido.",
-                body: "Os valores previstos para \(category == nil ? "dispesas" : category!.lowercased()) foram ultrapassados."
+                body: "Os valores previstos para \(category == nil ? "despesas" : category!.lowercased()) foram ultrapassados."
             )
             try? Worker.shared.settings.add(currentBreakingNotificationAppears: self.settings.currentBreakingNotificationAppears + [budgetID])
         })

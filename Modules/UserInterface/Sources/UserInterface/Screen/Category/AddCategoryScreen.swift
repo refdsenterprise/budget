@@ -22,8 +22,10 @@ public struct AddCategoryScreen<Presenter: AddCategoryPresenterProtocol>: View {
             AddCategorymacOSView<Presenter>()
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             AddCategoryiOSView<Presenter>()
                 .environmentObject(presenter)
+            #endif
         }
     }
 }

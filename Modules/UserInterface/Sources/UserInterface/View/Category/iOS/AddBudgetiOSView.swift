@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsUI
 import Domain
 import Presentation
-
+#if os(iOS)
 struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     private let newBudget: ((AddBudgetViewData) -> Void)?
@@ -119,3 +119,4 @@ struct AddBudgetiOSView<Presenter: AddBudgetPresenterProtocol>: View {
         }
     }
 }
+#endif

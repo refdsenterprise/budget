@@ -10,7 +10,7 @@ import RefdsUI
 import Charts
 import Domain
 import Presentation
-
+#if os(iOS)
 struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
@@ -459,3 +459,4 @@ struct BudgetiOSView<Presenter: BudgetPresenterProtocol>: View {
         .padding(.vertical)
     }
 }
+#endif

@@ -25,6 +25,7 @@ public struct PeriodSelectionView: View {
     
     public var body: some View {
         Section {
+            #if os(iOS)
             Button {
                 withAnimation {
                     isCollapsed.toggle()
@@ -38,6 +39,20 @@ public struct PeriodSelectionView: View {
                         .rotationEffect(isCollapsed ? .degrees(0) : .degrees(90))
                 }
             }
+            #else
+            HStack(spacing: 15) {
+                RefdsText(Strings.UserInterface.periodTitle.value)
+                Spacer()
+                RefdsText(date.asString(withDateFormat: dateFormat).capitalized, color: .secondary)
+                RefdsIcon(symbol: .chevronRight, color: .accentColor, size: 16, weight: .medium, renderingMode: .hierarchical)
+                    .rotationEffect(isCollapsed ? .degrees(0) : .degrees(90))
+            }
+            .onTapGesture {
+                withAnimation {
+                    isCollapsed.toggle()
+                }
+            }
+            #endif
             if !isCollapsed {
                 DatePicker(selection: Binding(get: { date }, set: { date = $0; action?($0) }), displayedComponents: .date) {
                     EmptyView()

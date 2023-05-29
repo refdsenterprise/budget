@@ -25,8 +25,10 @@ struct AboutmacOSView<Presenter: AboutPresenterProtocol>: View {
                 sectionLinks
             })
         ])
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .share(item: $presenter.appShareItem)
+        #endif
     }
     
     private var sectionHeader: some View {
@@ -47,7 +49,11 @@ struct AboutmacOSView<Presenter: AboutPresenterProtocol>: View {
     private var sectionLinks: some View {
         Group {
             Button {
+                #if os(iOS)
                 UIApplication.shared.open(presenter.link(.website))
+                #else
+                NSWorkspace.shared.open(presenter.link(.website))
+                #endif
             } label: {
                 GroupBox {
                     HStack {
@@ -60,7 +66,11 @@ struct AboutmacOSView<Presenter: AboutPresenterProtocol>: View {
             }
             
             Button {
+                #if os(iOS)
                 UIApplication.shared.open(presenter.link(.github))
+                #else
+                NSWorkspace.shared.open(presenter.link(.github))
+                #endif
             } label: {
                 GroupBox {
                     HStack {

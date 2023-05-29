@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsUI
 import Domain
 import Presentation
-
+#if os(iOS)
 struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
@@ -259,3 +259,4 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
         }
     }
 }
+#endif

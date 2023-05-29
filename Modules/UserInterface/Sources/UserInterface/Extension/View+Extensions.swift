@@ -26,7 +26,7 @@ public extension View {
             ) { EmptyView() }.hidden()
         )
     }
-    
+    #if os(iOS)
     func share(item: Binding<ShareItem>) -> some View {
         self.sheet(isPresented: item.isPresented) {
             if let url = item.url.wrappedValue {
@@ -39,4 +39,5 @@ public extension View {
             }
         }
     }
+    #endif
 }

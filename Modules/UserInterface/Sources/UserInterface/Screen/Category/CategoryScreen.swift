@@ -23,9 +23,11 @@ public struct CategoryScreen<Presenter: CategoryPresenterProtocol>: View {
                 .environmentObject(presenter)
                 .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
         } else {
+            #if os(iOS)
             CategoryiOSView<Presenter>()
                 .environmentObject(presenter)
                 .onChange(of: appConfigurator.isPro) { _ in presenter.loadData() }
+            #endif
         }
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 import RefdsUI
 import Presentation
-
+#if os(iOS)
 struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     @Environment(\.dismiss) var dismiss
@@ -119,3 +119,4 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
         }
     }
 }
+#endif

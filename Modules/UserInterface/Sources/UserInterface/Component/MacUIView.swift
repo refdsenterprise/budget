@@ -38,7 +38,11 @@ public struct MacUIView: View {
                         .padding()
                 }
             }
+            #if os(iOS)
             .background(colorScheme == .light ? Color(hex: "F2F2F7") : Color(uiColor: .systemBackground))
+            #else
+            .background(colorScheme == .light ? Color(hex: "F2F2F7") : Color(nsColor: .windowBackgroundColor))
+            #endif
         }
     }
 }

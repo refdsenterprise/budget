@@ -24,9 +24,10 @@ public struct AddBudgetScreen<Presenter: AddBudgetPresenterProtocol>: View {
             AddBudgetmacOSView<Presenter>(newBudget: newBudget)
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             AddBudgetiOSView<Presenter>(newBudget: newBudget)
                 .environmentObject(presenter)
-            
+            #endif
         }
     }
 }

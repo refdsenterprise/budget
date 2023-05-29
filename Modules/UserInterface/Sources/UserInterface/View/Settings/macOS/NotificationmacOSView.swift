@@ -29,9 +29,11 @@ struct NotificationmacOSView<Presenter: NotificationManagerPresenterProtocol>: V
             }
         }
         .navigationTitle(presenter.string(.navigationTitle))
+        #if os(iOS)
         .onReceive(SwiftUI.NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             Task { await presenter.checkNotificationPermission() }
         }
+        #endif
     }
     
     private var sectionAllowNotification: some View {

@@ -8,7 +8,7 @@
 import SwiftUI
 import RefdsUI
 import Presentation
-
+#if os(iOS)
 struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
@@ -104,3 +104,4 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
         }
     }
 }
+#endif

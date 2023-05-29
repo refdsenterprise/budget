@@ -23,7 +23,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
         }
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
-        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
+        .toolbar { ToolbarItem { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
         .task { await presenter.start(id: presenter.id) }
         .navigation(isPresented: $presenter.isPresentedEditBudget) {
@@ -52,8 +52,7 @@ struct AddCategorymacOSView<Presenter: AddCategoryPresenterProtocol>: View {
             RefdsTextField(
                 presenter.string(.labelPlaceholderName),
                 text: $presenter.viewData.name,
-                alignment: .trailing,
-                textInputAutocapitalization: .characters
+                alignment: .trailing
             )
         }
     }

@@ -94,9 +94,13 @@ public final class NotificationManagerPresenter: NotificationManagerPresenterPro
     }
     
     public func actionNotificationSettings() {
+        #if os(iOS)
         if let url = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(url)
         }
+        #else
+        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference")!)
+        #endif
     }
     
     @MainActor public func checkNotificationPermission() async {

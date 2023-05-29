@@ -29,6 +29,7 @@ public struct CollapsedView: View {
     }
     
     public var body: some View {
+        #if os(iOS)
         Button {
             Application.shared.endEditing()
             withAnimation {
@@ -41,6 +42,21 @@ public struct CollapsedView: View {
                 rowView(row: row)
             }
         }
+        #else
+        Group {
+            if let title = title {
+                rowView(title: title)
+            } else if let row = row {
+                rowView(row: row)
+            }
+        }
+        .onTapGesture {
+            Application.shared.endEditing()
+            withAnimation {
+                showOptions.toggle()
+            }
+        }
+        #endif
         if showOptions {
             AnyView(content())
         }

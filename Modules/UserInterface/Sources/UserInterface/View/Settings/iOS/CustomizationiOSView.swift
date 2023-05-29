@@ -9,7 +9,7 @@ import SwiftUI
 import RefdsUI
 import Domain
 import Presentation
-
+#if os(iOS)
 struct CustomizationiOSView<Presenter: CustomizationPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     @EnvironmentObject private var appConfigurator: AppConfiguration
@@ -65,3 +65,4 @@ struct CustomizationiOSView<Presenter: CustomizationPresenterProtocol>: View {
         }
     }
 }
+#endif

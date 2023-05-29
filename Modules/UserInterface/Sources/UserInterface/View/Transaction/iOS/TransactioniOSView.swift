@@ -10,7 +10,7 @@ import RefdsUI
 import Charts
 import Domain
 import Presentation
-
+#if os(iOS)
 struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     
@@ -246,3 +246,4 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
         .position(by: .value(presenter.string(.chartDate), data.date))
     }
 }
+#endif

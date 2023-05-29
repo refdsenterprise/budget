@@ -26,7 +26,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
         ])
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
-        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
+        .toolbar { ToolbarItem { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
         .task {
             await presenter.start(transaction: presenter.transaction)
@@ -61,8 +61,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
             RefdsTextField(
                 presenter.string(.inputDescription),
                 text: $presenter.viewData.message,
-                alignment: .trailing,
-                textInputAutocapitalization: .sentences
+                alignment: .trailing
             )
         }
     }

@@ -116,7 +116,13 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
     }
     
     private var termsButton: some View {
-        Button { UIApplication.shared.open(AboutLinks.policy.url) } label: {
+        Button {
+            #if os(iOS)
+            UIApplication.shared.open(AboutLinks.policy.url)
+            #else
+            NSWorkspace.shared.open(AboutLinks.policy.url)
+            #endif
+        } label: {
             RefdsText(presenter.string(.readTermsButton), size: .small, color: .accentColor, alignment: .center)
         }
     }

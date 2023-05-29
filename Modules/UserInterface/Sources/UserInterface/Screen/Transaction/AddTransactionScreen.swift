@@ -21,8 +21,10 @@ public struct AddTransactionScreen<Presenter: AddTransactionPresenterProtocol>: 
             AddTransactionmacOSView<Presenter>()
                 .environmentObject(presenter)
         } else {
+            #if os(iOS)
             AddTransactioniOSView<Presenter>()
                 .environmentObject(presenter)
+            #endif
         }
     }
 }

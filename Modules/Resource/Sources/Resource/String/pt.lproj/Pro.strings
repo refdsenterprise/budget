@@ -16,7 +16,7 @@
 "macOSTitle" = "Versão macOS";
 "macOSDescription" = "Utilize o layout feito para mac e iPad quando quiser.";
 "notificationTitle" = "Notificações";
-"notificationDescription" = "Saiba quando ultrapassou 70% ou 100% das dispesas em cada categoria e no geral.";
+"notificationDescription" = "Saiba quando ultrapassou 70% ou 100% das despesas em cada categoria e no geral.";
 "customizationTitle" = "Customização";
 "customizationDescription" = "Alterar a cor do tema e ícone do aplicativo para o jeito que mais combine com você.";
 "resourceHeader" = "Recursos";

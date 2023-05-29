@@ -18,7 +18,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         MacUIView(sections: sections)
             .budgetAlert($presenter.alert)
             .navigationTitle(presenter.string(.navigationTitle))
-            .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddTransaction } }
+            .toolbar { ToolbarItem { buttonAddTransaction } }
             .searchable(text: $presenter.query, prompt: presenter.string(.searchForTransactions))
             .onAppear { presenter.loadData() }
             .overlay(alignment: .center) { loading }
@@ -48,7 +48,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
             }),
             .init(maxAmount: 1, content: {
                 Group {
-                    if #available(iOS 16.0, *),
+                    if #available(iOS 16.0, *), #available(macOS 13.0, *),
                        !presenter.viewData.chart.isEmpty {
                         CollapsedView(title: presenter.string(.chart)) {
                             sectionChartTransactions
@@ -133,11 +133,10 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
     
     private var sectionTransactions: some View {
         ForEach(presenter.viewData.transactions.flatMap({ $0 }), id: \.id) { transaction in
-            Button {} label: {
-                GroupBox {
-                    TransactionCardView(transaction: transaction)
-                }.listGroupBoxStyle()
+            GroupBox {
+                TransactionCardView(transaction: transaction)
             }
+            .listGroupBoxStyle()
             .frame(minHeight: 90)
             .padding()
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {

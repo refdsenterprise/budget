@@ -18,7 +18,7 @@ public struct ListGroupBoxStyle: GroupBoxStyle {
     public func makeBody(configuration: Configuration) -> some View {
         Group {
             if isButton {
-                HStack {
+                HStack(spacing: 10) {
                     configuration.content
                     Spacer()
                     Image(systemName: "chevron.right")
@@ -31,7 +31,11 @@ public struct ListGroupBoxStyle: GroupBoxStyle {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
+                #if os(iOS)
                 .fill(colorScheme == .light ? .white : Color(uiColor: .secondarySystemBackground))
+                #else
+                .fill(colorScheme == .light ? .white : Color(nsColor: .controlBackgroundColor))
+                #endif
         )
     }
 }

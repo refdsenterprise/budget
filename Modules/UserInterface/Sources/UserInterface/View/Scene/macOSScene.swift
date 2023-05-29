@@ -10,6 +10,7 @@ import RefdsUI
 import Domain
 import Presentation
 
+@available(macOS 13.0, *)
 @available(iOS 16.0, *)
 struct macOSScene<Presenter: ScenePresenterProtocol>: View {
     @Environment(\.dismiss) private var dismiss
@@ -30,7 +31,7 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
     }
     
     private var dismissButton: ToolbarItem<(), Button<RefdsIcon>> {
-        ToolbarItem(placement: .navigationBarLeading) {
+        ToolbarItem {
             Button { presenter.creationItemSelection = nil } label: {
                 RefdsIcon(
                     symbol: .xmarkCircleFill,
@@ -53,9 +54,12 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
                     case .transaction: NavigationStack { presenter.router.configure(routes: .transactions) }
                     case .settings: NavigationStack { presenter.router.configure(routes: .settings) }
                     }
-                } label: { Label { RefdsText(item.title, size: .large) } icon: { item.image } }
+                } label: { Label { RefdsText(item.title) } icon: { item.image } }
+                #if os(macOS)
+                    .padding(.vertical, 2)
+                #endif
             }
-        } header: { RefdsText(presenter.string(.headerShowing), size: .large, weight: .bold) }
+        } header: { RefdsText(presenter.string(.headerShowing).uppercased(), size: .extraSmall, color: .secondary) }
     }
     
     private var sectionCreation: some View {
@@ -78,9 +82,12 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
                                 .onAppear { presenter.creationItemSelection = item }
                         }
                     }
-                } label: { RefdsText(item.title, size: .large) }
+                } label: { Label { RefdsText(item.title) } icon: { item.image } }
+                #if os(macOS)
+                    .padding(.vertical, 2)
+                #endif
             }
-        } header: { RefdsText(presenter.string(.headerCreation), size: .large, weight: .bold) }
+        } header: { RefdsText(presenter.string(.headerCreation).uppercased(), size: .extraSmall, color: .secondary) }
     }
     
     private func creationContentSheet(item: CreationItem) -> some View {
@@ -88,15 +95,23 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
             switch item {
             case .category:
                 presenter.router.configure(routes: .addCategory)
+                    #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                    #endif
                     .toolbar { dismissButton }
+                    
             case .transaction:
                 presenter.router.configure(routes: .addTransaction)
+                    #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                    #endif
                     .toolbar { dismissButton }
+                    
             case .budget:
                 presenter.router.configure(routes: .addBudget)
+                    #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                    #endif
                     .toolbar { dismissButton }
             }
         }
