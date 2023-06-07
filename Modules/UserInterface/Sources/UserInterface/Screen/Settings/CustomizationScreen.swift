@@ -8,7 +8,7 @@
 import SwiftUI
 import Presentation
 
-public struct CustomizationScree<Presenter: CustomizationPresenterProtocol>: View {
+public struct CustomizationScreen<Presenter: CustomizationPresenterProtocol>: View {
     @StateObject private var presenter: Presenter
     
     public init(presenter: Presenter) {

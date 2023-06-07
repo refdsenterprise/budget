@@ -6,7 +6,7 @@
       "location" : "https://github.com/refdsenterprise/refds-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "ab87abf1fbc3ccfff56a9adf4cba394d16354630"
+        "revision" : "bcd105ab13f72d3cc25e54dec769aeb913068760"
       }
     },
     {
@@ -15,7 +15,16 @@
       "location" : "https://github.com/refdsenterprise/refds-design-system.git",
       "state" : {
         "branch" : "develop",
-        "revision" : "d4c657a3fbe0d087e3d639eb1008308545a2721b"
+        "revision" : "7369de0c6680fe4ce0e3941a6e2a77704811219d"
+      }
+    },
+    {
+      "identity" : "refds-resource",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/refdsenterprise/refds-resource.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "6a3f4bd730889d7b86b2424891f85d3027ab3a54"
       }
     }
   ],

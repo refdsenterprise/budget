@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import RefdsUI
 import Domain
 import Data
 import Resource
@@ -66,7 +67,6 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
     }
     
     public func loadData() {
-        viewData = .init()
         showLoading = true
         Task {
             await updateShowModalPro()
@@ -110,7 +110,8 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
                 percent: percent,
                 amountTransactions: amountTransactions,
                 budget: budget,
-                date: date
+                date: date,
+                icon: RefdsIconSymbol(rawValue: $0.icon) ?? .dollarsign
             )
         }
     }
@@ -182,7 +183,8 @@ public final class CategoryPresenter: CategoryPresenterProtocol {
             id: category.id,
             name: category.name,
             color: Color(hex: category.color),
-            budgets: category.budgets.filter({ $0 != budgetID })
+            budgets: category.budgets.filter({ $0 != budgetID }),
+            icon: category.icon
         )
         loadData()
     }

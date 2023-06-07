@@ -18,14 +18,7 @@ public struct AboutScreen<Presenter: AboutPresenterProtocol>: View {
     }
     
     public var body: some View {
-        if Device.current == .macOS {
-            AboutmacOSView<Presenter>()
-                .environmentObject(presenter)
-        } else {
-            #if os(iOS)
-            AboutiOSView<Presenter>()
-                .environmentObject(presenter)
-            #endif
-        }
+        AboutView<Presenter>()
+            .environmentObject(presenter)
     }
 }

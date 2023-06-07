@@ -30,9 +30,9 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
         .navigationSplitViewStyle(.balanced)
     }
     
-    private var dismissButton: ToolbarItem<(), Button<RefdsIcon>> {
+    private var dismissButton: ToolbarItem<(), RefdsButton> {
         ToolbarItem {
-            Button { presenter.creationItemSelection = nil } label: {
+            RefdsButton { presenter.creationItemSelection = nil } label: {
                 RefdsIcon(
                     symbol: .xmarkCircleFill,
                     color: .secondary,
@@ -59,7 +59,7 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
                     .padding(.vertical, 2)
                 #endif
             }
-        } header: { RefdsText(presenter.string(.headerShowing).uppercased(), size: .extraSmall, color: .secondary) }
+        } header: { RefdsText(presenter.string(.headerShowing).uppercased(), style: .caption1, color: .secondary) }
     }
     
     private var sectionCreation: some View {
@@ -87,7 +87,7 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
                     .padding(.vertical, 2)
                 #endif
             }
-        } header: { RefdsText(presenter.string(.headerCreation).uppercased(), size: .extraSmall, color: .secondary) }
+        } header: { RefdsText(presenter.string(.headerCreation).uppercased(), style: .caption1, color: .secondary) }
     }
     
     private func creationContentSheet(item: CreationItem) -> some View {
@@ -115,5 +115,8 @@ struct macOSScene<Presenter: ScenePresenterProtocol>: View {
                     .toolbar { dismissButton }
             }
         }
+        #if os(macOS)
+        .frame(width: 700, height: 400)
+        #endif
     }
 }

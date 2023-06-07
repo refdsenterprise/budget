@@ -82,7 +82,10 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                 }
             }),
             .init(content: {
-                sectionBubbleWords
+                Group {
+                    sectionBubbleWords
+                    sectionAddBubble
+                }
             }),
             .init(maxAmount: 1, content: {
                 Group {
@@ -140,10 +143,11 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                     CollapsedView(title: presenter.string(.options)) {
                         Group {
                             HStack {
-                                Toggle(isOn: $presenter.isFilterPerDate) {
+                                RefdsToggle(isOn: $presenter.isFilterPerDate) {
                                     RefdsText(presenter.string(.filterByDate))
                                 }
                                 .tint(.accentColor)
+                                Spacer()
                             }
                             
                             if presenter.isFilterPerDate {
@@ -174,17 +178,17 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
     
     private var sectionValueDifference: some View {
         VStack(alignment: .center, spacing: 10) {
-            RefdsText(presenter.string(.totalDiff).uppercased(), size: .custom(12), color: .secondary)
+            RefdsText(presenter.string(.totalDiff).uppercased(), style: .caption1, color: .secondary)
             RefdsText(
                 presenter.viewData.remainingCategoryValue.amount.currency,
-                size: .custom(40),
+                style: .superTitle,
                 weight: .bold,
                 alignment: .center,
                 lineLimit: 1
             )
             RefdsText(
                 presenter.viewData.remainingCategoryValue.percentString,
-                size: .custom(20),
+                style: .title3,
                 color: presenter.viewData.remainingCategoryValue.color,
                 weight: .bold
             )
@@ -234,7 +238,6 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                         rowBubble(index: index)
                     }.listGroupBoxStyle()
                 }
-                sectionAddBubble
             }
         }
     }
@@ -255,19 +258,19 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
         VStack(spacing: 5) {
             RefdsText(
                 presenter.string(.maxTransactionRanking(presenter.viewData.weekdaysDetail?.amountTransactions ?? 0)).uppercased(),
-                size: .custom(15),
+                style: .subheadline,
                 color: .secondary
             )
             RefdsText(
                 (presenter.viewData.weekdaysDetail?.amount ?? 0).currency,
-                size: .custom(40),
+                style: .superTitle,
                 weight: .bold,
                 alignment: .center,
                 lineLimit: 1
             )
             RefdsText(
                 presenter.viewData.weekdaysDetail?.percentString ?? "",
-                size: .custom(20),
+                style: .title3,
                 color: .accentColor,
                 weight: .bold
             )
@@ -288,31 +291,38 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
         VStack(spacing: 10) {
             RefdsText(
                 presenter.string(.currentValue(presenter.isFilterPerDate ? presenter.date.asString(withDateFormat: .custom("MMMM")).capitalized : "")).uppercased(),
-                size: .custom(12),
+                style: .caption1,
                 color: .secondary
             )
             RefdsText(
                 actual.currency,
-                size: .custom(40),
+                style: .superTitle,
                 weight: .bold,
                 alignment: .center,
                 lineLimit: 1
             )
-            RefdsText(budget.currency, size: .custom(20), color: .accentColor, weight: .bold)
+            RefdsText(budget.currency, style: .title3, color: .accentColor, weight: .bold)
         }
     }
     
     private func rowDifference(category: BudgetViewData.RemainingCategory) -> some View {
-        VStack(spacing: 5) {
-            HStack {
-                RefdsText(category.name.capitalized, weight: .bold)
-                Spacer()
-                RefdsText(category.value.currency)
-            }
-            HStack(spacing: 10) {
-                RefdsText(category.percentString, color: .secondary)
-                ProgressView(value: category.percent, total: 100, label: {  })
-                    .tint(category.percentColor)
+        HStack(spacing: 15) {
+            RefdsIcon(symbol: category.icon, color: category.color, size: 12, weight: .medium, renderingMode: .hierarchical)
+                .frame(width: 18, height: 18)
+                .padding(.all, 5)
+                .background(category.color.opacity(0.2))
+                .cornerRadius(8)
+            VStack(spacing: 5) {
+                HStack {
+                    RefdsText(category.name.capitalized, weight: .bold)
+                    Spacer()
+                    RefdsText(category.value.currency)
+                }
+                HStack(spacing: 10) {
+                    RefdsText(category.percentString, color: .secondary)
+                    ProgressView(value: category.percent, total: 100, label: {  })
+                        .tint(category.percentColor)
+                }
             }
         }
     }
@@ -329,7 +339,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
     
     private var sectionAddBubble: some View {
         SectionGroup {
-            CollapsedView(title: "Adicionar Bolha", description: "\(presenter.viewData.bubbleWords.count)") {
+            CollapsedView(title: presenter.string(.addBubble), description: "\(presenter.viewData.bubbleWords.count)") {
                 Group {
                     rowBubbleName
                     rowBubbleColor
@@ -337,7 +347,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                         Application.shared.endEditing()
                         Task { await presenter.addBubble() }
                     } label: {
-                        RefdsText("Salvar Bolha".uppercased(), size: .extraSmall, color: .accentColor, weight: .bold, alignment: .center)
+                        RefdsText(presenter.string(.saveBubble).capitalized, style: .body, color: .accentColor, alignment: .center)
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -360,10 +370,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
         HStack {
             RefdsText(presenter.string(.labelBubbleColor))
             Spacer()
-            ColorPicker(
-                selection: $presenter.bubbleColor,
-                supportsOpacity: false
-            ) {}
+            ColorSelection(color: $presenter.bubbleColor).padding(.trailing, -15)
         }
     }
     
@@ -397,7 +404,7 @@ struct BudgetmacOSView<Presenter: BudgetPresenterProtocol>: View {
                 Spacer()
                 VStack(alignment: .center, spacing: 5) {
                     RefdsText(presenter.string(.transactionsForCategory), weight: .bold)
-                    RefdsText(presenter.string(.budgetVsActual), size: .small)
+                    RefdsText(presenter.string(.budgetVsActual), style: .footnote)
                 }
                 Spacer()
             }

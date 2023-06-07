@@ -18,18 +18,18 @@ public extension Strings {
         
         private var key: String {
             switch self {
-            case .navigationTitle: return "navigationTitle"
-            case .headerShowing: return "headerShowing"
-            case .headerCreation: return "headerCreation"
-            case .labelAddTransaction: return "labelAddTransaction"
-            case .labelAddCategory: return "labelAddCategory"
-            case .labelAddBudget: return "labelAddBudget"
+            case .navigationTitle: return "scene.navigationTitle"
+            case .headerShowing: return "scene.headerShowing"
+            case .headerCreation: return "scene.headerCreation"
+            case .labelAddTransaction: return "scene.labelAddTransaction"
+            case .labelAddCategory: return "scene.labelAddCategory"
+            case .labelAddBudget: return "scene.labelAddBudget"
             }
         }
         
         public var value: String {
             switch self {
-            default: return NSLocalizedString(key, tableName: "Scene", bundle: .module, comment: "")
+            default: return NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
             }
         }
     }

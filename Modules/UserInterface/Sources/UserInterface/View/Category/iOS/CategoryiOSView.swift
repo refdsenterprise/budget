@@ -29,6 +29,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             
         }
         .listStyle(.insetGrouped)
+        .refreshable { presenter.loadData() }
         .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonAddCategory } }
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
@@ -57,10 +58,10 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private var sectionNonCategories: some View {
         Section {
             VStack(alignment: .center, spacing: 15) {
-                RefdsText(presenter.string(.alertCreateCategoryTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateCategoryTitle), style: .body, weight: .bold, alignment: .center)
                 RefdsText(presenter.string(.alertCreateCategoryDescription), color: .secondary, alignment: .center)
                 Button { presenter.isPresentedAddCategory.toggle() } label: {
-                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                    RefdsText(presenter.string(.alertButton).uppercased(), style: .caption1, color: .white)
                         .frame(maxWidth: .infinity)
                         .padding()
                 }
@@ -75,10 +76,10 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
     private var sectionNonBudgets: some View {
         Section {
             VStack(alignment: .center, spacing: 15) {
-                RefdsText(presenter.string(.alertCreateBudgetTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateBudgetTitle), style: .body, weight: .bold, alignment: .center)
                 RefdsText(presenter.string(.alertCreateBudgetDescription), color: .secondary, alignment: .center)
                 Button { presenter.isPresentedAddBudget.toggle() } label: {
-                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                    RefdsText(presenter.string(.alertButton).uppercased(), style: .caption1, color: .white)
                         .frame(maxWidth: .infinity)
                         .padding()
                 }
@@ -101,7 +102,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             } else {
                 CollapsedView(title: presenter.string(.sectionOptions)) {
                     Group {
-                        Toggle(isOn: $presenter.isFilterPerDate) {
+                        RefdsToggle(isOn: $presenter.isFilterPerDate) {
                             RefdsText(presenter.string(.sectionOptionsFilterPerDate))
                         }
                         .tint(.accentColor)
@@ -121,7 +122,7 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 NavigationLink(destination: {
                     presenter.router.configure(routes: .transactions(category.id, presenter.date))
                 }, label: {
-                    rowCategory(category)
+                    CategoryCardView(category: category, placeHolderPercent: presenter.string(.rowSpending(category.percent)), placeHolderAmountTransactions: presenter.string(.rowTransactionsAmount(category.amountTransactions)))
                 })
                 .contextMenu {
                     contextMenuEditCategory(category)
@@ -133,12 +134,12 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 }
             }
             NavigationLink(destination: { presenter.router.configure(routes: .addBudget) }) {
-                RefdsText("Adicionar Budget")
+                RefdsText(presenter.string(.buttonAddBudget))
             }
         } header: {
             RefdsText(
                 presenter.string(.mediumBudget),
-                size: .extraSmall,
+                style: .caption1,
                 color: .secondary
             )
         }
@@ -149,12 +150,12 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
             VStack(spacing: 10) {
                 RefdsText(
                     presenter.string(.currentValue).uppercased(),
-                    size: .custom(12),
+                    style: .caption1,
                     color: .secondary
                 )
                 RefdsText(
                     presenter.viewData.value.totalActual.currency,
-                    size: .custom(40),
+                    style: .superTitle,
                     color: .primary,
                     weight: .bold,
                     alignment: .center,
@@ -162,35 +163,13 @@ struct CategoryiOSView<Presenter: CategoryPresenterProtocol>: View {
                 )
                 RefdsText(
                     presenter.viewData.value.totalBudget.currency,
-                    size: .custom(20),
+                    style: .title3,
                     color: .accentColor,
                     weight: .bold
                 )
             }
         }
         .frame(maxWidth: .infinity)
-    }
-    
-    private func rowCategory(_ category: CategoryViewData.Budget) -> some View {
-        HStack(spacing: 10) {
-            IndicatorPointView(color: category.color)
-            VStack(spacing: 2) {
-                HStack {
-                    RefdsText(category.name.capitalized, weight: .bold)
-                    Spacer()
-                    RefdsText(
-                        category.budget.currency,
-                        lineLimit: 1
-                    )
-                }
-                
-                HStack {
-                    RefdsText(presenter.string(.rowSpending(category.percent)), color: .secondary)
-                    Spacer()
-                    RefdsText(presenter.string(.rowTransactionsAmount(category.amountTransactions)), color: .secondary)
-                }
-            }
-        }
     }
     
     private func swipeRemoveCategory(_ category: CategoryViewData.Budget) -> some View {

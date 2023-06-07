@@ -27,26 +27,26 @@ public extension Strings {
         
         private var key: String {
             switch self {
-            case .navigationTitle: return "navigationTitle"
-            case .allowNotification: return "allowNotification"
-            case .allowNotificationDescription: return "allowNotificationDescription"
-            case .disableNotificationTitle: return "disableNotificationTitle"
-            case .disableNotificationDescription: return "disableNotificationDescription"
-            case .remiderTitle: return "remiderTitle"
-            case .remiderDescription: return "remiderDescription"
-            case .warningTitle: return "warningTitle"
-            case .warningDescription: return "warningDescription"
-            case .breakingTitle: return "breakingTitle"
-            case .breakingDescription: return "breakingDescription"
-            case .options: return "options"
-            case .changeNotificationPermission: return "changeNotificationPermission"
-            case .activeNotifications: return "activeNotifications"
-            case .status: return "status"
+            case .navigationTitle: return "notification.navigationTitle"
+            case .allowNotification: return "notification.allowNotification"
+            case .allowNotificationDescription: return "notification.allowNotificationDescription"
+            case .disableNotificationTitle: return "notification.disableNotificationTitle"
+            case .disableNotificationDescription: return "notification.disableNotificationDescription"
+            case .remiderTitle: return "notification.remiderTitle"
+            case .remiderDescription: return "notification.remiderDescription"
+            case .warningTitle: return "notification.warningTitle"
+            case .warningDescription: return "notification.warningDescription"
+            case .breakingTitle: return "notification.breakingTitle"
+            case .breakingDescription: return "notification.breakingDescription"
+            case .options: return "notification.options"
+            case .changeNotificationPermission: return "notification.changeNotificationPermission"
+            case .activeNotifications: return "notification.activeNotifications"
+            case .status: return "notification.status"
             }
         }
         
         public var value: String {
-            NSLocalizedString(key, tableName: "NotificationManager", bundle: .module, comment: "")
+            NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
         }
     }
 }

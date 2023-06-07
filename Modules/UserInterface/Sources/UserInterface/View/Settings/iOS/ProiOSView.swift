@@ -67,7 +67,7 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
             benefitPRO(title: .maxTransactionTitle, description: .maxTransactionDescription)
             benefitPRO(title: .weekDayTitle, description: .weekDayDescription)
         } header: {
-            RefdsText(presenter.string(.reportHeader), size: .extraSmall, color: .secondary)
+            RefdsText(presenter.string(.reportHeader), style: .caption1, color: .secondary)
         }
     }
     
@@ -79,17 +79,16 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
             benefitPRO(title: .notificationTitle, description: .notificationDescription)
             benefitPRO(title: .customizationTitle, description: .customizationDescription)
         } header: {
-            RefdsText(presenter.string(.resourceHeader), size: .extraSmall, color: .secondary)
+            RefdsText(presenter.string(.resourceHeader), style: .caption1, color: .secondary)
         }
     }
     
     private var sectionAcceptedTerms: some View {
         Section {} footer: {
             VStack(alignment: .leading) {
-                Toggle(isOn: $presenter.isAcceptedTerms) {
+                RefdsToggle(isOn: $presenter.isAcceptedTerms) {
                     RefdsText(presenter.string(.acceptedTerms))
                 }
-                .toggleStyle(CheckBoxStyle(isLeading: true))
             }
             .padding(.top, -20)
         }
@@ -98,7 +97,7 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
     private var sectionAppleInPurchaseDescription: some View  {
         Section {} footer: {
             VStack(alignment: .leading, spacing: 30) {
-                RefdsText(presenter.string(.appleInPurchaseDescription), size: .extraSmall, color: .secondary, weight: .light)
+                RefdsText(presenter.string(.appleInPurchaseDescription), style: .caption1, color: .secondary, weight: .light)
                 restorePurchaseButton
             }
             .frame(maxWidth: .infinity)
@@ -118,7 +117,7 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
             Task { try? await presenter.restore() }
         } label: {
             Group {
-                RefdsText("Restaurar Compra".uppercased(), size: .small, color: .accentColor, weight: .bold)
+                RefdsText("Restaurar Compra".uppercased(), style: .footnote, color: .accentColor, weight: .bold)
                     .frame(maxWidth: .infinity)
                     .padding()
             }
@@ -132,7 +131,7 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
             Task { try? await presenter.buyPro() }
         } label: {
             Group {
-                RefdsText(presenter.string(.beProButton(4.99.currency)), size: .large, color: presenter.isAcceptedTerms ? .white : .secondary, weight: .bold)
+                RefdsText(presenter.string(.beProButton(4.99.currency)), style: .body, color: presenter.isAcceptedTerms ? .white : .secondary, weight: .bold)
                     .frame(maxWidth: .infinity)
                     .padding()
             }
@@ -143,7 +142,7 @@ struct ProiOSView<Presenter: ProPresenterProtocol>: View {
     
     private var termsButton: some View {
         Button { UIApplication.shared.open(AboutLinks.policy.url) } label: {
-            RefdsText(presenter.string(.readTermsButton), size: .small, color: .accentColor, alignment: .center)
+            RefdsText(presenter.string(.readTermsButton), style: .footnote, color: .accentColor, alignment: .center)
         }
     }
 }

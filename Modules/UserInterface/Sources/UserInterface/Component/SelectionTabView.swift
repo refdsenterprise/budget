@@ -24,7 +24,7 @@ public struct SelectionTabView: View {
                     GroupBox {
                         RefdsText(
                             values[index].uppercased(),
-                            size: .extraSmall,
+                            style: .caption1,
                             color: values[index] == selected ? .accentColor : .secondary,
                             weight: values[index] == selected ? .bold : .regular
                         )

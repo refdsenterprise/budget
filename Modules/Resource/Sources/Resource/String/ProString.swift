@@ -38,39 +38,39 @@ public extension Strings {
         
         private var key: String {
             switch self {
-            case .navigationTitle: return "navigationTitle"
-            case .benefitsDescription: return "benefitsDescription"
-            case .remaningTitle: return "remaningTitle"
-            case .remaningDescription: return "remaningDescription"
-            case .chartsTitle: return "chartsTitle"
-            case .chartsDescription: return "chartsDescription"
-            case .maxTransactionTitle: return "maxTransactionTitle"
-            case .maxTransactionDescription: return "maxTransactionDescription"
-            case .weekDayTitle: return "weekDayTitle"
-            case .weekDayDescription: return "weekDayDescription"
-            case .reportHeader: return "reportHeader"
-            case .filterTitle: return "filterTitle"
-            case .filterDescription: return "filterDescription"
-            case .categoryTitle: return "categoryTitle"
-            case .categoryDescription: return "categoryDescription"
-            case .macOSTitle: return "macOSTitle"
-            case .macOSDescription: return "macOSDescription"
-            case .notificationTitle: return "notificationTitle"
-            case .notificationDescription: return "notificationDescription"
-            case .customizationTitle: return "customizationTitle"
-            case .customizationDescription: return "customizationDescription"
-            case .resourceHeader: return "resourceHeader"
-            case .acceptedTerms: return "acceptedTerms"
-            case .appleInPurchaseDescription: return "appleInPurchaseDescription"
-            case .beProButton(_): return "beProButton"
-            case .readTermsButton: return "readTermsButton"
+            case .navigationTitle: return "pro.navigationTitle"
+            case .benefitsDescription: return "pro.benefitsDescription"
+            case .remaningTitle: return "pro.remaningTitle"
+            case .remaningDescription: return "pro.remaningDescription"
+            case .chartsTitle: return "pro.chartsTitle"
+            case .chartsDescription: return "pro.chartsDescription"
+            case .maxTransactionTitle: return "pro.maxTransactionTitle"
+            case .maxTransactionDescription: return "pro.maxTransactionDescription"
+            case .weekDayTitle: return "pro.weekDayTitle"
+            case .weekDayDescription: return "pro.weekDayDescription"
+            case .reportHeader: return "pro.reportHeader"
+            case .filterTitle: return "pro.filterTitle"
+            case .filterDescription: return "pro.filterDescription"
+            case .categoryTitle: return "pro.categoryTitle"
+            case .categoryDescription: return "pro.categoryDescription"
+            case .macOSTitle: return "pro.macOSTitle"
+            case .macOSDescription: return "pro.macOSDescription"
+            case .notificationTitle: return "pro.notificationTitle"
+            case .notificationDescription: return "pro.notificationDescription"
+            case .customizationTitle: return "pro.customizationTitle"
+            case .customizationDescription: return "pro.customizationDescription"
+            case .resourceHeader: return "pro.resourceHeader"
+            case .acceptedTerms: return "pro.acceptedTerms"
+            case .appleInPurchaseDescription: return "pro.appleInPurchaseDescription"
+            case .beProButton(_): return "pro.beProButton"
+            case .readTermsButton: return "pro.readTermsButton"
             }
         }
         
         public var value: String {
             switch self {
-            case .beProButton(let value): return String(format: NSLocalizedString(key, tableName: "Pro", bundle: .module, comment: ""), value)
-            default: return NSLocalizedString(key, tableName: "Pro", bundle: .module, comment: "")
+            case .beProButton(let value): return String(format: NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: ""), value)
+            default: return NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
             }
         }
     }

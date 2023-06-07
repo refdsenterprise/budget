@@ -70,20 +70,21 @@ public final class CategoryWorker {
         }.first
     }
     
-    public func addCategory(id: UUID, name: String, color: Color, budgets: [UUID]) throws {
+    public func addCategory(id: UUID, name: String, color: Color, budgets: [UUID], icon: String) throws {
         guard let category = getCategory(by: id) else {
             let category = CategoryEntity(context: database.viewContext)
             category.id = id
             category.name = name.uppercased()
-            category.color = color.toHex()
+            category.color = color.asHex()
             category.budgets = budgets
             try database.viewContext.save()
             return
         }
         category.id = id
         category.name = name.uppercased()
-        category.color = color.toHex()
+        category.color = color.asHex()
         category.budgets = budgets
+        category.icon = icon
         try database.viewContext.save()
     }
     
@@ -130,7 +131,13 @@ public final class CategoryWorker {
         }
         
         for category in categories {
-            try? addCategory(id: category.id, name: category.name, color: category.color, budgets: category.budgets.map({ $0.id }))
+            try? addCategory(
+                id: category.id,
+                name: category.name,
+                color: category.color,
+                budgets: category.budgets.map({ $0.id }),
+                icon: "dollarsign"
+            )
         }
     }
     

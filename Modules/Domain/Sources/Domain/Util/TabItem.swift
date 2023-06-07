@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import RefdsUI
+import Resource
 
 public enum TabItem: Int, CaseIterable {
     case category = 1
@@ -17,10 +18,10 @@ public enum TabItem: Int, CaseIterable {
     
     public var title: String {
         switch self {
-        case .category: return "Categorias"
-        case .home: return "Início"
-        case .transaction: return "Transações"
-        case .settings: return "Ajustes"
+        case .category: return Strings.UserInterface.categories.value
+        case .home: return Strings.UserInterface.home.value
+        case .transaction: return Strings.UserInterface.transactions.value
+        case .settings: return Strings.UserInterface.settings.value
         }
     }
     

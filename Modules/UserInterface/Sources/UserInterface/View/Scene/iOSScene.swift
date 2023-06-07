@@ -14,6 +14,7 @@ public var shortcutItemReceived: ShortcutItem?
 public struct iOSScene<Presenter: ScenePresenterProtocol>: View {
     @Environment(\.dismiss) private var dismiss
     @State private var shortcutItem: ShortcutItem?
+    @State private var tabSelectionShorcutItem: TabItem?
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var presenter: Presenter
     
@@ -37,14 +38,20 @@ public struct iOSScene<Presenter: ScenePresenterProtocol>: View {
                     switch newValue {
                     case .active:
                         if let shortcutItem = shortcutItemReceived {
-                            presenter.tabItemSelection = shortcutItem.tabItem
+                            presenter.tabItemSelection = .home
+                            tabSelectionShorcutItem = shortcutItem.tabItem
                             self.shortcutItem = shortcutItem
                             shortcutItemReceived = nil
                         }
                     default: break
                     }
                 }
-                .sheet(item: $shortcutItem) { shortcutAction(item: $0) }
+                .sheet(item: $shortcutItem, onDismiss: {
+                    if let tabItem = tabSelectionShorcutItem {
+                        presenter.tabItemSelection = tabItem
+                        tabSelectionShorcutItem = nil
+                    }
+                }) { shortcutAction(item: $0) }
             }
         }
     }

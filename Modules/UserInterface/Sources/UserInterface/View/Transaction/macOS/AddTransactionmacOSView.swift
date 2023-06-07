@@ -37,7 +37,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     private var sectionInformation: some View {
         VStack {
             if presenter.isStarted {
-                RefdsCurrencyTextField(value: $presenter.amount, size: .custom(40), color: .primary, alignment: .center)
+                RefdsCurrencyTextField(value: $presenter.amount, style: .custom(40), color: .primary, alignment: .center)
                     .padding()
             }
             rowInformation
@@ -82,7 +82,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
         HStack(spacing: 15) {
             RefdsText(presenter.string(.category))
             Spacer()
-            RefdsTag(name, size: .extraSmall, color: color)
+            RefdsTag(name, style: .caption1, color: color)
         }
     }
     
@@ -97,9 +97,14 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     }
     
     private func categoryOptionView(category: AddTransactionViewData.Category) -> some View {
-        Button { presenter.viewData.category = category } label: {
+        RefdsButton { presenter.viewData.category = category } label: {
             HStack(spacing: 10) {
-                IndicatorPointView(color: presenter.viewData.category?.id == category.id ? category.color : .secondary)
+                RefdsIcon(symbol: category.icon, color: category.color, size: 12, weight: .medium, renderingMode: .hierarchical)
+                    .frame(width: 18, height: 18)
+                    .padding(.all, 5)
+                    .background(category.color.opacity(0.2))
+                    .cornerRadius(8)
+                    .opacity(presenter.viewData.category?.id == category.id ? 1 : 0.2)
                 RefdsText(category.name.capitalized)
                 Spacer()
                 RefdsText(
@@ -112,13 +117,13 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     }
     
     private var buttonAddCategory: some View {
-        NavigationLink { presenter.router.configure(routes: .addCategory) } label: {
+        RefdsRow {
             HStack {
                 RefdsText(presenter.string(.category))
                 Spacer()
                 RefdsText(presenter.string(.addNewCategory), color: .secondary, alignment: .trailing, lineLimit: 1)
             }
-        }
+        } destination: { presenter.router.configure(routes: .addCategory) }
     }
     
     private var sectionDate: some View {
@@ -139,7 +144,7 @@ struct AddTransactionmacOSView<Presenter: AddTransactionPresenterProtocol>: View
     }
     
     private var buttonSave: some View {
-        Button {
+        RefdsButton {
             Application.shared.endEditing()
             presenter.save { dismiss() } onError: {
                 presenter.alert = .init(error: $0)

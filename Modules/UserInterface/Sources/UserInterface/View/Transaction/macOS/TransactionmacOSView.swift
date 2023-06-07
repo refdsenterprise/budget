@@ -79,8 +79,11 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                 } else {
                     CollapsedView(title: presenter.string(.options)) {
                         Group {
-                            Toggle(isOn: $presenter.isFilterPerDate) {
-                                RefdsText(presenter.string(.filterPerDate))
+                            RefdsToggle(isOn: $presenter.isFilterPerDate) {
+                                HStack {
+                                    RefdsText(presenter.string(.filterPerDate))
+                                    Spacer()
+                                }
                             }
                             .tint(.accentColor)
                             
@@ -89,7 +92,7 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
                                     VStack(alignment: .leading) {
                                         ForEach(PeriodItem.allCases.indices, id: \.self) { index in
                                             let period = PeriodItem.allCases[index]
-                                            Button {
+                                            RefdsButton {
                                                 presenter.selectedPeriod = period
                                             } label: {
                                                 HStack(spacing: 15) {
@@ -116,12 +119,12 @@ struct TransactionmacOSView<Presenter: TransactionPresenterProtocol>: View {
         VStack(spacing: 10) {
             RefdsText(
                 presenter.string(.totalTransactions).uppercased(),
-                size: .custom(12),
+                style: .caption1,
                 color: .secondary
             )
             RefdsText(
                 presenter.viewData.value.value.currency,
-                size: .custom(40),
+                style: .superTitle,
                 color: .primary,
                 weight: .bold,
                 alignment: .center,

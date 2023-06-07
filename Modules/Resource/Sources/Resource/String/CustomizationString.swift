@@ -20,19 +20,19 @@ public extension Strings {
         
         private var key: String {
             switch self {
-            case .navigationTitle: return "navigationTitle"
-            case .color: return "color"
-            case .appearence: return "appearence"
-            case .theme: return "theme"
-            case .appName: return "appName"
-            case .auto: return "auto"
-            case .light: return "light"
-            case .dark: return "dark"
+            case .navigationTitle: return "customization.navigationTitle"
+            case .color: return "customization.color"
+            case .appearence: return "customization.appearence"
+            case .theme: return "customization.theme"
+            case .appName: return "customization.appName"
+            case .auto: return "customization.auto"
+            case .light: return "customization.light"
+            case .dark: return "customization.dark"
             }
         }
         
         public var value: String {
-            return NSLocalizedString(key, tableName: "Customization", bundle: .module, comment: "")
+            return NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
         }
     }
 }

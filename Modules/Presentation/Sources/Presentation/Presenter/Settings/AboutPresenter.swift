@@ -20,7 +20,7 @@ public enum AboutLinks {
         switch self {
         case .website: return URL(string: "https://budget.rafaelescaleira.com.br")!
         case .github: return URL(string: "https://github.com/refdsenterprise/budget")!
-        case .appleStore: return URL(string: "https://apps.apple.com/us/app/budget/id6448043784")!
+        case .appleStore: return URL(string: "https://apps.apple.com/br/app/budget/id6448043784")!
         case .policy: return URL(string: "https://budget.rafaelescaleira.com.br/privacy-policy")!
         }
     }
@@ -40,7 +40,7 @@ public final class AboutPresenter: AboutPresenterProtocol {
     @Published public var urlShareItem: ShareItem = .init()
     @Published public var appShareItem: ShareItem = .init()
     public var appVersion: String {
-        "  \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")  "
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     }
     
     public init() {}

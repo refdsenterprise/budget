@@ -6,6 +6,8 @@
 //
 
 import Domain
+import Resource
+import RefdsUI
 #if os(macOS)
 #else
 import UIKit
@@ -23,6 +25,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         configurationForConnecting connectingSceneSession: UISceneSession,
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
+        configureQuickAction()
         let configuration = UISceneConfiguration(
             name: connectingSceneSession.configuration.name,
             sessionRole: connectingSceneSession.role
@@ -44,6 +47,32 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             return false
         }
         return true
+    }
+    
+    private func configureQuickAction() {
+        let addTransactionItem = UIApplicationShortcutItem(
+            type: Strings.QuickAction.addTransaction.actionType,
+            localizedTitle: Strings.QuickAction.addTransaction.value,
+            localizedSubtitle: nil,
+            icon: UIApplicationShortcutIcon(systemImageName: RefdsIconSymbol.listBulletRectangleFill.rawValue)
+        )
+        
+        let addCategoryItem = UIApplicationShortcutItem(
+            type: Strings.QuickAction.addCategory.actionType,
+            localizedTitle: Strings.QuickAction.addCategory.value,
+            localizedSubtitle: nil,
+            icon: UIApplicationShortcutIcon(systemImageName: RefdsIconSymbol.squareStack3DForwardDottedlineFill.rawValue)
+        )
+        
+        let addBudgetItem = UIApplicationShortcutItem(
+            type: Strings.QuickAction.addBudget.actionType,
+            localizedTitle: Strings.QuickAction.addBudget.value,
+            localizedSubtitle: nil,
+            icon: UIApplicationShortcutIcon(systemImageName: RefdsIconSymbol.dollarsignSquareFill.rawValue)
+        )
+        
+        UIApplication.shared.shortcutItems = []
+        UIApplication.shared.shortcutItems = [addBudgetItem, addCategoryItem, addTransactionItem]
     }
 }
 
@@ -67,12 +96,10 @@ class SceneDelegate: NSObject, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
               let url = userActivity.webpageURL,
-              let components = URLComponents(url: url,
+              let _ = URLComponents(url: url,
                                              resolvingAgainstBaseURL: true) else {
             return
         }
-        
-        print(components)
     }
 }
 #endif

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import RefdsUI
 
 public struct AddTransactionViewData {
     public var id: UUID = .init()
@@ -21,5 +22,6 @@ public struct AddTransactionViewData {
         public var color: Color
         public var name: String
         public var remaning: Double
+        public var icon: RefdsIconSymbol
     }
 }

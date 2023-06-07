@@ -19,4 +19,5 @@ public class CategoryEntity: NSManagedObject {
     @NSManaged public var color: String
     @NSManaged public var id: UUID
     @NSManaged public var name: String
+    @NSManaged public var icon: String
 }

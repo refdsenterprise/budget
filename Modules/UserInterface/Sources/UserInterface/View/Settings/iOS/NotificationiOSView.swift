@@ -28,12 +28,12 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
     
     private var sectionAllowNotification: some View {
         Section {
-            Toggle(isOn: $presenter.isAllowNotification) {
+            RefdsToggle(isOn: $presenter.isAllowNotification) {
                 RefdsText(presenter.string(.allowNotification))
             }
             .tint(.accentColor)
         } header: {
-            RefdsText(presenter.string(.status), size: .extraSmall, color: .secondary)
+            RefdsText(presenter.string(.status), style: .caption1, color: .secondary)
         }
     }
     
@@ -41,13 +41,13 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
         VStack(alignment: .center, spacing: 30) {
             RefdsIcon(symbol: .bellBadgeFill, color: .accentColor, size: 70, renderingMode: .hierarchical)
             VStack(alignment: .center, spacing: 10) {
-                RefdsText(presenter.string(.disableNotificationTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.disableNotificationTitle), style: .body, weight: .bold, alignment: .center)
                 RefdsText(presenter.string(.disableNotificationDescription), color: .secondary, alignment: .center)
             }
             Button {
                 presenter.actionNotificationSettings()
             } label: {
-                RefdsText(presenter.string(.changeNotificationPermission).uppercased(), size: .small, color: .white, weight: .bold)
+                RefdsText(presenter.string(.changeNotificationPermission).uppercased(), style: .footnote, color: .white, weight: .bold)
                     .padding()
                     .background(Color.accentColor)
                     .cornerRadius(8)
@@ -66,7 +66,7 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
             Button {
                 presenter.isAllowNotification.toggle()
             } label: {
-                RefdsText(presenter.string(.activeNotifications).uppercased(), size: .small, color: .white, weight: .bold)
+                RefdsText(presenter.string(.activeNotifications).uppercased(), style: .footnote, color: .white, weight: .bold)
                     .padding()
                     .background(Color.accentColor)
                     .cornerRadius(8)
@@ -84,7 +84,7 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
                     rowNotificationOption(index: index)
                 }
             } header: {
-                RefdsText(presenter.string(.options), size: .extraSmall, color: .secondary)
+                RefdsText(presenter.string(.options), style: .caption1, color: .secondary)
             }
         }
     }
@@ -94,9 +94,9 @@ struct NotificationiOSView<Presenter: NotificationManagerPresenterProtocol>: Vie
             Image(systemName: presenter.viewData[index].icon)
                 .symbolRenderingMode(.multicolor)
                 .font(.system(size: 22, weight: .bold))
-            Toggle(isOn: $presenter.viewData[index].isOn) {
+            RefdsToggle(isOn: $presenter.viewData[index].isOn) {
                 VStack(alignment: .leading, spacing: 5) {
-                    RefdsText(presenter.viewData[index].title.capitalized, size: .small, weight: .bold)
+                    RefdsText(presenter.viewData[index].title.capitalized, style: .body, weight: .bold)
                     RefdsText(presenter.viewData[index].description, color: .secondary)
                 }
             }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RefdsUI
 import Domain
 import Data
 import Resource
@@ -16,8 +17,10 @@ public protocol AddCategoryPresenterProtocol: ObservableObject {
     var alert: AlertItem { get set }
     var isPresentedEditBudget: Bool { get set }
     var buttonForegroundColor: Color { get }
+    var colorOptions: [RefdsColor] { get }
     var id: UUID? { get }
     var budget: UUID? { get set }
+    var canAddNewCategory: Bool { get }
     
     func string(_ string: Strings.AddCategory) -> String
     func add(budget: AddBudgetViewData) async
@@ -31,6 +34,7 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
     @Published public var isPresentedEditBudget: Bool = false
     @Published public var viewData: AddCategoryViewData = .init()
     @Published public var alert: AlertItem = .init()
+    public var colorOptions: [RefdsColor] { return RefdsColor.Default.allCases.map({ $0.rawValue }) }
     public var id: UUID?
     public var budget: UUID?
     var isStarted: Bool = false
@@ -39,7 +43,7 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
         canAddNewCategory ? .accentColor : .secondary
     }
     
-    private var canAddNewCategory: Bool {
+    public var canAddNewCategory: Bool {
         return !viewData.budgets.isEmpty && !viewData.name.isEmpty
     }
     
@@ -52,8 +56,9 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
         if let id = id, let category = Worker.shared.category.getCategory(by: id), !isStarted {
             viewData = .init(
                 id: category.id,
-                name: category.name,
+                name: category.name.capitalized,
                 color: Color(hex: category.color),
+                icon: RefdsIconSymbol(rawValue: category.icon) ?? .dollarsign,
                 budgets: category.budgetsValue.map({
                     AddBudgetViewData(
                         id: $0.id,
@@ -63,7 +68,8 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
                         category: .init(
                             id: id,
                             color: Color(hex: category.color),
-                            name: category.name
+                            name: category.name,
+                            icon: RefdsIconSymbol(rawValue: category.icon) ?? .dollarsign
                         ),
                         categories: nil,
                         bind: {}
@@ -139,7 +145,8 @@ public final class AddCategoryPresenter: AddCategoryPresenterProtocol {
                     id: viewData.id,
                     name: viewData.name,
                     color: viewData.color,
-                    budgets: viewData.budgets.map({ $0.id })
+                    budgets: viewData.budgets.map({ $0.id }),
+                    icon: viewData.icon.rawValue
                 )
                 onSuccess?()
             } catch {

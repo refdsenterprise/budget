@@ -47,7 +47,7 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
     private var rowCurrency: some View {
         Group {
             if presenter.isStarted {
-                RefdsCurrencyTextField(value: $presenter.viewData.amount, size: .custom(40), color: .primary, alignment: .center)
+                RefdsCurrencyTextField(value: $presenter.viewData.amount, style: .custom(40), color: .primary, alignment: .center)
                     .padding()
             }
         }
@@ -93,7 +93,7 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
         HStack(spacing: 15) {
             RefdsText(presenter.string(.category))
             Spacer()
-            RefdsTag(name, size: .extraSmall, color: color)
+            RefdsTag(name, style: .caption1, color: color)
         }
     }
     
@@ -108,9 +108,14 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
     }
     
     private func categoryOptionView(category: AddBudgetViewData.Category) -> some View {
-        Button { presenter.viewData.category = category } label: {
+        RefdsButton { presenter.viewData.category = category } label: {
             HStack(spacing: 10) {
-                IndicatorPointView(color: presenter.viewData.category?.id == category.id ? category.color : .secondary)
+                RefdsIcon(symbol: category.icon, color: category.color, size: 12, weight: .medium, renderingMode: .hierarchical)
+                    .frame(width: 18, height: 18)
+                    .padding(.all, 5)
+                    .background(category.color.opacity(0.2))
+                    .cornerRadius(8)
+                    .opacity(presenter.viewData.category?.id == category.id ? 1 : 0.2)
                 RefdsText(category.name.capitalized)
                 Spacer()
             }
@@ -119,34 +124,22 @@ struct AddBudgetmacOSView<Presenter: AddBudgetPresenterProtocol>: View {
     }
     
     private var buttonAddCategory: some View {
-        NavigationLink { presenter.router.configure(routes: .addCategory) } label: {
+        RefdsRow {
             HStack {
                 RefdsText(presenter.string(.category))
                 Spacer()
                 RefdsText(presenter.string(.addNewCategory), color: .secondary, alignment: .trailing, lineLimit: 1)
             }
-        }
+        } destination: { presenter.router.configure(routes: .addCategory) }
     }
     
     private var buttonSave: some View {
-        Button {
+        RefdsButton(Strings.General.budgetSave.value, style: .secondary) {
             Application.shared.endEditing()
             presenter.add(budget: { budget in
                 newBudget?(budget)
                 dismiss()
             }, dismiss: { dismiss() })
-        } label: {
-            GroupBox {
-                RefdsText(
-                    Strings.General.budgetSave.value.uppercased(),
-                    size: .small,
-                    color: presenter.buttonForegroundColor,
-                    weight: .bold
-                )
-                .frame(maxWidth: .infinity)
-            }
-            .padding(.vertical)
-            .listGroupBoxStyle()
         }
     }
 }

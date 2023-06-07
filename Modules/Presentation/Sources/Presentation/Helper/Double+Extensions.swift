@@ -9,7 +9,5 @@ import Foundation
 import Resource
 
 public extension Double {
-    var currency: String {
-        self.formatted(.currency(code: Strings.UserInterface.currencyCode.value))
-    }
+
 }

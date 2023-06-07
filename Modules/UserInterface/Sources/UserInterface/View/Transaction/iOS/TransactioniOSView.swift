@@ -41,6 +41,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                 }
             }
         }
+        .refreshable { presenter.loadData() }
         .listStyle(.insetGrouped)
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
@@ -75,7 +76,7 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
             } else {
                 CollapsedView(title: presenter.string(.options)) {
                     Group {
-                        Toggle(isOn: $presenter.isFilterPerDate) {
+                        RefdsToggle(isOn: $presenter.isFilterPerDate) {
                             RefdsText(presenter.string(.filterPerDate))
                         }
                         .tint(.accentColor)
@@ -83,11 +84,12 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
                         if presenter.isFilterPerDate {
                             CollapsedView(title: presenter.string(.period), description: presenter.selectedPeriod.label.capitalized) {
                                 ForEach(PeriodItem.allCases, id: \.self) { period in
-                                    Button { presenter.selectedPeriod = period  } label: {
-                                        HStack(spacing: 15) {
-                                            IndicatorPointView(color: presenter.selectedPeriod == period ? .accentColor : .secondary)
-                                            RefdsText(period.label.capitalized)
-                                        }
+                                    RefdsToggle(isOn: Binding(get: {
+                                        presenter.selectedPeriod == period
+                                    }, set: {
+                                        presenter.selectedPeriod = $0 ? period : presenter.selectedPeriod
+                                    }), style: .checkbox, alignment: .leading) {
+                                        RefdsText(period.label.capitalized)
                                     }
                                 }
                             }
@@ -105,12 +107,12 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
             VStack(spacing: 10) {
                 RefdsText(
                     presenter.string(.totalTransactions).uppercased(),
-                    size: .custom(12),
+                    style: .caption1,
                     color: .secondary
                 )
                 RefdsText(
                     presenter.viewData.value.value.currency,
-                    size: .custom(40),
+                    style: .superTitle,
                     color: .primary,
                     weight: .bold,
                     alignment: .center,
@@ -139,9 +141,9 @@ struct TransactioniOSView<Presenter: TransactionPresenterProtocol>: View {
             } header: {
                 if let date = transactions.first?.date {
                     HStack {
-                        RefdsText(date.asString(withDateFormat: .custom("dd MMMM, yyyy")), size: .extraSmall, color: .secondary)
+                        RefdsText(date.asString(withDateFormat: .custom("dd MMMM, yyyy")), style: .caption1, color: .secondary)
                         Spacer()
-                        RefdsText(date.asString(withDateFormat: .custom("EEEE")), size: .extraSmall, color: .secondary)
+                        RefdsText(date.asString(withDateFormat: .custom("EEEE")), style: .caption1, color: .secondary)
                     }
                 }
             }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RefdsUI
 
 public struct BudgetViewData {
     public var value: Value = .init(totalActual: 0, totalBudget: 0)
@@ -31,6 +32,8 @@ public struct BudgetViewData {
         public var percent: Double
         public var percentString: String
         public var percentColor: Color
+        public var icon: RefdsIconSymbol
+        public var color: RefdsColor
     }
     
     public struct RemainingValue {
@@ -66,5 +69,13 @@ public struct BudgetViewData {
         public var color: Color
         public var offset = CGSize.zero
         public var realValue: Double
+        
+        public init(id: UUID, title: String, value: CGFloat, color: Color, realValue: Double) {
+            self.id = id
+            self.title = title
+            self.value = value
+            self.color = color
+            self.realValue = realValue
+        }
     }
 }

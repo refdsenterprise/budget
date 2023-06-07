@@ -13,6 +13,7 @@ import Presentation
 import Core
 import Data
 import WidgetKit
+import Resource
 
 @main
 struct MainApp: App {
@@ -20,7 +21,7 @@ struct MainApp: App {
     #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     #endif
-    @StateObject private var appConfiguration = AppConfiguration.shared
+    @StateObject private var configuration = AppConfiguration.shared
     
     init() {
         #if os(iOS)
@@ -31,30 +32,32 @@ struct MainApp: App {
     var body: some Scene {
         WindowGroup {
             AnyView(Factory.shared.makeSceneScreen())
-                .accentColor(appConfiguration.themeColor)
-                .environment(\.appTheme, appConfiguration.themeColor)
-                .environmentObject(appConfiguration)
-                .preferredColorScheme(appConfiguration.colorScheme)
+                .accentColor(configuration.themeColor)
+                .environment(\.appTheme, configuration.themeColor)
+                .environmentObject(configuration)
+                .preferredColorScheme(configuration.colorScheme)
+                .refdsAuth(autheticated: $configuration.authenticaded)
+                .onboardingView(isFinished: $configuration.onboarding)
                 .onChange(of: scenePhase) { newValue in
                     updateWidget()
                     switch newValue {
                     case .active:
-                        appConfiguration.startObserver()
+                        configuration.startObserver()
                         #if os(iOS)
                         UserInterface.shortcutItemReceived = shortcutItemReceived
                         shortcutItemReceived = nil
                         #endif
-                    default: appConfiguration.stopObserver()
+                    default:
+                        configuration.authenticaded = false
+                        configuration.stopObserver()
                     }
                 }
-//                .onAppear {
-//                    Worker.shared.category.replaceAllCategories(Mock.categories.data)
-//                    Worker.shared.transaction.replaceAllTransactions(Mock.transactions.data)
-//                }
         }
     }
     
     func updateWidget() {
-        WidgetCenter.shared.reloadAllTimelines()
+        DispatchQueue.main.async {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 }

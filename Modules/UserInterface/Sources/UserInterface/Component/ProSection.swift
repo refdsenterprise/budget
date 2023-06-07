@@ -42,12 +42,12 @@ public struct ProSection: View {
                     .scaledToFit()
                     .frame(height: 75)
                     .cornerRadius(10)
-                RefdsText("Desbloqueie todas as funcionalidades sendo um usuário PRO!", size: .large, weight: .bold)
+                RefdsText("Desbloqueie todas as funcionalidades sendo um usuário PRO!", weight: .bold)
             }
             RefdsText("Descubra todas as possibilidades que a nossa plataforma tem a oferecer!\n\nAproveite os recursos exclusivos disponíveis para usuários PRO, como acesso ilimitado a conteúdo premium, funcionalidades avançadas.\n\nSeja um usuário PRO agora e desfrute de uma experiência completa em nossa plataforma.", color: .secondary)
             
             Button { isPresentedPro.toggle() } label: {
-                RefdsText("QUERO SER PRO", size: .small, color: .white, weight: .bold)
+                RefdsText("QUERO SER PRO", style: .footnote, color: .white, weight: .bold)
             }
             .padding()
             .frame(maxWidth: .infinity)

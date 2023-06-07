@@ -22,7 +22,7 @@ public struct SectionGroup<Content: View>: View {
     public var body: some View {
         VStack(alignment: .leading) {
             if let headerTitle = headerTitle {
-                RefdsText(headerTitle.uppercased(), size: .extraSmall, color: .secondary)
+                RefdsText(headerTitle.uppercased(), style: .caption1, color: .secondary)
             }
             
             GroupBox {

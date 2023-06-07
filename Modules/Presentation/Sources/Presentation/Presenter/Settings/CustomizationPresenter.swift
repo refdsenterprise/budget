@@ -19,7 +19,7 @@ public protocol CustomizationPresenterProtocol: ObservableObject {
 
 public final class CustomizationPresenter: CustomizationPresenterProtocol {
     @Published public var themeColor: Color = Color(hex: Worker.shared.settings.get().theme) {
-        didSet { try? Worker.shared.settings.add(theme: themeColor.toHex()) }
+        didSet { try? Worker.shared.settings.add(theme: themeColor.asHex()) }
     }
     
     @Published public var appearenceSelected: AppearenceItem = AppearenceItem(rawValue: Worker.shared.settings.get().appearence) ?? .automatic {

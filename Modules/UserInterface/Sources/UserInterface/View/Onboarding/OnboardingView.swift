@@ -1,6 +1,6 @@
 //
 //  OnboardingView.swift
-//  
+//
 //
 //  Created by Rafael Santos on 18/03/23.
 //
@@ -8,65 +8,100 @@
 import SwiftUI
 import RefdsUI
 import Resource
-#if os(iOS)
-public struct OnboardingViewData {
-    public var image: ResourceImage
-    public var title: String
-    public var description: String
-    
-    public init(image: ResourceImage, title: String, description: String) {
-        self.image = image
-        self.title = title
-        self.description = description
-    }
-}
 
 public struct OnboardingView: View {
-    private var viewData: [OnboardingViewData]
+    @AppStorage(.refdsString(.storage(.onboarding))) private var onboarding: Bool = false
+    @Binding private var isFinished: Bool
+    @State private var selectionTab: Int = 0
     
-    public init(viewData: [OnboardingViewData]) {
-        self.viewData = viewData
+    public init(isFinished: Binding<Bool>) {
+        self._isFinished = isFinished
     }
     
     public var body: some View {
-        GeometryReader { proxy in
-            TabView {
-                ForEach(viewData.indices, id: \.self) { index in
-                    let data = viewData[index]
-                    let textAlignment: TextAlignment = index % 2 == 0 ? .leading : .trailing
-                    VStack(alignment: index % 2 == 0 ? .leading : .trailing, spacing: 10) {
-                        Spacer()
-                        RefdsText(data.title, size: .custom(28), weight: .bold, alignment: textAlignment)
-                        data.image.image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: proxy.size.height * 0.4)
-                        RefdsText(data.description, color: .secondary, alignment: textAlignment)
-                        Spacer()
-
-                    }
-                    .padding()
+        VStack {
+            TabView(selection: $selectionTab) {
+                OnboardingCardView(
+                    .category,
+                    title: Strings.Onboarding.categoryTitle.value,
+                    description: Strings.Onboarding.categoryDescription.value,
+                    keywords: Strings.Onboarding.categoryKeywords.value.components(separatedBy: ",")
+                )
+                .tag(0)
+                
+                OnboardingCardView(
+                    .budget,
+                    title: Strings.Onboarding.budgetTitle.value,
+                    description: Strings.Onboarding.budgetDescription.value,
+                    keywords: Strings.Onboarding.budgetKeywords.value.components(separatedBy: ",")
+                )
+                .tag(1)
+                
+                OnboardingCardView(
+                    .transaction,
+                    title: Strings.Onboarding.transactionTitle.value,
+                    description: Strings.Onboarding.transactionDescription.value,
+                    keywords: Strings.Onboarding.transactionKeywords.value.components(separatedBy: ",")
+                )
+                .tag(2)
+            }
+            #if os(iOS)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            #endif
+            
+            buttonPageControl
+                .padding()
+                .padding(.horizontal)
+                .frame(maxWidth: 500)
+        }
+    }
+    
+    @ViewBuilder
+    private var buttonPageControl: some View {
+        HStack {
+            if selectionTab == 0 {
+                Spacer()
+                RefdsButton(Strings.Onboarding.next.value, color: .accentColor, style: .primary, maxSize: true) {
+                    withAnimation { selectionTab += 1 }
+                }
+            } else if selectionTab == 2 {
+                RefdsButton(Strings.Onboarding.previous.value, color: .accentColor, style: .secondary, maxSize: true) {
+                    withAnimation { selectionTab -= 1 }
+                }
+                RefdsButton(Strings.Onboarding.getStart.value, color: .accentColor, style: .primary, maxSize: true) {
+                    withAnimation { isFinished.toggle() }
+                }
+            } else if selectionTab == 1 {
+                RefdsButton(Strings.Onboarding.previous.value, color: .accentColor, style: .secondary, maxSize: true) {
+                    withAnimation { selectionTab -= 1 }
+                }
+                RefdsButton(Strings.Onboarding.next.value, color: .accentColor, style: .primary, maxSize: true) {
+                    withAnimation { selectionTab += 1 }
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
         }
     }
 }
 
-struct OnboardingView_Previews: PreviewProvider {
-    static var previews: some View {
-        OnboardingView(viewData: [
-            .init(
-                image: .categoriesOnboarding,
-                title: "Categorias",
-                description: "Organize suas despesas por categorias e acompanhe o quanto está gastando em cada uma delas."
-            ),
-            .init(
-                image: .transactionsOnboarding,
-                title: "Transações",
-                description: "Adicione despesas de forma rápida e intuitiva. Filtre as informações de um jeito simples."
-            )
-        ])
+struct OnboardingViewModifier: ViewModifier {
+    @Binding var isFinished: Bool
+    
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay {
+                ZStack {
+                    if !isFinished {
+                        OnboardingView(isFinished: $isFinished)
+                            .background(ignoresSafeAreaEdges: .all)
+                    }
+                }.animation(.spring(), value: isFinished)
+            }
     }
 }
-#endif
+
+public extension View {
+    func onboardingView(isFinished: Binding<Bool>) -> some View {
+        self.modifier(OnboardingViewModifier(isFinished: isFinished))
+    }
+}

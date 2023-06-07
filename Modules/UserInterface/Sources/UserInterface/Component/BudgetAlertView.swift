@@ -23,7 +23,7 @@ public struct BudgetAlertView: View {
                 RefdsIcon(symbol: icon, size: 40, renderingMode: .multicolor)
             }
             VStack(alignment: .center, spacing: 5) {
-                RefdsText(alert.title, size: .large, weight: .bold, alignment: .center)
+                RefdsText(alert.title, style: .body, weight: .bold, alignment: .center)
                 if let message = alert.message {
                     RefdsText(message, color: .secondary, alignment: .center)
                 }
@@ -35,6 +35,6 @@ public struct BudgetAlertView: View {
 
 struct BudgetAlertView_Previews: PreviewProvider {
     static var previews: some View {
-        BudgetAlertView(alert: .constant(.init()))
+        BudgetAlertView(alert: .constant(.init(error: .cantAddCategoryPro)))
     }
 }

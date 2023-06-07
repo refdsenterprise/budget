@@ -32,13 +32,13 @@ public final class BubbleWorker {
             let bubble = BubbleEntity(context: database.viewContext)
             bubble.id = id
             bubble.name = name.uppercased()
-            bubble.color = color.toHex()
+            bubble.color = color.asHex()
             try database.viewContext.save()
             return
         }
         bubble.id = id
         bubble.name = name.uppercased()
-        bubble.color = color.toHex()
+        bubble.color = color.asHex()
         try database.viewContext.save()
     }
     

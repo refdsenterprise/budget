@@ -81,22 +81,21 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
     
     private var sectionAcceptedTerms: some View {
         VStack(alignment: .leading) {
-            Toggle(isOn: $presenter.isAcceptedTerms) {
+            RefdsToggle(isOn: $presenter.isAcceptedTerms) {
                 RefdsText(presenter.string(.acceptedTerms))
             }
-            .toggleStyle(CheckBoxStyle(isLeading: true))
         }
     }
     
     private var sectionAppleInPurchaseDescription: some View  {
-        RefdsText(presenter.string(.appleInPurchaseDescription), size: .small, color: .secondary, weight: .light)
+        RefdsText(presenter.string(.appleInPurchaseDescription), style: .footnote, color: .secondary, weight: .light)
     }
     
     private var restorePurchaseButton: some View {
         Button {
             Task { try? await presenter.restore() }
         } label: {
-            RefdsText("Restaurar Compra".uppercased(), size: .small, color: .accentColor, weight: .bold)
+            RefdsText("Restaurar Compra".uppercased(), style: .footnote, color: .accentColor, weight: .bold)
                 .frame(maxWidth: .infinity)
         }
     }
@@ -106,7 +105,7 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
             Task { try? await presenter.buyPro() }
         } label: {
             Group {
-                RefdsText(presenter.string(.beProButton(4.99.currency)), size: .large, color: .white, weight: .bold)
+                RefdsText(presenter.string(.beProButton(4.99.currency)), style: .body, color: .white, weight: .bold)
                     .frame(maxWidth: .infinity)
                     .padding()
             }
@@ -123,7 +122,7 @@ struct PromacOSView<Presenter: ProPresenterProtocol>: View {
             NSWorkspace.shared.open(AboutLinks.policy.url)
             #endif
         } label: {
-            RefdsText(presenter.string(.readTermsButton), size: .small, color: .accentColor, alignment: .center)
+            RefdsText(presenter.string(.readTermsButton), style: .footnote, color: .accentColor, alignment: .center)
         }
     }
 }

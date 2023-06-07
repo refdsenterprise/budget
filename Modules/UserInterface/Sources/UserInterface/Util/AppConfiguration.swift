@@ -24,6 +24,11 @@ public extension EnvironmentValues {
 public final class AppConfiguration: ObservableObject {
     public static let shared = AppConfiguration()
     @MainActor private let proPresenter = ProPresenter.shared
+    @AppStorage(.refdsString(.storage(.onboarding))) public var onboarding: Bool = false
+    @AppStorage(.refdsString(.storage(.auth))) public var allowAuth: Bool = false {
+        didSet { authenticaded = !allowAuth }
+    }
+    
     private var timer = Timer()
     
     public init() {
@@ -33,6 +38,7 @@ public final class AppConfiguration: ObservableObject {
     @Published public var themeColor: Color = Color(hex: Worker.shared.settings.get().theme)
     @Published public var colorScheme: ColorScheme? = AppearenceItem(rawValue: Worker.shared.settings.get().appearence.rounded())?.colorScheme
     @Published public var isPro: Bool = true//Worker.shared.settings.get().isPro
+    @Published public var authenticaded: Bool = false
     
     public func startObserver() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [self] timer in
@@ -54,6 +60,10 @@ public final class AppConfiguration: ObservableObject {
 //                    currentWarningNotificationAppears: [],
 //                    currentBreakingNotificationAppears: []
 //                )
+//            }
+//            
+//            if !isPro {
+//                allowAuth = false
 //            }
         })
     }

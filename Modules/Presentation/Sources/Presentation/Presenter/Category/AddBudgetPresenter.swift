@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RefdsUI
 import Domain
 import Data
 import Resource
@@ -64,7 +65,8 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
                     id: category.id,
                     name: category.name,
                     color: category.color,
-                    budgets: budgets + [viewData.id]
+                    budgets: budgets + [viewData.id],
+                    icon: category.icon.rawValue
                 )
                 dismiss?()
             }
@@ -81,7 +83,8 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
             category = AddBudgetViewData.Category(
                 id: categoryFiltered.id,
                 color: Color(hex: categoryFiltered.color),
-                name: categoryFiltered.name
+                name: categoryFiltered.name,
+                icon: RefdsIconSymbol(rawValue: categoryFiltered.icon) ?? .dollarsign
             )
             if let id = budgetID, let budget = Worker.shared.category.getBudget(in: id) {
                 amount = budget.amount
@@ -93,7 +96,7 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
                     $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
                 })
             })
-            categories = allCategories.map({ .init(id: $0.id, color: Color(hex: $0.color), name: $0.name) })
+            categories = allCategories.map({ .init(id: $0.id, color: Color(hex: $0.color), name: $0.name, icon: RefdsIconSymbol(rawValue: $0.icon) ?? .dollarsign) })
             category = categories?.first
         }
         
@@ -119,7 +122,7 @@ public final class AddBudgetPresenter: AddBudgetPresenterProtocol {
                 $0.date.asString(withDateFormat: .monthYear) == viewData.date.asString(withDateFormat: .monthYear)
             })
         })
-        viewData.categories = allCategories.map({ .init(id: $0.id, color: Color(hex: $0.color), name: $0.name) })
+        viewData.categories = allCategories.map({ .init(id: $0.id, color: Color(hex: $0.color), name: $0.name, icon: RefdsIconSymbol(rawValue: $0.icon) ?? .dollarsign) })
         if !(viewData.categories?.contains(where: { $0.id == viewData.category?.id }) ?? false) {
             viewData.category = viewData.categories?.first
         }

@@ -13,7 +13,7 @@ public struct BubbleView: View {
     @Binding private var data: [BudgetViewData.Bubble]
     private var spacing: CGFloat = 10
     private var startAngle: Int = 180
-    private var clockwise: Bool = Bool.random()
+    private var clockwise: Bool = true
     
     public init(viewData: Binding<[BudgetViewData.Bubble]>) {
         _data = viewData
@@ -45,7 +45,7 @@ public struct BubbleView: View {
                         Circle().scaleEffect(0.9)
                         RefdsText(
                             item.title.uppercased(),
-                            size: .custom(CGFloat(item.value) * scale * 0.13),
+                            style: .custom(CGFloat(item.value) * scale * 0.13),
                             color: .white,
                             weight: .bold
                         )

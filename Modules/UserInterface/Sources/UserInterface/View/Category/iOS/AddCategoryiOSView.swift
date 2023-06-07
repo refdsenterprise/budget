@@ -9,21 +9,23 @@ import SwiftUI
 import RefdsUI
 import Domain
 import Presentation
-#if os(iOS)
+
 struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        List {
-            sectionName
-            sectionBudget
+        RefdsList { proxy in
+            sectionForm(proxy: proxy)
+            sectionBudget(proxy: proxy)
         }
         .budgetAlert($presenter.alert)
         .navigationTitle(presenter.string(.navigationTitle))
-        .toolbar { ToolbarItem(placement: .navigationBarTrailing) { buttonSave } }
         .gesture(DragGesture().onChanged({ _ in Application.shared.endEditing() }))
         .task { await presenter.start(id: presenter.id) }
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
         .navigation(isPresented: $presenter.isPresentedEditBudget) {
             presenter.router.configure(routes: .addBudget({ budget in
                 Task { await presenter.add(budget: budget) }
@@ -31,52 +33,58 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
         }
     }
     
-    private var sectionName: some View {
-        Section {
-            rowName
-            rowColor
-        } header: {
-            RefdsText(
-                presenter.string(.headerCategory),
-                size: .extraSmall,
-                color: .secondary
-            )
+    private func sectionForm(proxy: GeometryProxy) -> some View {
+        Group {
+            RefdsSection(proxy: proxy, header: nil) {
+                RefdsTextField(
+                    presenter.string(.labelPlaceholderName),
+                    text: $presenter.viewData.name,
+                    style: .largeTitle,
+                    weight: .bold,
+                    alignment: .center,
+                    minimumScaleFactor: 0.4,
+                    lineLimit: 1
+                )
+            } content: {}
+            
+            RefdsSection(proxy: proxy, headerDescription: presenter.string(.labelColor)) {
+                ColorSelection(color: $presenter.viewData.color)
+                    .padding(.horizontal, -15)
+            }
+            
+            RefdsSection(proxy: proxy, headerDescription: presenter.string(.labelIcon)) {
+                IconSelection(icon: $presenter.viewData.icon, color: presenter.viewData.color)
+                    .padding(.horizontal, -15)
+            }
+            
+            RefdsSection(proxy: proxy) {
+                RefdsButton {
+                    presenter.save { dismiss() }
+                } label: {
+                    HStack {
+                        Spacer()
+                        RefdsText(presenter.id == nil ? presenter.string(.buttonCreate) : presenter.string(.buttonSave), color: presenter.buttonForegroundColor)
+                        Spacer()
+                    }
+                }
+                .disabled(!presenter.canAddNewCategory)
+            }
         }
     }
     
-    private var rowName: some View {
-        HStack {
-            RefdsText(presenter.string(.labelName))
-            RefdsTextField(
-                presenter.string(.labelPlaceholderName),
-                text: $presenter.viewData.name,
-                alignment: .trailing,
-                textInputAutocapitalization: .characters
-            )
-        }
-    }
-    
-    private var rowColor: some View {
-        HStack {
-            RefdsText(presenter.string(.labelColor))
-            Spacer()
-            ColorPicker(
-                selection: $presenter.viewData.color,
-                supportsOpacity: false
-            ) {}
-        }
-    }
-    
-    private var sectionBudget: some View {
-        Section {
+    private func sectionBudget(proxy: GeometryProxy) -> some View {
+        RefdsSection(proxy: proxy, maxColumns: 1, headerDescription: presenter.string(.headerBudgets)) {
             rowBudget
-            buttonAddBudget
-        } header: {
-            RefdsText(
-                presenter.string(.headerBudgets),
-                size: .extraSmall,
-                color: .secondary
-            )
+            RefdsRow {
+                HStack(spacing: 15) {
+                    RefdsIcon(symbol: .plusSquareFill, size: 20)
+                    RefdsText(presenter.string(.buttonAddBudget))
+                }
+            } destination: {
+                presenter.router.configure(routes: .addBudget({ budget in
+                    Task { await presenter.add(budget: budget) }
+                }, category: presenter.viewData.id, budget: nil))
+            }
         }
     }
     
@@ -84,38 +92,44 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
         Group {
             if !presenter.viewData.budgets.isEmpty {
                 ForEach(presenter.viewData.budgets, id: \.id) { budget in
-                    rowBudget(budget)
-                        .contextMenu {
-                            contextMenuRemoveBudget(
-                                category: presenter.viewData,
-                                budget: budget
-                            )
-                            contextMenuEditBudget(
-                                category: presenter.viewData,
-                                budget: budget
-                            )
-                        }
+                    rowBudget(budget, from: presenter.viewData)
                 }
-            } else { RefdsText(presenter.string(.noBudgetAdded)) }
+            } else { RefdsText(presenter.string(.noBudgetAdded)).padding(.vertical, 10) }
         }
     }
     
-    private func rowBudget(_ budget: AddBudgetViewData) -> some View {
+    private func rowBudget(_ budget: AddBudgetViewData, from category: AddCategoryViewData) -> some View {
         HStack(spacing: 15) {
-            RefdsText(budget.date.asString(withDateFormat: .custom("MMMM yyyy")).capitalized)
+            VStack(alignment: .leading) {
+                RefdsText(
+                    budget.amount.currency,
+                    style: .body,
+                    weight: .bold,
+                    lineLimit: 1
+                )
+                RefdsText(
+                    budget.date.asString(withDateFormat: .custom("MMMM yyyy")).capitalized,
+                    color: .secondary
+                )
+            }
             Spacer()
-            RefdsText(
-                budget.amount.currency,
-                size: .normal,
-                color: .secondary,
-                lineLimit: 1
-            )
+            Menu {
+                editBudget(category: category, budget: budget)
+                removeBudget(category: category, budget: budget)
+            } label: {
+                RefdsIcon(
+                    symbol: .ellipsisCircleFill,
+                    color: .secondary,
+                    renderingMode: .hierarchical
+                )
+            }
+
         }
         .padding(.vertical, 4)
     }
     
-    private func contextMenuRemoveBudget(category: AddCategoryViewData, budget: AddBudgetViewData) -> some View {
-        Button {
+    private func removeBudget(category: AddCategoryViewData, budget: AddBudgetViewData) -> some View {
+        RefdsButton {
             Task { await presenter.remove(budget: budget, on: category)  }
         } label: {
             Label(
@@ -125,8 +139,8 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
         }
     }
     
-    private func contextMenuEditBudget(category: AddCategoryViewData, budget: AddBudgetViewData) -> some View {
-        Button {
+    private func editBudget(category: AddCategoryViewData, budget: AddBudgetViewData) -> some View {
+        RefdsButton {
             presenter.budget = budget.id
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 presenter.isPresentedEditBudget.toggle()
@@ -138,33 +152,4 @@ struct AddCategoryiOSView<Presenter: AddCategoryPresenterProtocol>: View {
             )
         }
     }
-    
-    private var buttonSave: some View {
-        Button {
-            Application.shared.endEditing()
-            presenter.save { dismiss() }
-        } label: {
-            RefdsIcon(
-                symbol: .checkmarkRectangleFill,
-                color: presenter.buttonForegroundColor,
-                size: 20,
-                weight: .medium,
-                renderingMode: .hierarchical
-            )
-        }
-    }
-    
-    private var buttonAddBudget: some View {
-        NavigationLink(destination: presenter.router.configure(routes: .addBudget({ budget in
-            Task { await presenter.add(budget: budget) }
-        }, category: presenter.viewData.id, budget: nil))) {
-            RefdsText(
-                presenter.string(.buttonAddBudget),
-                size: .small,
-                color: .accentColor,
-                weight: .bold
-            )
-        }
-    }
 }
-#endif

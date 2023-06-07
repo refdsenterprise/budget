@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RefdsUI
 import Domain
 import Data
 import Resource
@@ -138,7 +139,8 @@ public final class TransactionPresenter: TransactionPresenterProtocol {
                 description: $0.message,
                 categoryName: $0.categoryValue?.name ?? "",
                 categoryColor: Color(hex: $0.categoryValue?.color ?? ""),
-                amount: $0.amount
+                amount: $0.amount,
+                categoryIcon: RefdsIconSymbol(rawValue: $0.categoryValue?.icon ?? "dollarsign") ?? .dollarsign
             )
         })
         viewData.transactions = Dictionary(grouping: transactions, by: { $0.date.asString(withDateFormat: .dayMonthYear) })

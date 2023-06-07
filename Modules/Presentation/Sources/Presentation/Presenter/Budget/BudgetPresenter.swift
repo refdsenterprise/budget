@@ -55,7 +55,6 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     }
     
     public func loadData() {
-        viewData = .init()
         showLoading = true
         Task {
             await updateShowModalPro()
@@ -112,13 +111,16 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
             let budget = self.getBudgetAmount(by: $0)
             let percent = self.getPercent(budget: budget, actual: transaction)
             let percentString = self.getDifferencePercentString(budget: budget, actual: transaction)
+            let percentColor: RefdsColor = percent >= 100 ? .red : percent >= 70 ? .yellow : .green
             return .init(
                 id: $0.id,
                 name: $0.name,
                 value: budget - transaction,
                 percent: percent,
                 percentString: percentString,
-                percentColor: percent >= 100 ? .red : percent >= 70 ? .yellow : .green
+                percentColor: percentColor,
+                icon: RefdsIconSymbol(rawValue: $0.icon) ?? .dollarsign,
+                color: RefdsColor(hex: $0.color)
             )
         })
     }
@@ -144,14 +146,18 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     @MainActor private func updateViewDataBiggerBuy() async {
         guard let biggerTransaction = transactions.max(by: {
             $0.amount < $1.amount
-        }), let category = biggerTransaction.categoryValue else { return }
+        }), let category = biggerTransaction.categoryValue else {
+            viewData.biggerBuy = nil
+            return
+        }
         viewData.biggerBuy = .init(
             id: biggerTransaction.id,
             date: biggerTransaction.date.date,
             description: biggerTransaction.message,
             categoryName: category.name,
             categoryColor: Color(hex: category.color),
-            amount: biggerTransaction.amount
+            amount: biggerTransaction.amount,
+            categoryIcon: RefdsIconSymbol(rawValue: category.icon) ?? .dollarsign
         )
     }
     
@@ -177,7 +183,8 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
                 description: $0.message,
                 categoryName: $0.categoryValue?.name ?? "",
                 categoryColor: Color(hex: $0.categoryValue?.color ?? ""),
-                amount: $0.amount
+                amount: $0.amount,
+                categoryIcon: RefdsIconSymbol(rawValue: $0.categoryValue?.icon ?? "dollarsign") ?? .dongsign
             )
         })
         let amount = transactions.map({ $0.amount }).reduce(0, +)
@@ -195,7 +202,7 @@ public final class BudgetPresenter: BudgetPresenterProtocol {
     @MainActor private func updateViewDataBubble() async {
         let bubbles = Worker.shared.bubble.get()
         var dataItem = bubbles.map { bubble in
-            let value = transactions.filter({ $0.description.lowercased().stripingDiacritics.contains(bubble.name.lowercased()) }).map({ $0.amount }).reduce(0, +)
+            let value = transactions.filter({ $0.description.lowercased().stripingDiacritics.contains(bubble.name.lowercased().stripingDiacritics) }).map({ $0.amount }).reduce(0, +)
             return BudgetViewData.Bubble(id: bubble.id, title: bubble.name.capitalized, value: CGFloat(value), color: Color(hex: bubble.color), realValue: value)
         }.sorted(by: { $0.value > $1.value })
         if let maxBubbleItem = dataItem.max(by: { $0.value < $1.value }) {

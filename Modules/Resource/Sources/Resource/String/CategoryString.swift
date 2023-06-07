@@ -29,7 +29,7 @@ public extension Strings {
         }
         
         public var value: String {
-            NSLocalizedString(key, tableName: "Category", bundle: .module, comment: "")
+            NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
         }
     }
 }
@@ -41,12 +41,15 @@ public extension Strings {
         case buttonAddBudget
         case labelName
         case labelColor
+        case labelIcon
         case labelPlaceholderName
         case headerCategory
         case headerBudgets
         case buttonRemoveBudget
         case noBudgetAdded
         case buttonEditBudget
+        case buttonSave
+        case buttonCreate
         
         private var key: String {
             switch self {
@@ -54,17 +57,20 @@ public extension Strings {
             case .buttonAddBudget: return "addCategory.button.addBudget"
             case .labelName: return "addCategory.label.name"
             case .labelColor: return "addCategory.label.color"
+            case .labelIcon: return "addCategory.label.icon"
             case .labelPlaceholderName: return "addCategory.label.placeholder.name"
             case .headerCategory: return "addCategory.header.category"
             case .headerBudgets: return "addCategory.header.budgets"
             case .buttonRemoveBudget: return "addCategory.button.removeBudget"
             case .noBudgetAdded: return "addCategory.noBudgetAdded"
             case .buttonEditBudget: return "addCategory.button.editBudget"
+            case .buttonSave: return "addCategory.button.save"
+            case .buttonCreate: return "addCategory.button.create"
             }
         }
         
         public var value: String {
-            NSLocalizedString(key, tableName: "Category", bundle: .module, comment: "")
+            NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
         }
     }
 }
@@ -92,6 +98,7 @@ public extension Strings {
         case alertButton
         case alertCreateBudgetTitle
         case alertCreateBudgetDescription
+        case buttonAddBudget
         
         private var key: String {
             switch self {
@@ -115,14 +122,15 @@ public extension Strings {
             case .alertButton: return "category.alertButton"
             case .alertCreateBudgetTitle: return "category.alertCreateBudgetTitle"
             case .alertCreateBudgetDescription: return "category.alertCreateBudgetDescription"
+            case .buttonAddBudget: return "addCategory.button.addBudget"
             }
         }
         
         public var value: String {
             switch self {
-            case .rowSpending(let percent): return String(format: NSLocalizedString(key, tableName: "Category", bundle: .module, comment: ""), percent)
-            case .rowTransactionsAmount(let count): return String(format: NSLocalizedString(key, tableName: "Category", bundle: .module, comment: ""), count)
-            default: return NSLocalizedString(key, tableName: "Category", bundle: .module, comment: "")
+            case .rowSpending(let percent): return String(format: NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: ""), percent)
+            case .rowTransactionsAmount(let count): return String(format: NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: ""), count)
+            default: return NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
             }
         }
     }
@@ -142,7 +150,7 @@ public extension Strings {
         }
         
         public var value: String {
-            NSLocalizedString(key, tableName: "Category", bundle: .module, comment: "")
+            NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
         }
     }
 }

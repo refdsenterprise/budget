@@ -19,7 +19,7 @@ struct Provider: IntentTimelineProvider {
     
     func placeholder(in context: Context) -> CurrencyEntry {
         CurrencyEntry(
-            date: .current,
+            date: Self.presenter.date,
             diff: Self.presenter.diff,
             totalBudget: Self.presenter.totalBudget,
             diffColor: Self.presenter.diffColor,
@@ -33,7 +33,7 @@ struct Provider: IntentTimelineProvider {
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (CurrencyEntry) -> ()) {
         let entry = CurrencyEntry(
-            date: .current,
+            date: Self.presenter.date,
             diff: Self.presenter.diff,
             totalBudget: Self.presenter.totalBudget,
             diffColor: Self.presenter.diffColor,
@@ -49,7 +49,7 @@ struct Provider: IntentTimelineProvider {
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let entries: [CurrencyEntry] = [
             CurrencyEntry(
-                date: .current,
+                date: Self.presenter.date,
                 diff: Self.presenter.diff,
                 totalBudget: Self.presenter.totalBudget,
                 diffColor: Self.presenter.diffColor,
@@ -111,7 +111,7 @@ struct BudgetWidgetEntryView : View {
         ViewThatFits {
             VStack(alignment: .leading) {
                 Label {
-                    Text("Budget")
+                    Text(presenter.string(.budget))
                         .font(.system(size: 18, weight: .bold))
                         .minimumScaleFactor(0.5)
                 } icon: {
@@ -122,12 +122,12 @@ struct BudgetWidgetEntryView : View {
                 }
                 
                 Spacer()
-                Text(entry.isActive ? "Até o momento, nenhum orçamento para o mês de \(entry.date.asString(withDateFormat: .custom("MMMM"))) foi realizado." : "Tenha acesso a todos as funcionalidades, como: relatórios e recursos especiais.")
+                Text(entry.isActive ? presenter.string(.noneSmall(entry.date.asString(withDateFormat: .custom("MMMM")))) : presenter.string(.proSmall))
                     .font(.system(size: 12))
                     .foregroundColor(.secondary)
                 Spacer()
                 Button(action: {}) {
-                    Text((entry.isActive ? "planejar" : "seja pro").uppercased())
+                    Text((entry.isActive ? presenter.string(.noneButton) : presenter.string(.proButton)).uppercased())
                         .font(.system(size: 10, weight: .bold))
                         .foregroundColor(.white)
                 }
@@ -146,7 +146,7 @@ struct BudgetWidgetEntryView : View {
                 VStack(alignment: .leading) {
                     Label {
                         (
-                            Text("Budget ") +
+                            Text("\(presenter.string(.budget)) ") +
                             Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
                                 .foregroundColor(.secondary)
                         )
@@ -160,20 +160,20 @@ struct BudgetWidgetEntryView : View {
                     }
                     
                     Spacer()
-                    Text("valor atual".uppercased())
+                    Text(presenter.string(.actualValue).uppercased())
                         .font(.system(size: 8))
                         .foregroundColor(.secondary)
                         .lineLimit(1)
                     Text(totalActual.currency)
-                        .font(.system(size: 20, weight: .bold, design: .monospaced))
+                        .font(.system(size: 20, weight: .bold))
                         .foregroundColor(diffColor)
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
                     Text(totalBudget.currency)
-                        .font(.system(size: 20, weight: .bold, design: .monospaced))
+                        .font(.system(size: 20, weight: .bold))
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
-                    Text("valor budget".uppercased())
+                    Text(presenter.string(.budgetValue).uppercased())
                         .font(.system(size: 8))
                         .foregroundColor(.secondary)
                         .lineLimit(1)
@@ -181,7 +181,7 @@ struct BudgetWidgetEntryView : View {
                     
                     VStack(alignment: .leading, spacing: 5) {
                         VStack(alignment: .leading, spacing: 0) {
-                            Text("restante".uppercased())
+                            Text(presenter.string(.remaining).uppercased())
                                 .font(.system(size: 8))
                                 .foregroundColor(.secondary)
                                 .lineLimit(1)
@@ -190,7 +190,7 @@ struct BudgetWidgetEntryView : View {
                                     .font(.system(size: 10, weight: .bold))
                                     .foregroundColor(diffColor)
                                 Spacer()
-                                Text(presenter.string(.diff).uppercased())
+                                Text(presenter.localString(.diff).uppercased())
                                     .font(.system(size: 10, weight: .bold))
                             }
                         }
@@ -215,7 +215,7 @@ struct BudgetWidgetEntryView : View {
                             .symbolRenderingMode(.hierarchical)
                             .foregroundColor(.green)
                             .scaleEffect(1.5)
-                        Text("Budget")
+                        Text(presenter.string(.budget))
                             .font(.system(size: 17, weight: .bold))
                     }
                     
@@ -223,7 +223,7 @@ struct BudgetWidgetEntryView : View {
                     
                     Button(action: {}) {
                         Button(action: {}) {
-                            Text((entry.isActive ? "planejar" : "seja pro").uppercased())
+                            Text((entry.isActive ? presenter.string(.noneButton) : presenter.string(.proButton)).uppercased())
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundColor(.white)
                         }
@@ -234,7 +234,7 @@ struct BudgetWidgetEntryView : View {
                     }
                 }
                 Spacer()
-                Text(entry.isActive ? "Até o momento, nenhum orçamento para o mês de \(entry.date.asString(withDateFormat: .custom("MMMM"))) foi realizado. Clique aqui e comece seu mês planejando sua vida financeira." : "Para utilizar os widget é necessário ser PRO. Com isso, você terá acesso a todos os relatórios e diversos recursos especiais.")
+                Text(entry.isActive ? presenter.string(.noneMedium(entry.date.asString(withDateFormat: .custom("MMMM")))) : presenter.string(.proMedium))
                     .font(.system(size: 14))
                     .foregroundColor(.secondary)
                 Spacer()
@@ -257,20 +257,20 @@ struct BudgetWidgetEntryView : View {
                                 .scaleEffect(1.5)
                             VStack(alignment: .leading) {
                                 (
-                                    Text("Budget ") +
+                                    Text("\(presenter.string(.budget)) ") +
                                     Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
                                         .foregroundColor(.secondary)
                                 )
                                 .font(.system(size: 17, weight: .bold))
                                 Text(totalBudget.currency)
-                                    .font(.system(size: 12, design: .monospaced))
+                                    .font(.system(size: 12))
                                     .foregroundColor(.secondary)
                             }
                         }
                         ProgressView(value: totalActual, total: totalBudget) {
                             HStack(spacing: 5) {
                                 Text(totalActual.currency)
-                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .font(.system(size: 8.5, weight: .bold))
                                     .lineLimit(1)
                                 
                                 Spacer()
@@ -302,18 +302,18 @@ struct BudgetWidgetEntryView : View {
                         .symbolRenderingMode(.hierarchical)
                         .foregroundColor(.green)
                         .font(.system(size: 50))
-                    Text("Budget")
+                    Text(presenter.string(.budget))
                         .font(.system(size: 28, weight: .bold))
                 }
                 Spacer()
-                Text(entry.isActive ? "Até o momento, nenhum orçamento para o mês de \(entry.date.asString(withDateFormat: .custom("MMMM"))) foi realizado. Clique aqui e comece seu mês planejando sua vida financeira. Crie suas categorias e cadastre suas despesas em instantes" : "Para utilizar os widget é necessário ser PRO. Com isso, você terá acesso a todos os relatórios e diversos recursos especiais. Crie suas categorias e cadastre suas despesas em instantes")
+                Text(entry.isActive ? presenter.string(.noneLarge(entry.date.asString(withDateFormat: .custom("MMMM")))) : presenter.string(.proLarge))
                     .font(.system(size: 14))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                 Spacer()
                 Button(action: {}) {
                     Button(action: {}) {
-                        Text((entry.isActive ? "planejar agora mesmo" : "Comece agora mesmo").uppercased())
+                        Text((entry.isActive ? presenter.string(.noneButtonLarge) : presenter.string(.proButtonLarge)).uppercased())
                             .font(.system(size: 10, weight: .bold))
                             .foregroundColor(.white)
                             .padding(.all, 10)
@@ -350,20 +350,20 @@ struct BudgetWidgetEntryView : View {
                                 .scaleEffect(1.5)
                             VStack(alignment: .leading) {
                                 (
-                                    Text("Budget ") +
+                                    Text("\(presenter.string(.budget)) ") +
                                     Text(entry.date.asString(withDateFormat: .custom("MMM")).capitalized)
                                         .foregroundColor(.secondary)
                                 )
                                 .font(.system(size: 17, weight: .bold))
                                 Text(totalBudget.currency)
-                                    .font(.system(size: 12, design: .monospaced))
+                                    .font(.system(size: 12))
                                     .foregroundColor(.secondary)
                             }
                         }
                         ProgressView(value: totalActual, total: totalBudget) {
                             HStack(spacing: 5) {
                                 Text(totalActual.currency)
-                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .font(.system(size: 8.5, weight: .bold))
                                     .lineLimit(1)
                                 
                                 Spacer()
@@ -422,11 +422,11 @@ struct BudgetWidgetEntryView : View {
                     .symbolRenderingMode(.hierarchical)
                     .fontWeight(.bold)
                     .scaleEffect(1.2)
-                Text("Budget")
+                Text(presenter.string(.budget))
                     .fontWeight(.bold)
             }
             
-            Text(entry.isActive ? "Faça orçamento para \(entry.date.asString(withDateFormat: .custom("MMMM")))." : "Funcionalidade para usuário PRO.")
+            Text(entry.isActive ? presenter.string(.noneRectangular(entry.date.asString(withDateFormat: .custom("MMMM")))) : presenter.string(.proRectangular))
         }
     }
     
@@ -441,7 +441,7 @@ struct BudgetWidgetEntryView : View {
                             .symbolRenderingMode(.hierarchical)
                             .fontWeight(.bold)
                             .scaleEffect(1.2)
-                        Text(presenter.string(.diff) + " Restante")
+                        Text(presenter.localString(.diff) + " \(presenter.string(.remaining).capitalized)")
                             .fontWeight(.bold)
                     }
                     
@@ -451,7 +451,7 @@ struct BudgetWidgetEntryView : View {
                         .padding(.horizontal, 25)
                     
                     HStack {
-                        Text("Valor:")
+                        Text(presenter.string(.value))
                         Text((totalBudget - totalActual).currency)
                             .foregroundColor(.secondary)
                         Spacer()
@@ -475,7 +475,7 @@ struct BudgetWidgetEntryView : View {
     private var accessoryInlineEmpty: some View {
         ViewThatFits {
             Label {
-                Text(entry.isActive ? "\(entry.date.asString(withDateFormat: .custom("MMMM")).capitalized) sem orçamento" : "Funcionalidade PRO")
+                Text(entry.isActive ? presenter.string(.noneInline(entry.date.asString(withDateFormat: .custom("MMMM")).capitalized)) : presenter.string(.proInline))
             } icon: {
                 Image(systemName: "dollarsign.square.fill")
                     .symbolRenderingMode(.hierarchical)
@@ -490,7 +490,7 @@ struct BudgetWidgetEntryView : View {
                 accessoryInlineEmpty
             } else {
                 Label {
-                    Text("Resta \((diff).currency)")
+                    Text("\(presenter.string(.remainingInline)) \((diff).currency)")
                 } icon: {
                     Image(systemName: "dollarsign.square.fill")
                         .symbolRenderingMode(.hierarchical)
@@ -504,16 +504,16 @@ struct BudgetWidgetEntryView : View {
         Chart(chartData, id: \.label) { chartData in
             ForEach(chartData.data, id: \.category) {
                 BarMark(
-                    x: .value(presenter.string(.category), String($0.category.prefix(3)) + "."),
-                    y: .value(presenter.string(.value), $0.value)
+                    x: .value(presenter.localString(.category), String($0.category.prefix(3)) + "."),
+                    y: .value(presenter.localString(.value), $0.value)
                 )
-                .foregroundStyle(by: .value(presenter.string(.category), chartData.label))
-                .position(by: .value(presenter.string(.category), chartData.label))
+                .foregroundStyle(by: .value(presenter.localString(.category), chartData.label))
+                .position(by: .value(presenter.localString(.category), chartData.label))
             }
         }
         .chartForegroundStyleScale([
-            presenter.string(.budget): Color.blue,
-            presenter.string(.current): entry.diffColor
+            presenter.localString(.budget): Color.blue,
+            presenter.localString(.current): entry.diffColor
         ])
         .chartLegend(.hidden)
         .chartYAxis { AxisMarks(position: .trailing) }
@@ -555,7 +555,7 @@ struct BudgetWidget_Previews: PreviewProvider {
             chartData: [],
             categories: [],
             isEmpty: false,
-            isActive: true
+            isActive: false
         ))
         
         entryView

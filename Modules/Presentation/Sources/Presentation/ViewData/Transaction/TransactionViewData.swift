@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RefdsUI
 import RefdsCore
 
 public struct TransactionViewData {
@@ -25,14 +26,16 @@ public struct TransactionViewData {
         public var categoryName: String
         public var categoryColor: Color
         public var amount: Double
+        public var categoryIcon: RefdsIconSymbol
         
-        public init(id: UUID, date: Date, description: String, categoryName: String, categoryColor: Color, amount: Double) {
+        public init(id: UUID, date: Date, description: String, categoryName: String, categoryColor: Color, amount: Double, categoryIcon: RefdsIconSymbol) {
             self.id = id
             self.date = date
             self.description = description
             self.categoryName = categoryName
             self.categoryColor = categoryColor
             self.amount = amount
+            self.categoryIcon = categoryIcon
         }
     }
     

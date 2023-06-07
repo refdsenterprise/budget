@@ -32,7 +32,7 @@ public extension Strings {
         
         public var value: String {
             switch self {
-            default: return NSLocalizedString(key, tableName: "Transaction", bundle: .module, comment: "")
+            default: return NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
             }
         }
     }
@@ -74,7 +74,7 @@ public extension Strings {
             switch self {
             case .edit: return Strings.UserInterface.edit.value
             case .remove: return Strings.UserInterface.remove.value
-            default: return NSLocalizedString(key, tableName: "Transaction", bundle: .module, comment: "")
+            default: return NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
             }
         }
     }

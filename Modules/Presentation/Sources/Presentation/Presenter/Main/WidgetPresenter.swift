@@ -93,20 +93,28 @@ public final class WidgetPresenter {
     private let categoryWorker = CategoryWorker.shared
     private let transactionsWorker = TransactionWorker.shared
     
+    public func string(_ string: Strings.Widget) -> String {
+        string.value
+    }
+    
+    public var date: Date {
+        .current
+    }
+    
     private var categoriesFiltred: [CategoryEntity] {
-        categoryWorker.getCategories(from: .current)
+        categoryWorker.getCategories(from: date)
     }
     
     private func getBudget(by category: CategoryEntity) -> BudgetEntity? {
         category.budgetsValue.first(where: {
-            $0.date.asString(withDateFormat: .monthYear) == Date.current.asString(withDateFormat: .monthYear)
+            $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
         })
     }
     
     private func getActualTransaction(by category: UUID) -> Double {
         transactionsWorker.get(
             on: category,
-            from: .current,
+            from: date,
             format: .monthYear
         ).map({
             $0.amount
@@ -132,8 +140,8 @@ public final class WidgetPresenter {
     
     public var chartData: [ChartDataItem] {
         [
-            .init(label: string(.budget), data: budgetData),
-            .init(label: string(.current), data: actualData)
+            .init(label: localString(.budget), data: budgetData),
+            .init(label: localString(.current), data: actualData)
         ]
     }
     
@@ -159,19 +167,19 @@ public final class WidgetPresenter {
     
     private func getBudgetAmountByPeriod(by category: CategoryEntity) -> Double {
         (category.budgetsValue.first(where: {
-            $0.date.asString(withDateFormat: .monthYear) == Date.current.asString(withDateFormat: .monthYear)
+            $0.date.asString(withDateFormat: .monthYear) == date.asString(withDateFormat: .monthYear)
         })?.amount ?? 0)
     }
     
     public func getAmountTransactions(by category: UUID) -> Double {
         transactionsWorker.get(
             on: category,
-            from: .current,
+            from: date,
             format: .monthYear
         ).map({ $0.amount }).reduce(0, +)
     }
     
-    public func string(_ string: WidgetString) -> String {
+    public func localString(_ string: WidgetString) -> String {
         switch string {
         case .currentValue(let date): return Strings.UserInterface.currentValue.value + " " + date.asString(withDateFormat: .custom("MMMM"))
         case .diff: return String(format: "%02d", 100 - Int((totalActual * 100) / totalBudget)) + "%"
@@ -194,11 +202,11 @@ public final class WidgetPresenter {
         for category in categoriesFiltred {
             var budget = getBudgetAmountByPeriod(by: category)
             budget = budget == 0 ? 1 : budget
-            let transactions = transactionsWorker.get(on: category.id, from: .current, format: .monthYear)
+            let transactions = transactionsWorker.get(on: category.id, from: date, format: .monthYear)
             let actual = transactions.map({ $0.amount }).reduce(0, +)
             let percent = (actual * 100) / budget
             let percentColor = percent >= 90 ? Color.red : percent >= 70 ? Color.yellow : .green
-            categories.append((color: Color(hex: category.color), name: category.name, percent: (percent, transactions.first?.date.date ?? .current), percentColor: percentColor))
+            categories.append((color: Color(hex: category.color), name: category.name, percent: (percent, transactions.first?.date.date ?? date), percentColor: percentColor))
         }
         categories.sort(by: { $0.percent.1 > $1.percent.1 })
         if categories.count > 6 {

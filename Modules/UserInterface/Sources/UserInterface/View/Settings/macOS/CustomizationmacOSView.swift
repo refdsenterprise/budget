@@ -13,57 +13,67 @@ import Presentation
 struct CustomizationmacOSView<Presenter: CustomizationPresenterProtocol>: View {
     @EnvironmentObject private var presenter: Presenter
     @EnvironmentObject private var appConfigurator: AppConfiguration
+    @State private var isCollapsed: Bool = true
     
     var body: some View {
-        MacUIView(maxAmount: 2) {
-            Group {
-                sectionHeaderIcon
-                sectionApplicationTheme
+        RefdsList { proxy in
+            RefdsSection(proxy: proxy, maxColumns: 2) {
+                VStack {
+                    sectionHeaderIcon(proxy: proxy)
+                    sectionColor(proxy: proxy)
+                }
+                sectionScheme(proxy: proxy)
             }
         }
         .navigationTitle(presenter.string(.navigationTitle))
     }
     
-    private var sectionApplicationTheme: some View {
-        SectionGroup(headerTitle: presenter.string(.theme)) {
-            Group {
-                ColorPicker(selection: Binding(get: {
-                    presenter.themeColor
-                }, set: {
-                    presenter.themeColor = $0
-                    appConfigurator.themeColor = $0
-                }), supportsOpacity: true) {
-                    RefdsText(presenter.string(.color))
-                }
-                CollapsedView(title: presenter.string(.appearence), description: presenter.appearenceSelected.description) {
-                    ForEach(AppearenceItem.allCases, id: \.self) { appearence in
-                        Button {
-                            presenter.appearenceSelected = appearence
-                            appConfigurator.colorScheme = appearence.colorScheme
-                        } label: {
-                            HStack(spacing: 15) {
-                                RefdsIcon(symbol: appearence.icon, color: presenter.appearenceSelected == appearence ? appConfigurator.themeColor : .primary, size: 20, renderingMode: .hierarchical)
-                                    .padding(.all, 5)
-                                    .background((presenter.appearenceSelected == appearence ? appConfigurator.themeColor : .secondary).opacity(0.2))
-                                    .cornerRadius(8)
-                                RefdsText(appearence.description)
-                                Spacer()
-                            }
-                            .padding(.vertical, 2)
-                        }
-                    }
-                }
+    private func sectionHeaderIcon(proxy: GeometryProxy) -> some View {
+        RefdsRow {
+            VStack(spacing: 15) {
+                AppIconView(icon: .dollarsign, color: appConfigurator.themeColor)
+                RefdsText(presenter.string(.appName))
             }
+            .frame(maxWidth: .infinity)
+            .padding(.top)
         }
     }
     
-    private var sectionHeaderIcon: some View {
-        VStack {
-            AppIconView(icon: .dollarsign, color: appConfigurator.themeColor)
-            RefdsText(presenter.string(.appName))
+    private func sectionColor(proxy: GeometryProxy) -> some View {
+        RefdsRow {
+            ColorSelection(color: Binding(get: {
+                presenter.themeColor
+            }, set: {
+                presenter.themeColor = $0
+                appConfigurator.themeColor = $0
+            }))
+            
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top)
+    }
+    
+    private func sectionScheme(proxy: GeometryProxy) -> some View {
+        RefdsRow {
+            VStack {
+                ForEach(AppearenceItem.allCases, id: \.self) { appearence in
+                    Spacer()
+                    RefdsRow {
+                        presenter.appearenceSelected = appearence
+                        appConfigurator.colorScheme = appearence.colorScheme
+                    } content: {
+                        HStack(spacing: 15) {
+                            RefdsIcon(symbol: appearence.icon, color: presenter.appearenceSelected == appearence ? appConfigurator.themeColor : .primary, size: 20, renderingMode: .hierarchical)
+                                .padding(.all, 5)
+                                .background((presenter.appearenceSelected == appearence ? appConfigurator.themeColor : .secondary).opacity(0.2))
+                                .cornerRadius(8)
+                            RefdsText(appearence.description)
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+                Spacer()
+            }
+            .padding(.horizontal)
+        }
     }
 }
 

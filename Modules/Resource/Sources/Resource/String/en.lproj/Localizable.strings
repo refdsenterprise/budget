@@ -1,0 +1,260 @@
+// MARK: - About
+"about.navigationTitle" = "About";
+"about.applicationDescription" = "Budget is the perfect app for those who are tired of dealing with their finances in a confusing and disorganized way. With it, you can easily plan your monthly expenses, dividing them into different categories for better tracking and organization.\n\nThe app allows you to access detailed reports on your expenses, which helps you maintain financial control and avoid unnecessary spending. Additionally, Budget is easy to use and intuitive, making it an essential tool for anyone looking to keep their finances in order.\n\nWith Budget, you no longer need to worry about losing control of your money. The app allows you to stay on top of your finances, with the ability to adjust your expenses according to your financial reality.\n\nIf you want to manage your finances intelligently and effectively, Budget is the perfect solution. Don't waste any more time, download Budget now from the Apple Store and take full control of your finances!\n\n";
+"about.optionWebsite" = "Website";
+"about.optionGithub" = "Github";
+"about.optionWriteReview" = "Write a review";
+"about.optionShare" = "Share";
+"about.applicationName" = "Budget";
+"about.applicationAuthor" = "by Rafael Escaleira";
+
+// MARK: - Budget
+"budget.navigationTitle" = "Budget %@";
+"budget.options" = "Filters";
+"budget.amountTransactionsMoment" = "Number of transactions performed so far";
+"budget.transactionsForCategory" = "Transactions by category";
+"budget.budgetVsActual" = "Budget x Actual";
+"budget.transactions" = "transactions";
+"budget.filterByDate" = "Filter by date";
+"budget.currentValue" = "current value %@";
+"budget.diff" = "remaining";
+"budget.totalDiff" = "total remaining";
+"budget.category" = "category";
+"budget.value" = "value";
+"budget.budget" = "budget";
+"budget.current" = "current";
+"budget.noDescription" = "No description";
+"budget.biggerBuy" = "largest purchase";
+"budget.maxTransactionTitle" = "In this area, you can track your expenses by days of the week.";
+"budget.maxTransactionDescription" = "Keep in mind that it is ordered by the highest spending.";
+"budget.maxTransactionHeader" = "Summary of the days of the week";
+"budget.maxTransactionRanking" = "%d transactions";
+"budget.showTransactoins" = "Show transactions";
+"budget.concentrationValue" = "Concentration values";
+"budget.expansesConcentration" = "expense concentration";
+"budget.labelBubbleName" = "Name";
+"budget.labelBubbleColor" = "Color";
+"budget.labelPlaceholderName" = "Enter the name";
+"budget.addBubble" = "Add bubble";
+"budget.saveBubble" = "Save bubble";
+
+// MARK: - Add Budget
+"addBudget.navigation.title" = "New Budget";
+"addBudget.infoMonth" = "Enter the month";
+"addBudget.placeholder.description" = "Enter the description (Optional)";
+"addBudget.description" = "Description";
+"addBudget.category" = "Category";
+"addBudget.addNewCategory" = "Add new category";
+
+// MARK: - Add Category Scene
+"addCategory.navigation.title" = "Category";
+"addCategory.button.addBudget" = "Add Budget";
+"addCategory.label.name" = "Name";
+"addCategory.label.color" = "Color";
+"addCategory.label.placeholder.name" = "Enter the category name";
+"addCategory.header.category" = "Category";
+"addCategory.header.budgets" = "Budgets";
+"addCategory.button.removeBudget" = "Remove";
+"addCategory.button.editBudget" = "Edit";
+"addCategory.noBudgetAdded" = "No budgets added";
+"addCategory.button.save" = "Save Changes";
+"addCategory.button.create" = "Create Category";
+"addCategory.label.icon" = "Icon";
+
+// MARK: - Category
+"category.navigation.title" = "Categories";
+"category.search.placeholder" = "Search by category";
+"category.section.options" = "Filters";
+"category.section.options.filterPerDate" = "Filter by date";
+"category.section.options.period" = "Period";
+"category.section.duplicate.notFound" = "No category found";
+"category.section.duplicate.suggestion" = "We can duplicate the budgets from the previous month while keeping the same category";
+"category.section.duplicate.button" = "Duplicate";
+"category.section.header.category.mediumBudget" = "budget";
+"category.row.spending" = "%@ spent";
+"category.row.transactionsAmount" = "%d transactions";
+"category.row.medium" = "average";
+"currentValue" = "current value";
+"category.alertCreateCategoryTitle" = "Create a category for your expenses";
+"category.alertCreateCategoryDescription" = "It seems you don't have any categories for your expenses yet. To keep your finances organized, we recommend creating one now.";
+"category.alertButton" = "Click here to start";
+"category.alertCreateBudgetTitle" = "Create a budget for this month";
+"category.alertCreateBudgetDescription" = "It seems you haven't created a budget for your expenses this month yet. To ensure you stay within your financial limits, we suggest creating one now.";
+
+// MARK: - General
+"save.button" = "Save Changes";
+"budget.save.button" = "Add Budget";
+"edit" = "Edit";
+"remove" = "Remove";
+
+// MARK: - Customization
+"customization.navigationTitle" = "Customization";
+"customization.color" = "Color";
+"customization.appearence" = "Appearance";
+"customization.theme" = "Theme";
+"customization.appName" = "Budget";
+"customization.auto" = "Automatic";
+"customization.light" = "Light";
+"customization.dark" = "Dark";
+
+// MARK: - Notification
+"notification.navigationTitle" = "Notifications";
+"notification.allowNotification" = "Allow notifications";
+"notification.allowNotificationDescription" = "Enable notifications and receive alerts about your expenses, reached limits, and reminders to fill in new transactions.";
+"notification.disableNotificationTitle" = "Budget notifications are disabled on your device!";
+"notification.disableNotificationDescription" = "Change notification permissions to receive alerts about your expenses, reached limits, and reminders to fill in new transactions.";
+"notification.remiderTitle" = "New expenses";
+"notification.remiderDescription" = "Be notified to fill in transactions.";
+"notification.warningTitle" = "Caution";
+"notification.warningDescription" = "Know when you're approaching the limit.";
+"notification.breakingTitle" = "Limit exceeded";
+"notification.breakingDescription" = "Know when you've exceeded your limit.";
+"notification.options" = "Options";
+"notification.changeNotificationPermission" = "Change device permissions";
+"notification.activeNotifications" = "Enable notifications";
+"notification.status" = "Status";
+
+// MARK: - Pro
+"pro.navigationTitle" = "Budget Pro";
+"pro.benefitsDescription" = "Discover all the advantages we can offer you for the price of a coffee.";
+"pro.remaningTitle" = "Know how much is left";
+"pro.remaningDescription" = "This in percentage and value, either by category or overall.";
+"pro.chartsTitle" = "Track your expenses";
+"pro.chartsDescription" = "See everything in intuitive and well-organized graphs.";
+"pro.maxTransactionTitle" = "Largest purchase";
+"pro.maxTransactionDescription" = "Find out the highest amount spent during the desired period.";
+"pro.weekDayTitle" = "Summary of the days of the week";
+"pro.weekDayDescription" = "See which day of the week had the most expenses and what they were.";
+"pro.reportHeader" = "Reports";
+"pro.filterTitle" = "Filters";
+"pro.filterDescription" = "Search for whatever you want using all available filters.";
+"pro.categoryTitle" = "Unlimited categories";
+"pro.categoryDescription" = "Add as many categories as you need without worry.";
+"pro.macOSTitle" = "macOS version";
+"pro.macOSDescription" = "Use the layout designed for Mac and iPad whenever you want.";
+"pro.notificationTitle" = "Notifications";
+"pro.notificationDescription" = "Be notified when you exceed 70% or 100% of expenses in each category and overall.";
+"pro.customizationTitle" = "Customization";
+"pro.customizationDescription" = "Change the theme color and app icon to suit your preferences.";
+"pro.resourceHeader" = "Features";
+"pro.acceptedTerms" = "I have read and accept the contract, terms of use, and privacy policy.";
+"pro.appleInPurchaseDescription" = "This service includes monthly access to the Budget Pro service with exclusive functionalities. The monthly payment will be charged to your iTunes account upon confirmation of purchase. The subscription is automatically renewed unless you turn off the auto-renewal at least 24 hours before the billing date. You can manage the subscription and turn off the auto-renewal on your device.";
+"pro.beProButton" = "GO PRO FOR %@/MONTH";
+"pro.readTermsButton" = "Read contract, terms of use, and privacy policy";
+
+// MARK: - Scene
+"scene.navigationTitle" = "Menu";
+"scene.headerShowing" = "Display";
+"scene.headerCreation" = "Creation";
+"scene.labelAddTransaction" = "Transaction";
+"scene.labelAddCategory" = "Category";
+"scene.labelAddBudget" = "Budget";
+
+// MARK: - Settings
+"settings.navigationTitle" = "Settings";
+"settings.manageNotification" = "Manage notifications";
+"settings.manageCustomization" = "Customization";
+"settings.aboutApplication" = "About the app";
+"settings.headerConfiguration" = "Configuration";
+"settings.optionPro" = "Go Pro";
+"settings.addTransaction" = "New transaction";
+"settings.addBudget" = "New budget";
+"settings.addCategory" = "New category";
+"settings.headerShortcut" = "Shortcuts";
+"settings.faceIDPasscode" = "Biometrics or password";
+"settings.customAppIcon" = "Custom icon";
+"settings.permissions" = "System permissions";
+
+// MARK: - AddTransaction
+"addTransaction.navigationTitle" = "New Transaction";
+"addTransaction.dateAndTime" = "Date and time";
+"addTransaction.inputMonth" = "Enter the month";
+"addTransaction.description" = "Description";
+"addTransaction.inputDescription" = "Enter the description";
+"addTransaction.category" = "Category";
+"addTransaction.addNewCategory" = "Add new category";
+
+// MARK: - Transaction
+"transaction.navigationTitle" = "Transactions";
+"transaction.searchForTransactions" = "Search for transactions";
+"transaction.chart" = "Graph";
+"transaction.totalTransactions" = "total transactions";
+"transaction.options" = "Filters";
+"transaction.filterPerDate" = "Filter by date";
+"transaction.period" = "Period";
+"transaction.noDescription" = "No description";
+"transaction.chartDate" = "date";
+"transaction.chartValue" = "value";
+
+// MARK: - UserInterface
+"userInterface.component.periodSelection.title" = "Date";
+"userInterface.ok" = "Ok";
+"userInterface.currentValue" = "current value";
+"userInterface.edit" = "Edit";
+"userInterface.remove" = "Remove";
+"userInterface.week" = "Weekly";
+"userInterface.day" = "Daily";
+"userInterface.month" = "Monthly";
+"userInterface.year" = "Yearly";
+
+// MARK: - General Tab
+"generalTab.categories" = "Categories";
+"generalTab.home" = "Home";
+"generalTab.transactions" = "Transactions";
+"generalTab.settings" = "Settings";
+
+// MARK: - AppIcon
+"appIcon.default" = "Default";
+"appIcon.light" = "Light Default";
+"appIcon.dark" = "Dark Default";
+"appIcon.system" = "System";
+"appIcon.lightSystem" = "Light System";
+"appIcon.darkSystem" = "Dark System";
+"appIcon.lgbt" = "LGBT";
+"appIcon.alertError" = "Your device is not compatible with icon exchange";
+
+// MARK: - Widget
+"widget.budget" = "Budget";
+"widget.noneSmall" = "So far, no budget has been made for the month of %@";
+"widget.proSmall" = "Gain access to all functionalities, such as reports and special features";
+"widget.noneButton" = "plan";
+"widget.proButton" = "be pro";
+"widget.actualValue" = "current value";
+"widget.budgetValue" = "budget value";
+"widget.remaining" = "remaining";
+"widget.noneMedium" = "So far, no budget has been made for the month of %@. Click here and start your month by planning your financial life";
+"widget.proMedium" = "To use the widgets, it's necessary to be PRO. By doing so, you'll have access to all reports and various special features";
+"widget.noneLarge" = "So far, no budget has been made for the month of %@. Click here and start your month by planning your financial life. Create your categories and register your expenses in an instant";
+"widget.proLarge" = "To use the widget, it's necessary to be PRO. By doing so, you'll have access to all reports and various special features. Create your categories and register your expenses in an instant";
+"widget.noneButtonLarge" = "Start planning now";
+"widget.proButtonLarge" = "Start right away";
+"widget.noneRectangular" = "Create a budget for %@";
+"widget.proRectangular" = "Functionality for PRO user";
+"widget.value" = "Value:";
+"widget.noneInline" = "%@ without a budget";
+"widget.proInline" = "PRO functionality";
+"widget.remainingInline" = "Remaining";
+"widget.description" = "Track your expenses by knowing how much you can spend";
+
+// MARK: - Quick Action
+"quickAction.addTransaction" = "Add transaction";
+"quickAction.addBudget" = "Add budget";
+"quickAction.addCategory" = "Add category";
+
+// MARK: - Onboarding
+"onboarding.categoryTitle" = "Categories";
+"onboarding.categoryDescription" = "Bring your finances to life! Create customized categories and add a touch of color, icon, and name to each one. Additionally, set monthly budgets to track your expenses in an organized and dazzling way";
+"onboarding.categoryKeywords" = "Monthly budgets, customization, colors, icons, organization";
+"onboarding.budgetTitle" = "Reports";
+"onboarding.budgetDescription" = "Your financial assistant on one screen! Discover the power of numbers with monthly reports that reveal how much you still have to spend in each category. Captivating charts accompany your expenses, showcasing the biggest purchase of the month and even displaying expenses as bubbles, where the larger the expense, the larger the bubble!";
+"onboarding.budgetKeywords" = "Monthly reports, expense tracking, intuitive charts, biggest purchase of the month, expenses by day of the week, bubble chart";
+"onboarding.transactionTitle" = "Transactions";
+"onboarding.transactionDescription" = "Your financial journey begins here! Create new transactions and delve into details with personalized filters. Explore a universe of colorful expenses while keeping track of each category. Your reliable guide for making smart decisions about your finances.";
+"onboarding.transactionKeywords" = "Transaction creation, expense tracking, personalized filters, expense history, financial control";
+"onboarding.category" = "Category";
+"onboarding.transactions" = "Transactions";
+"onboarding.transactionDescriptionPlaceholder" = "Expense description";
+"onboarding.next" = "Next";
+"onboarding.previous" = "Previous";
+"onboarding.getStart" = "Get start";
+"onboarding.onboarding" = "Onboarding";

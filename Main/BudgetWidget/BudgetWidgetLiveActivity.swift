@@ -194,16 +194,16 @@ struct BudgetWidgetLiveActivity: Widget {
         Chart(chartData, id: \.label) { chartData in
             ForEach(chartData.data, id: \.category) {
                 BarMark(
-                    x: .value(presenter.string(.category), String($0.category.prefix(3)) + "."),
-                    y: .value(presenter.string(.value), $0.value)
+                    x: .value(presenter.localString(.category), String($0.category.prefix(3)) + "."),
+                    y: .value(presenter.localString(.value), $0.value)
                 )
-                .foregroundStyle(by: .value(presenter.string(.category), chartData.label))
-                .position(by: .value(presenter.string(.category), chartData.label))
+                .foregroundStyle(by: .value(presenter.localString(.category), chartData.label))
+                .position(by: .value(presenter.localString(.category), chartData.label))
             }
         }
         .chartForegroundStyleScale([
-            presenter.string(.budget): Color.blue,
-            presenter.string(.current): diffColor
+            presenter.localString(.budget): Color.blue,
+            presenter.localString(.current): diffColor
         ])
         .chartLegend(.hidden)
         .chartYAxis { AxisMarks(position: .trailing) }

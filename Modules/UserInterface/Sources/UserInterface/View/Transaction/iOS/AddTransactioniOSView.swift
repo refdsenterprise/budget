@@ -34,7 +34,7 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
             rowCategory
         } header: {
             if presenter.isStarted {
-                RefdsCurrencyTextField(value: $presenter.amount, size: .custom(40), color: .primary, alignment: .center)
+                RefdsCurrencyTextField(value: $presenter.amount, style: .custom(40), color: .primary, alignment: .center)
                     .padding()
             }
         }
@@ -67,7 +67,12 @@ struct AddTransactioniOSView<Presenter: AddTransactionPresenterProtocol>: View {
         ForEach(categories, id: \.id) { category in
             Button { presenter.viewData.category = category } label: {
                 HStack(spacing: 10) {
-                    IndicatorPointView(color: presenter.viewData.category?.id == category.id ? category.color : .secondary)
+                    RefdsIcon(symbol: category.icon, color: category.color, size: 12, weight: .medium, renderingMode: .hierarchical)
+                        .frame(width: 18, height: 18)
+                        .padding(.all, 5)
+                        .background(category.color.opacity(0.2))
+                        .cornerRadius(8)
+                        .opacity(presenter.viewData.category?.id == category.id ? 1 : 0.2)
                     RefdsText(category.name.capitalized)
                     Spacer()
                     RefdsText(

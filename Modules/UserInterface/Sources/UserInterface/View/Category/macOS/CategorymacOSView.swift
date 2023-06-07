@@ -81,12 +81,12 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
         VStack(spacing: 10) {
             RefdsText(
                 presenter.string(.currentValue).uppercased(),
-                size: .custom(12),
+                style: .caption1,
                 color: .secondary
             )
             RefdsText(
                 presenter.viewData.value.totalActual.currency,
-                size: .custom(40),
+                style: .superTitle,
                 color: .primary,
                 weight: .bold,
                 alignment: .center,
@@ -95,7 +95,7 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
             .frame(maxWidth: .infinity)
             RefdsText(
                 presenter.viewData.value.totalBudget.currency,
-                size: .custom(20),
+                style: .title3,
                 color: .accentColor,
                 weight: .bold
             )
@@ -116,10 +116,11 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                     CollapsedView(title: presenter.string(.sectionOptions)) {
                         Group {
                             HStack {
-                                Toggle(isOn: $presenter.isFilterPerDate) {
+                                RefdsToggle(isOn: $presenter.isFilterPerDate) {
                                     RefdsText(presenter.string(.sectionOptionsFilterPerDate))
                                 }
                                 .tint(.accentColor)
+                                Spacer()
                             }
                             
                             if presenter.isFilterPerDate {
@@ -133,21 +134,20 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     }
     
     private var sectionAddBudget: some View {
-        Button { presenter.isPresentedAddBudget.toggle() } label: {
-            GroupBox {
+        SectionGroup {
+            RefdsButton { presenter.isPresentedAddBudget.toggle() } label: {
                 HStack {
-                    RefdsText("Adicionar Budget")
+                    RefdsText(presenter.string(.buttonAddBudget))
                     Spacer()
                 }
             }
-            .listGroupBoxStyle(isButton: true)
         }
     }
     
     private var sectionCategories: some View {
         ForEach(presenter.viewData.budgets, id: \.id) { category in
             GroupBox {
-                rowCategory(category)
+                CategoryCardView(category: category, placeHolderPercent: presenter.string(.rowSpending(category.percent)), placeHolderAmountTransactions: presenter.string(.rowTransactionsAmount(category.amountTransactions)))
             }
             .onTapGesture { isPresentedTransactions.toggle() }
             .padding(.all, 10)
@@ -167,10 +167,10 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     private var sectionNonCategories: some View {
         SectionGroup {
             VStack(alignment: .center, spacing: 15) {
-                RefdsText(presenter.string(.alertCreateCategoryTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateCategoryTitle), style: .body, weight: .bold, alignment: .center)
                 RefdsText(presenter.string(.alertCreateCategoryDescription), color: .secondary, alignment: .center)
                 Button { presenter.isPresentedAddCategory.toggle() } label: {
-                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                    RefdsText(presenter.string(.alertButton).uppercased(), style: .caption1, color: .white)
                         .frame(maxWidth: .infinity)
                         .padding()
                 }
@@ -185,10 +185,10 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
     private var sectionNonBudgets: some View {
         SectionGroup {
             VStack(alignment: .center, spacing: 15) {
-                RefdsText(presenter.string(.alertCreateBudgetTitle), size: .large, weight: .bold, alignment: .center)
+                RefdsText(presenter.string(.alertCreateBudgetTitle), style: .body, weight: .bold, alignment: .center)
                 RefdsText(presenter.string(.alertCreateBudgetDescription), color: .secondary, alignment: .center)
                 Button { presenter.isPresentedAddBudget.toggle() } label: {
-                    RefdsText(presenter.string(.alertButton).uppercased(), size: .extraSmall, color: .white)
+                    RefdsText(presenter.string(.alertButton).uppercased(), style: .caption1, color: .white)
                         .frame(maxWidth: .infinity)
                         .padding()
                 }
@@ -197,27 +197,6 @@ struct CategorymacOSView<Presenter: CategoryPresenterProtocol>: View {
                 .cornerRadius(8)
             }
             .padding()
-        }
-    }
-    
-    private func rowCategory(_ category: CategoryViewData.Budget) -> some View {
-        HStack(spacing: 10) {
-            IndicatorPointView(color: category.color)
-            VStack(spacing: 2) {
-                HStack {
-                    RefdsText(category.name.capitalized, weight: .bold)
-                    Spacer()
-                    RefdsText(
-                        category.budget.currency,
-                        lineLimit: 1
-                    )
-                }
-                HStack {
-                    RefdsText(presenter.string(.rowSpending(category.percent)), color: .secondary)
-                    Spacer()
-                    RefdsText(presenter.string(.rowTransactionsAmount(category.amountTransactions)), color: .secondary)
-                }
-            }
         }
     }
     

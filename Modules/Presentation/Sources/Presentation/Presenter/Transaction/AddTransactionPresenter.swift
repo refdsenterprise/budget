@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RefdsUI
 import Domain
 import Data
 import Resource
@@ -65,7 +66,8 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                     id: $0.id,
                     color: Color(hex: $0.color),
                     name: $0.name,
-                    remaning: totalBudget - totalActual
+                    remaning: totalBudget - totalActual,
+                    icon: RefdsIconSymbol(rawValue: $0.icon) ?? .dollarsign
                 )
             })
             Task { @MainActor in
@@ -77,7 +79,8 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                         id: category.id,
                         color: Color(hex: category.color),
                         name: category.name,
-                        remaning: totalBudget - totalActual
+                        remaning: totalBudget - totalActual,
+                        icon: RefdsIconSymbol(rawValue: category.icon) ?? .dollarsign
                     ),
                     categories: categories,
                     date: transaction.date.date
@@ -95,7 +98,8 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                     id: $0.id,
                     color: Color(hex: $0.color),
                     name: $0.name,
-                    remaning: totalBudget - totalActual
+                    remaning: totalBudget - totalActual,
+                    icon: RefdsIconSymbol(rawValue: $0.icon) ?? .dollarsign
                 )
             })
             Task { @MainActor in
@@ -121,7 +125,8 @@ public final class AddTransactionPresenter: AddTransactionPresenterProtocol {
                 id: $0.id,
                 color: Color(hex: $0.color),
                 name: $0.name,
-                remaning: totalBudget - totalActual
+                remaning: totalBudget - totalActual,
+                icon: RefdsIconSymbol(rawValue: $0.icon) ?? .dollarsign
             )
         })
         

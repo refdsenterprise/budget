@@ -78,6 +78,11 @@ public final class Factory: FactoryProtocol {
     
     public func makeCustomizationScreen() -> any View {
         let presenter = CustomizationPresenter()
-        return CustomizationScree(presenter: presenter)
+        return CustomizationScreen(presenter: presenter)
+    }
+    
+    public func makeCustomAppIconScreen() -> any View {
+        let presenter = CustomAppIconPresenter()
+        return CustomAppIconScreen(presenter: presenter)
     }
 }

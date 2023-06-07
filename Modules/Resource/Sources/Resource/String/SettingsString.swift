@@ -19,25 +19,31 @@ public extension Strings {
         case addCategory
         case addBudget
         case headerShortcut
+        case faceIDPasscode
+        case customAppIcon
+        case sytemPermissions
         
         private var key: String {
             switch self {
-            case .navigationTitle: return "navigationTitle"
-            case .manageNotification: return "manageNotification"
-            case .manageCustomization: return "manageCustomization"
-            case .aboutApplication: return "aboutApplication"
-            case .headerConfiguration: return "headerConfiguration"
-            case .optionPro: return "optionPro"
-            case .addTransaction: return "addTransaction"
-            case .addCategory: return "addCategory"
-            case .addBudget: return "addBudget"
-            case .headerShortcut: return "headerShortcut"
+            case .navigationTitle: return "settings.navigationTitle"
+            case .manageNotification: return "settings.manageNotification"
+            case .manageCustomization: return "settings.manageCustomization"
+            case .aboutApplication: return "settings.aboutApplication"
+            case .headerConfiguration: return "settings.headerConfiguration"
+            case .optionPro: return "settings.optionPro"
+            case .addTransaction: return "settings.addTransaction"
+            case .addCategory: return "settings.addCategory"
+            case .addBudget: return "settings.addBudget"
+            case .headerShortcut: return "settings.headerShortcut"
+            case .faceIDPasscode: return "settings.faceIDPasscode"
+            case .customAppIcon: return "settings.customAppIcon"
+            case .sytemPermissions: return "settings.permissions"
             }
         }
         
         public var value: String {
             switch self {
-            default: return NSLocalizedString(key, tableName: "Settings", bundle: .module, comment: "")
+            default: return NSLocalizedString(key, tableName: "Localizable", bundle: .module, comment: "")
             }
         }
     }
